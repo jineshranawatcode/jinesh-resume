@@ -576,6 +576,58 @@
             </section>
         </div>
 
+        <!-- Professional Advisory & Community Engagement -->
+        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center">
+                <i class="fas fa-handshake text-primary mr-2"></i>
+                Professional Advisory & Community Engagement
+            </h2>
+            <p class="text-gray-700 mb-4">
+                On weekends, I provide professional advisory services to organizations and individuals in the areas of Site Reliability Engineering (SRE), cloud architecture, and data engineering. This focused engagement allows me to contribute to the broader technology community while sharing specialized knowledge across various industries.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">Technical Advisory</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>SRE implementation for cloud-native applications</li>
+                        <li>Data infrastructure reliability and optimization</li>
+                        <li>Cloud architecture for enterprise workloads</li>
+                        <li>ML/AI platform engineering</li>
+                        <li>Data observability and governance frameworks</li>
+                    </ul>
+                    <p class="text-gray-600 text-sm mt-3">
+                        Provided strategic direction to multiple organizations implementing cloud-native architectures and SRE practices.
+                    </p>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h3 class="font-semibold mb-2">Knowledge Sharing</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Architecture review sessions for technical teams</li>
+                        <li>Technical mentoring for mid-senior engineers</li>
+                        <li>Technical content development for organizations</li>
+                        <li>Best practices implementation guidance</li>
+                        <li>Performance optimization methodologies</li>
+                    </ul>
+                    <p class="text-gray-600 text-sm mt-3">
+                        Engaged with over 300 professionals through structured knowledge-sharing initiatives focused on practical implementation.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg p-4">
+                <h3 class="font-semibold mb-2">Community Initiatives</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>Mentor for FUEL NGO supporting technology graduates in career development</li>
+                    <li>Technical advisor for early-stage startups in data infrastructure</li>
+                    <li>Author of technical publications on Medium</li>
+                    <li>Contributor to open-source data engineering projects</li>
+                    <li>Advocate for cost-efficient cloud architectures and practices</li>
+                </ul>
+            </div>
+        </section>
+
         <!-- Project Portfolio in Detail -->
         <section class="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 class="text-2xl font-bold mb-4 flex items-center">
@@ -697,134 +749,6 @@
                         <li>Featured in internal BP technical publications and shared as a case study</li>
                     </ul>
                 </div>
-            </div>
-
-            <!-- Project 4 -->
-            <div class="mb-8 border-b border-gray-200 pb-6">
-                <h3 class="text-xl font-bold mb-2">ADL Lineage & Monitoring System using Neo4J</h3>
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GraphQL</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Data Lake</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">D3.js</span>
-                </div>
-                <div class="mb-4">
-                    <p class="font-semibold">Problem:</p>
-                    <p class="text-gray-700 mb-2">
-                        BP lacked comprehensive visibility into data flows across their Azure Data Lake environment, making impact analysis, compliance, and data governance challenging.
-                    </p>
-                    <p class="font-semibold">Solution:</p>
-                    <p class="text-gray-700 mb-2">
-                        Created a comprehensive data lineage and monitoring solution using Neo4j to track, visualize, and analyze data flows across the data lake. The solution captures metadata from various data processing systems and builds a graph representation of data relationships.
-                    </p>
-                    <p class="font-semibold">Technical Implementation:</p>
-                    <ul class="list-disc list-inside text-gray-700 mb-2">
-                        <li>Designed Neo4j graph schema to represent data entities, transformations, and relationships</li>
-                        <li>Built metadata extractors for various data sources (Databricks, ADF, SQL, etc.)</li>
-                        <li>Implemented Python-based ingestion services to populate the lineage graph</li>
-                        <li>Created GraphQL API for efficient querying of lineage information</li>
-                        <li>Developed web-based visualization interface using D3.js for exploring data relationships</li>
-                    </ul>
-                    <p class="font-semibold">Impact:</p>
-                    <ul class="list-disc list-inside text-gray-700">
-                        <li>Enabled comprehensive impact analysis for planned system changes</li>
-                        <li>Improved regulatory compliance through end-to-end data lineage</li>
-                        <li>Enhanced data quality management by identifying critical data flows</li>
-                        <li>Reduced time to diagnose data issues from days to hours</li>
-                        <li>Solution now tracks over 5,000 data entities and their relationships</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Project 5 -->
-            <div>
-                <h3 class="text-xl font-bold mb-2">Bazel-based CICD for Data Engineering</h3>
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Bazel</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Java</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure DevOps</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Monorepo</span>
-                </div>
-                <div>
-                    <p class="font-semibold">Problem:</p>
-                    <p class="text-gray-700 mb-2">
-                        BP's data engineering team struggled with pipeline management across multiple repositories, leading to inconsistent deployment practices, dependency issues, and lengthy build times for their 6500+ pipelines.
-                    </p>
-                    <p class="font-semibold">Solution:</p>
-                    <p class="text-gray-700 mb-2">
-                        Architected and implemented a Bazel-based monorepo solution for data pipeline management, enabling consistent builds, efficient dependency management, and streamlined deployments.
-                    </p>
-                    <p class="font-semibold">Technical Implementation:</p>
-                    <ul class="list-disc list-inside text-gray-700 mb-2">
-                        <li>Set up Bazel build system for multi-language monorepo (Python, Java, SQL)</li>
-                        <li>Created custom Bazel rules for Databricks notebooks and other artifacts</li>
-                        <li>Developed one-click deployment framework for pipeline deployment</li>
-                        <li>Implemented incremental build and test capabilities</li>
-                        <li>Integrated with Azure DevOps pipelines for automated CI/CD</li>
-                    </ul>
-                    <p class="font-semibold">Impact:</p>
-                    <ul class="list-disc list-inside text-gray-700">
-                        <li>Reduced pipeline creation time from weeks to hours</li>
-                        <li>Decreased build times by 70% through incremental builds</li>
-                        <li>Improved code reuse and standardization across teams</li>
-                        <li>Enhanced collaboration through unified codebase</li>
-                        <li>Solution now manages 6500+ data pipelines in a single repository</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Freelance & Training -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
-                <i class="fas fa-chalkboard-teacher text-primary mr-2"></i>
-                Freelance Consulting & Training
-            </h2>
-            <p class="text-gray-700 mb-4">
-                Beyond my corporate role, I work as a freelance consultant and trainer, sharing expertise in cloud technologies, data engineering, and AI implementation. My consultancy focuses on helping organizations build scalable, cost-efficient data platforms and implement advanced analytics solutions.
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <h3 class="font-semibold mb-2">Training & Workshops</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-1">
-                        <li>Data Engineering on Azure & AWS</li>
-                        <li>Real-time Data Processing with Spark</li>
-                        <li>Building Cost-Effective Cloud Architectures</li>
-                        <li>Neo4j Graph Databases for Enterprise</li>
-                        <li>Generative AI Integration for Data Platforms</li>
-                    </ul>
-                    <p class="text-gray-600 text-sm mt-3">
-                        Conducted over 20 specialized workshops for 300+ professionals, focusing on practical implementation and best practices.
-                    </p>
-                </div>
-                
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <h3 class="font-semibold mb-2">Consulting Services</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-1">
-                        <li>Cloud Architecture Assessment & Optimization</li>
-                        <li>Data Platform Design & Implementation</li>
-                        <li>Cost Optimization Strategy</li>
-                        <li>Technical Due Diligence</li>
-                        <li>Team Building & Technical Mentoring</li>
-                    </ul>
-                    <p class="text-gray-600 text-sm mt-3">
-                        Helped multiple clients achieve significant improvements in performance, cost-efficiency, and scalability.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="border border-gray-200 rounded-lg p-4">
-                <h3 class="font-semibold mb-2">Community Contributions</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-1">
-                    <li>Mentor for FUEL NGO supporting fresh graduates in technology careers</li>
-                    <li>Speaker at technology conferences and meetups</li>
-                    <li>Author of technical articles and tutorials on Medium</li>
-                    <li>Open source contributor to data engineering tools</li>
-                    <li>Career advisor for data professionals transitioning to cloud technologies</li>
-                </ul>
             </div>
         </section>
 
