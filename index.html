@@ -80,9 +80,20 @@
         .section-header {
             cursor: pointer;
         }
+            .card-transform {
+            transition: all 0.3s ease;
+        }
+        .card-transform:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
         .bp-feature {
-            background: linear-gradient(to right, rgba(0, 155, 0, 0.1), rgba(14, 165, 233, 0.1));
+            background: linear-gradient(to right, rgba(0, 155, 0, 0.05), rgba(14, 165, 233, 0.05));
             border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        .bp-feature:hover {
+            background: linear-gradient(to right, rgba(0, 155, 0, 0.1), rgba(14, 165, 233, 0.1));
         }
         .testimonial-carousel {
             scroll-behavior: smooth;
@@ -186,7 +197,7 @@
                 </div>
             </div>
             <!-- Mobile Menu -->
-            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+            <div id="mobileMenu" class="hidden lg:hidden mt-4 pb-4">
                 <div class="flex flex-col space-y-3">
                     <a href="#vision" class="text-gray-700 hover:text-primary transition-colors">Vision</a>
                     <a href="#about" class="text-gray-700 hover:text-primary transition-colors">About</a>
@@ -206,7 +217,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center mb-6 md:mb-0">
                     <div class="h-20 w-20 bg-primary rounded-full flex items-center justify-center text-white overflow-hidden mr-6 shadow-lg">
-                        <img src="jinesh.jpeg" alt="Jinesh Ranawat" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='JR'; this.parentElement.classList.add('font-bold', 'text-2xl');">
+                        <img src="jinesh.jpeg" alt="Jinesh Ranawat" class="w-full h-full object-cover rounded-full" onerror="this.onerror=null; this.parentElement.innerHTML='JR'; this.parentElement.classList.add('font-bold', 'text-2xl');">
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold">Jinesh Ranawat</h1>
@@ -250,9 +261,9 @@
     <!-- BP Feature Banner -->
     <div class="bg-white my-2">
         <div class="container mx-auto px-4">
-            <div class="bp-feature p-4 rounded-lg flex flex-col md:flex-row items-center justify-between animate-pulse">
+            <div class="bp-feature p-4 rounded-lg flex flex-col md:flex-row items-center justify-between">
                 <div class="flex items-center mb-4 md:mb-0">
-                    <img src="/api/placeholder/80/40" alt="BP Logo" class="h-10 mr-4" />
+                    <img src="bp_logo.jpeg" alt="BP Logo" class="h-10 mr-4" onerror="this.src='/api/placeholder/80/40'; this.onerror='';" />
                     <div>
                         <h3 class="font-bold text-lg">Featured on BP's Global Website</h3>
                         <p class="text-gray-600">My story of innovation and leadership featured on BP's global careers page</p>
@@ -319,7 +330,7 @@
                             Leadership Development & Industry Influence
                         </div>
                         <p class="text-gray-700">
-                            As a member of BP's Advanced FLL (Future Leaders League) leadership group and the prestigious Changemaker Program, I'm receiving specialized training in leadership management while contributing to strategic initiatives across the organization. These programs have strengthened my capabilities in leading cross-functional teams, driving organizational change, and fostering innovation cultures. The combination of technical expertise and leadership development has positioned me to guide BP's digital transformation journey while mentoring the next generation of data and AI professionals.
+                            I'm focused on building technical leadership excellence and fostering innovation cultures throughout the organization. By combining deep technical expertise with leadership development, I'm positioned to guide BP's digital transformation journey while mentoring the next generation of data and AI professionals.
                         </p>
                     </div>
                 </div>
@@ -963,15 +974,15 @@
             <div id="portfolio-content" class="collapse-content">
                 <!-- Projects Tabs -->
                 <div class="mb-6">
-                    <div class="flex border-b border-gray-200">
-                        <button class="project-tab py-2 px-4 border-b-2 border-primary text-primary font-medium" data-target="project-1">
+                    <div class="flex flex-wrap border-b border-gray-200">
+                        <button class="project-tab py-2 px-3 text-sm border-b-2 border-primary text-primary font-medium" data-target="project-1">
                             Geospatial Analytics
                         </button>
-                        <button class="project-tab py-2 px-4 border-b-2 border-transparent text-gray-500 font-medium" data-target="project-2">
-                            LOC8 Data Discovery
+                        <button class="project-tab py-2 px-3 text-sm border-b-2 border-transparent text-gray-500 font-medium" data-target="project-2">
+                            LOC8 Discovery
                         </button>
-                        <button class="project-tab py-2 px-4 border-b-2 border-transparent text-gray-500 font-medium" data-target="project-3">
-                            Azure Storage Optimizer
+                        <button class="project-tab py-2 px-3 text-sm border-b-2 border-transparent text-gray-500 font-medium" data-target="project-3">
+                            Storage Optimizer
                         </button>
                     </div>
                 </div>
