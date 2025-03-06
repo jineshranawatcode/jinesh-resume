@@ -69,19 +69,137 @@
             color: rgba(0, 155, 0, 0.2);
             font-family: serif;
         }
+        .collapse-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .collapse-open {
+            max-height: 2000px;
+        }
+        .section-header {
+            cursor: pointer;
+        }
+        .bp-feature {
+            background: linear-gradient(to right, rgba(0, 155, 0, 0.1), rgba(14, 165, 233, 0.1));
+            border-left: 4px solid var(--primary-color);
+        }
+        .testimonial-carousel {
+            scroll-behavior: smooth;
+        }
+        .card-rotate:hover {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            transition: transform 0.8s;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
         @media print {
             .no-print {
                 display: none;
             }
         }
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--primary-color);
+            z-index: 1000;
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+        .nav-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .section-indicator {
+            height: 2px;
+            width: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+        .active-section .section-indicator {
+            width: 100%;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal text-gray-800">
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-indicator"></div>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md py-2 nav-sticky">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="h-10 w-10 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md">
+                        JR
+                    </div>
+                    <span class="text-lg font-bold">Jinesh Ranawat</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#about" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">About</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
+                    <a href="#projects" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">Projects</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
+                    <a href="#experience" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">Experience</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
+                    <a href="#skills" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">Skills</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
+                    <a href="#testimonials" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">Testimonials</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
+                    <a href="#contact" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">Contact</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
+                </div>
+                <div class="md:hidden">
+                    <button id="menuToggle" class="text-gray-700 hover:text-primary transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+                <div class="flex flex-col space-y-3">
+                    <a href="#about" class="text-gray-700 hover:text-primary transition-colors">About</a>
+                    <a href="#projects" class="text-gray-700 hover:text-primary transition-colors">Projects</a>
+                    <a href="#experience" class="text-gray-700 hover:text-primary transition-colors">Experience</a>
+                    <a href="#skills" class="text-gray-700 hover:text-primary transition-colors">Skills</a>
+                    <a href="#testimonials" class="text-gray-700 hover:text-primary transition-colors">Testimonials</a>
+                    <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <!-- Header -->
-    <header class="bg-white shadow-md">
+    <header class="bg-white shadow-md mt-0 py-8">
         <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
-                <div class="flex items-center mb-4 md:mb-0">
+                <div class="flex items-center mb-6 md:mb-0">
                     <div class="h-20 w-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mr-6 shadow-lg">
                         JR
                     </div>
@@ -121,6 +239,24 @@
             </div>
         </div>
     </header>
+
+    <!-- BP Feature Banner -->
+    <div class="bg-white my-2">
+        <div class="container mx-auto px-4">
+            <div class="bp-feature p-4 rounded-lg flex flex-col md:flex-row items-center justify-between animate-pulse">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <img src="/api/placeholder/80/40" alt="BP Logo" class="h-10 mr-4" />
+                    <div>
+                        <h3 class="font-bold text-lg">Featured on BP's Global Website</h3>
+                        <p class="text-gray-600">My story of innovation and leadership featured on BP's global careers page</p>
+                    </div>
+                </div>
+                <a href="https://www.bp.com/en/global/corporate/careers/life-at-bp/our-stories/jineshs-story.html" target="_blank" class="bg-primary text-white px-4 py-2 rounded hover:bg-green-700 transition-colors inline-flex items-center">
+                    Read My Story <i class="fas fa-external-link-alt ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -175,355 +311,463 @@
         </section>
 
         <!-- About Section -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <section id="about" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="about-content">
                 <i class="fas fa-user text-primary mr-2"></i>
                 About Me
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
             </h2>
-            <p class="text-gray-700 mb-4">
-                I'm a Staff AI/Data Engineer with over 10 years of experience across financial services, fintech, and energy sectors. Currently at BP, I lead innovative data engineering initiatives, building multi-modal conversational AI agents and managing highly scalable, cost-efficient platforms across AWS/Azure.
-            </p>
-            <p class="text-gray-700">
-                My expertise spans cloud architecture optimization, real-time data processing, and team leadership. I've successfully built and scaled a data engineering team from 2 to 50+ engineers while maintaining zero escalations and 90% team satisfaction. As a passionate educator, I also work as a freelance consultant and trainer, sharing knowledge through well-crafted technical content and training sessions that have reached over 300 professionals.
-            </p>
+            <div id="about-content" class="collapse-content collapse-open">
+                <p class="text-gray-700 mb-4">
+                    I'm a Staff AI/Data Engineer with over 10 years of experience across financial services, fintech, and energy sectors. Currently at BP, I lead innovative data engineering initiatives, building multi-modal conversational AI agents and managing highly scalable, cost-efficient platforms across AWS/Azure.
+                </p>
+                <p class="text-gray-700">
+                    My expertise spans cloud architecture optimization, real-time data processing, and team leadership. I've successfully built and scaled a data engineering team from 2 to 50+ engineers while maintaining zero escalations and 90% team satisfaction. As a passionate educator, I also work as a freelance consultant and trainer, sharing knowledge through well-crafted technical content and training sessions that have reached over 300 professionals.
+                </p>
+            </div>
         </section>
 
         <!-- Featured Projects -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <section id="projects" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="projects-content">
                 <i class="fas fa-laptop-code text-primary mr-2"></i>
                 Featured Projects
-                <a href="https://github.com/jineshranawat" target="_blank" class="ml-auto text-sm text-blue-600 hover:text-blue-800">
+                <a href="https://github.com/jineshranawat" target="_blank" class="ml-auto text-sm text-blue-600 hover:text-blue-800 mr-2">
                     View All <i class="fas fa-external-link-alt ml-1"></i>
                 </a>
+                <i class="fas fa-chevron-down transition-transform duration-300"></i>
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-lg font-semibold">Geospatial Analytics Platform</h3>
-                        <a href="https://github.com/jineshranawat/geospatial-analytics" target="_blank" class="text-blue-600 hover:text-blue-800">
-                            <i class="fab fa-github"></i>
-                        </a>
+            <div id="projects-content" class="collapse-content collapse-open">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate project-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold">Geospatial Analytics Platform</h3>
+                            <a href="https://github.com/jineshranawat/geospatial-analytics" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-2">Real-time vessel tracking with millisecond performance</p>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spark</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GeoJSON</span>
+                        </div>
+                        <p class="text-gray-700 text-sm">
+                            Developed a real-time geospatial tracking system enhancing safety across BP assets. The platform processes vessel location data with millisecond performance, providing critical insights for offshore operations and safety monitoring.
+                        </p>
+                        <div class="mt-4 project-details hidden">
+                            <h4 class="font-semibold mb-2">Key Achievements:</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                <li>Reduced vessel tracking latency from minutes to milliseconds</li>
+                                <li>Improved offshore safety with proactive collision alerts</li>
+                                <li>System now monitors over 30,000 vessels daily</li>
+                                <li>Extended to Castrol division for supply chain optimization</li>
+                            </ul>
+                        </div>
+                        <button class="mt-3 text-primary text-sm font-medium focus:outline-none project-expand">
+                            Show Details <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
                     </div>
-                    <p class="text-gray-600 text-sm mb-2">Real-time vessel tracking with millisecond performance</p>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spark</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GeoJSON</span>
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate project-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold">LOC8 Data Discovery</h3>
+                            <a href="https://github.com/jineshranawat/loc8-discovery" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-2">Pattern-based data discovery system</p>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Java</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spring Boot</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">React</span>
+                        </div>
+                        <p class="text-gray-700 text-sm">
+                            Engineered a revolutionary pattern-based data discovery system that significantly improved data accessibility and usability across the organization. The system leverages machine learning techniques for intelligent pattern recognition and metadata management.
+                        </p>
+                        <div class="mt-4 project-details hidden">
+                            <h4 class="font-semibold mb-2">Key Achievements:</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                <li>Reduced data discovery time from weeks to minutes</li>
+                                <li>Improved governance through comprehensive lineage tracking</li>
+                                <li>Enabled self-service for 500+ data consumers</li>
+                                <li>Now tracks over 10,000 data assets organization-wide</li>
+                            </ul>
+                        </div>
+                        <button class="mt-3 text-primary text-sm font-medium focus:outline-none project-expand">
+                            Show Details <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
                     </div>
-                    <p class="text-gray-700 text-sm">
-                        Developed a real-time geospatial tracking system enhancing safety across BP assets. The platform processes vessel location data with millisecond performance, providing critical insights for offshore operations and safety monitoring.
-                    </p>
-                </div>
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-lg font-semibold">LOC8 Data Discovery</h3>
-                        <a href="https://github.com/jineshranawat/loc8-discovery" target="_blank" class="text-blue-600 hover:text-blue-800">
-                            <i class="fab fa-github"></i>
-                        </a>
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate project-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold">ADL Lineage with Neo4J</h3>
+                            <a href="https://github.com/jineshranawat/adl-lineage" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-2">Data lineage and monitoring solution</p>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GraphQL</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">D3.js</span>
+                        </div>
+                        <p class="text-gray-700 text-sm">
+                            Implemented a comprehensive data lineage and monitoring solution using Neo4j, enabling full visibility into data flows and transformations. The solution helps in regulatory compliance, impact analysis, and data governance.
+                        </p>
+                        <div class="mt-4 project-details hidden">
+                            <h4 class="font-semibold mb-2">Key Achievements:</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                <li>Complete visibility of data lineage across multi-system workflows</li>
+                                <li>Automated impact analysis for system changes</li>
+                                <li>Enhanced regulatory compliance reporting</li>
+                                <li>Visualized complex data dependencies with D3.js</li>
+                            </ul>
+                        </div>
+                        <button class="mt-3 text-primary text-sm font-medium focus:outline-none project-expand">
+                            Show Details <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
                     </div>
-                    <p class="text-gray-600 text-sm mb-2">Pattern-based data discovery system</p>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Java</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spring Boot</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">React</span>
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate project-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-semibold">Azure Storage Optimizer</h3>
+                            <a href="https://github.com/jineshranawat/azure-storage-optimizer" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-2">Cost optimization for cloud storage</p>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">PowerShell</span>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Terraform</span>
+                        </div>
+                        <p class="text-gray-700 text-sm">
+                            Developed an innovative solution that saved millions in Azure storage costs by optimizing data lifecycle management, implementing intelligent tiering, and automating cleanup of redundant data while maintaining data integrity and access requirements.
+                        </p>
+                        <div class="mt-4 project-details hidden">
+                            <h4 class="font-semibold mb-2">Key Achievements:</h4>
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                <li>Reduced Azure storage costs from $50K to $7K monthly</li>
+                                <li>Decreased hot storage usage by 60% through intelligent tiering</li>
+                                <li>Automated lifecycle management for petabytes of data</li>
+                                <li>Featured as internal BP case study for cost optimization</li>
+                            </ul>
+                        </div>
+                        <button class="mt-3 text-primary text-sm font-medium focus:outline-none project-expand">
+                            Show Details <i class="fas fa-chevron-down ml-1"></i>
+                        </button>
                     </div>
-                    <p class="text-gray-700 text-sm">
-                        Engineered a revolutionary pattern-based data discovery system that significantly improved data accessibility and usability across the organization. The system leverages machine learning techniques for intelligent pattern recognition and metadata management.
-                    </p>
-                </div>
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-lg font-semibold">ADL Lineage with Neo4J</h3>
-                        <a href="https://github.com/jineshranawat/adl-lineage" target="_blank" class="text-blue-600 hover:text-blue-800">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                    <p class="text-gray-600 text-sm mb-2">Data lineage and monitoring solution</p>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GraphQL</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">D3.js</span>
-                    </div>
-                    <p class="text-gray-700 text-sm">
-                        Implemented a comprehensive data lineage and monitoring solution using Neo4j, enabling full visibility into data flows and transformations. The solution helps in regulatory compliance, impact analysis, and data governance.
-                    </p>
-                </div>
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-lg font-semibold">Azure Storage Optimizer</h3>
-                        <a href="https://github.com/jineshranawat/azure-storage-optimizer" target="_blank" class="text-blue-600 hover:text-blue-800">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    </div>
-                    <p class="text-gray-600 text-sm mb-2">Cost optimization for cloud storage</p>
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">PowerShell</span>
-                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Terraform</span>
-                    </div>
-                    <p class="text-gray-700 text-sm">
-                        Developed an innovative solution that saved millions in Azure storage costs by optimizing data lifecycle management, implementing intelligent tiering, and automating cleanup of redundant data while maintaining data integrity and access requirements.
-                    </p>
                 </div>
             </div>
         </section>
 
         <!-- Technical Writing -->
         <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="writing-content">
                 <i class="fas fa-pen-fancy text-primary mr-2"></i>
                 Technical Writing
-                <a href="https://medium.com/@jineshranawat" target="_blank" class="ml-auto text-sm text-blue-600 hover:text-blue-800">
+                <a href="https://medium.com/@jineshranawat" target="_blank" class="ml-auto text-sm text-blue-600 hover:text-blue-800 mr-2">
                     View All Articles <i class="fas fa-external-link-alt ml-1"></i>
                 </a>
+                <i class="fas fa-chevron-down transition-transform duration-300"></i>
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Article 1 -->
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <h3 class="text-lg font-semibold mb-2">Demystifying Spark Resource Calculation</h3>
-                    <p class="text-gray-600 text-sm mb-3">Aug 13, 2024</p>
-                    <p class="text-gray-700 text-sm mb-3">
-                        Have you ever felt like you're playing a guessing game when allocating resources for your Apache Spark jobs? You're not alone...
-                    </p>
-                    <a href="https://medium.com/@jineshranawat/demystifying-spark-resource-calculation" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
-                        Read More <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                <!-- Article 2 -->
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <h3 class="text-lg font-semibold mb-2">Forward Deployed Engineers: Building AI Systems</h3>
-                    <p class="text-gray-600 text-sm mb-3">Feb 6, 2024</p>
-                    <p class="text-gray-700 text-sm mb-3">
-                        In the rapidly evolving landscape of artificial intelligence, a new role has emerged that bridges the gap between cutting-edge AI...
-                    </p>
-                    <a href="https://medium.com/@jineshranawat/forward-deployed-engineers" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
-                        Read More <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
-                </div>
-                <!-- Article 3 -->
-                <div class="border border-gray-200 rounded-lg p-4 hover-translate">
-                    <h3 class="text-lg font-semibold mb-2">How 103 Lines of Code Saved Millions on Azure Storage</h3>
-                    <p class="text-gray-600 text-sm mb-3">Apr 22, 2024</p>
-                    <p class="text-gray-700 text-sm mb-3">
-                        As businesses grow and data accumulates, the costs associated with storing and managing that data can quickly escalate...
-                    </p>
-                    <a href="https://medium.com/@jineshranawat/how-103-lines-of-code-saved-millions" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
-                        Read More <i class="fas fa-arrow-right ml-1"></i>
-                    </a>
+            <div id="writing-content" class="collapse-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Article 1 -->
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate">
+                        <h3 class="text-lg font-semibold mb-2">Demystifying Spark Resource Calculation</h3>
+                        <p class="text-gray-600 text-sm mb-3">Aug 13, 2024</p>
+                        <p class="text-gray-700 text-sm mb-3">
+                            Have you ever felt like you're playing a guessing game when allocating resources for your Apache Spark jobs? You're not alone...
+                        </p>
+                        <a href="https://medium.com/@jineshranawat/demystifying-spark-resource-calculation" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                            Read More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    <!-- Article 2 -->
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate">
+                        <h3 class="text-lg font-semibold mb-2">Forward Deployed Engineers: Building AI Systems</h3>
+                        <p class="text-gray-600 text-sm mb-3">Feb 6, 2024</p>
+                        <p class="text-gray-700 text-sm mb-3">
+                            In the rapidly evolving landscape of artificial intelligence, a new role has emerged that bridges the gap between cutting-edge AI...
+                        </p>
+                        <a href="https://medium.com/@jineshranawat/forward-deployed-engineers" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                            Read More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    <!-- Article 3 -->
+                    <div class="border border-gray-200 rounded-lg p-4 hover-translate">
+                        <h3 class="text-lg font-semibold mb-2">How 103 Lines of Code Saved Millions on Azure Storage</h3>
+                        <p class="text-gray-600 text-sm mb-3">Apr 22, 2024</p>
+                        <p class="text-gray-700 text-sm mb-3">
+                            As businesses grow and data accumulates, the costs associated with storing and managing that data can quickly escalate...
+                        </p>
+                        <a href="https://medium.com/@jineshranawat/how-103-lines-of-code-saved-millions" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                            Read More <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Experience Section -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <section id="experience" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="experience-content">
                 <i class="fas fa-briefcase text-primary mr-2"></i>
                 Professional Experience
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
             </h2>
-            <div class="space-y-6">
-                <div class="timeline-item">
-                    <div class="timeline-bullet"></div>
-                    <h3 class="text-xl font-bold">Staff AI/Data Engineer</h3>
-                    <p class="text-gray-600">BP | November 2024 - Present</p>
-                    <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
-                        <li>Building multi-modal conversational AI agents and managing highly scalable platform services</li>
-                        <li>Accelerating adoption of AWS EMR, Iceberg, Glue, Azure Databricks, and Generative AI</li>
-                        <li>Leading cloud cost optimization initiatives, achieving $2M in savings for 2024</li>
-                        <li>Building a strong Data Engineering developer community across the organization</li>
-                    </ul>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-bullet"></div>
-                    <h3 class="text-xl font-bold">Data Engineering AI Tech Lead</h3>
-                    <p class="text-gray-600">BP | December 2021 - Present</p>
-                    <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
-                        <li>Led a federated team of 25+ data engineers supporting 30+ critical P&O products</li>
-                        <li>Developed real-time geospatial systems with millisecond performance</li>
-                        <li>Implemented cost optimization strategies reducing cloud costs from $50K to $7K monthly</li>
-                        <li>Delivered projects across Asset Intelligence, Production, SIRIUS, Digital Twin, and Geospatial</li>
-                        <li>Received 17 leadership awards across technical excellence, leadership, and team development</li>
-                    </ul>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-bullet"></div>
-                    <h3 class="text-xl font-bold">Associate Director</h3>
-                    <p class="text-gray-600">UBS | August 2020 - September 2021</p>
-                    <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
-                        <li>Led cloud and big data technology for Transaction and Reference data Reporting in IB</li>
-                        <li>Implemented core data lake solution using Azure technologies (Gen2, Databricks, ADF)</li>
-                        <li>Designed data pipelines using Spark, Kafka, and Azure services for regulatory reporting</li>
-                        <li>Managed team of 8-12 engineers delivering enterprise-scale data solutions</li>
-                    </ul>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-bullet"></div>
-                    <h3 class="text-xl font-bold">Assistant Vice President</h3>
-                    <p class="text-gray-600">Barclays Investment Bank | March 2015 - August 2020</p>
-                    <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
-                        <li>Led big data development for Market Risk VaR calculation using Hadoop ecosystem</li>
-                        <li>Implemented real-time streaming solutions using Flume, Kafka, and Spark Structured Streaming</li>
-                        <li>Designed and deployed data quality check systems on HBase with Spring Boot</li>
-                        <li>Managed data archival and Hadoop cluster optimization for 2 PB environment</li>
-                    </ul>
+            <div id="experience-content" class="collapse-content">
+                <div class="space-y-6">
+                    <div class="timeline-item">
+                        <div class="timeline-bullet"></div>
+                        <h3 class="text-xl font-bold">Staff AI/Data Engineer</h3>
+                        <p class="text-gray-600">BP | November 2024 - Present</p>
+                        <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
+                            <li>Building multi-modal conversational AI agents and managing highly scalable platform services</li>
+                            <li>Accelerating adoption of AWS EMR, Iceberg, Glue, Azure Databricks, and Generative AI</li>
+                            <li>Leading cloud cost optimization initiatives, achieving $2M in savings for 2024</li>
+                            <li>Building a strong Data Engineering developer community across the organization</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-bullet"></div>
+                        <h3 class="text-xl font-bold">Data Engineering AI Tech Lead</h3>
+                        <p class="text-gray-600">BP | December 2021 - Present</p>
+                        <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
+                            <li>Led a federated team of 25+ data engineers supporting 30+ critical P&O products</li>
+                            <li>Developed real-time geospatial systems with millisecond performance</li>
+                            <li>Implemented cost optimization strategies reducing cloud costs from $50K to $7K monthly</li>
+                            <li>Delivered projects across Asset Intelligence, Production, SIRIUS, Digital Twin, and Geospatial</li>
+                            <li>Received 17 leadership awards across technical excellence, leadership, and team development</li>
+                        </ul>
+                    </div>
+                    <div class="timeline-item experience-item collapsed">
+                        <div class="timeline-bullet"></div>
+                        <h3 class="text-xl font-bold">Associate Director</h3>
+                        <p class="text-gray-600">UBS | August 2020 - September 2021</p>
+                        <div class="experience-preview">
+                            <p class="text-gray-700">Led cloud and big data technology for Transaction and Reference data Reporting in IB...</p>
+                            <button class="text-primary text-sm mt-1 experience-expand">Show More</button>
+                        </div>
+                        <div class="experience-details hidden">
+                            <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
+                                <li>Led cloud and big data technology for Transaction and Reference data Reporting in IB</li>
+                                <li>Implemented core data lake solution using Azure technologies (Gen2, Databricks, ADF)</li>
+                                <li>Designed data pipelines using Spark, Kafka, and Azure services for regulatory reporting</li>
+                                <li>Managed team of 8-12 engineers delivering enterprise-scale data solutions</li>
+                            </ul>
+                            <button class="text-primary text-sm mt-1 experience-collapse">Show Less</button>
+                        </div>
+                    </div>
+                    <div class="timeline-item experience-item collapsed">
+                        <div class="timeline-bullet"></div>
+                        <h3 class="text-xl font-bold">Assistant Vice President</h3>
+                        <p class="text-gray-600">Barclays Investment Bank | March 2015 - August 2020</p>
+                        <div class="experience-preview">
+                            <p class="text-gray-700">Led big data development for Market Risk VaR calculation using Hadoop ecosystem...</p>
+                            <button class="text-primary text-sm mt-1 experience-expand">Show More</button>
+                        </div>
+                        <div class="experience-details hidden">
+                            <ul class="mt-2 list-disc list-inside text-gray-700 space-y-1">
+                                <li>Led big data development for Market Risk VaR calculation using Hadoop ecosystem</li>
+                                <li>Implemented real-time streaming solutions using Flume, Kafka, and Spark Structured Streaming</li>
+                                <li>Designed and deployed data quality check systems on HBase with Spring Boot</li>
+                                <li>Managed data archival and Hadoop cluster optimization for 2 PB environment</li>
+                            </ul>
+                            <button class="text-primary text-sm mt-1 experience-collapse">Show Less</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Testimonials & Recommendations -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <section id="testimonials" class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="testimonials-content">
                 <i class="fas fa-comment-alt text-primary mr-2"></i>
                 What Colleagues Say
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-gray-700 italic mb-3">
-                        I'm glad working closely with Jinesh for almost 3.5 years, and I'm truly impressed by his leadership qualities and approach to problem-solving. His skills in leadership, team management, and quick decision-making are outstanding. Jinesh creates a supportive and comfortable environment, allowing the team the freedom to excel.
-                    </p>
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Praveen Batta</p>
-                            <p class="text-gray-600 text-sm">Senior Engineer at Nagarro, former BP</p>
+            <div id="testimonials-content" class="collapse-content">
+                <div class="relative">
+                    <div class="testimonial-navigation absolute top-1/2 left-0 transform -translate-y-1/2 z-10">
+                        <button id="testimonial-prev" class="bg-white rounded-full p-2 shadow-md text-primary hover:text-green-700 focus:outline-none">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    <div class="testimonial-navigation absolute top-1/2 right-0 transform -translate-y-1/2 z-10">
+                        <button id="testimonial-next" class="bg-white rounded-full p-2 shadow-md text-primary hover:text-green-700 focus:outline-none">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-hidden">
+                        <div id="testimonial-carousel" class="flex transition-transform duration-500 ease-in-out">
+                            <div class="testimonial-slide min-w-full p-5">
+                                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-gray-700 italic mb-3">
+                                        I'm glad working closely with Jinesh for almost 3.5 years, and I'm truly impressed by his leadership qualities and approach to problem-solving. His skills in leadership, team management, and quick decision-making are outstanding. Jinesh creates a supportive and comfortable environment, allowing the team the freedom to excel.
+                                    </p>
+                                    <div class="flex items-center">
+                                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold">Praveen Batta</p>
+                                            <p class="text-gray-600 text-sm">Senior Engineer at Nagarro, former BP</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-slide min-w-full p-5">
+                                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-gray-700 italic mb-3">
+                                        Jinesh is a highly skilled professional who leverages his expertise in Azure, Palantir, and data modeling to simplify even the most complex concepts. His dedication to continuous learning and upskilling is evident in the way he stays ahead of industry trends and shares his knowledge through well-crafted blogs and insightful content.
+                                    </p>
+                                    <div class="flex items-center">
+                                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold">Maanvitha Allampalli</p>
+                                            <p class="text-gray-600 text-sm">API Engineer at Synchrony</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-slide min-w-full p-5">
+                                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-gray-700 italic mb-3">
+                                        I got a chance working with Jinesh and it was one of the greatest cooperations I had. He has experience in managing smaller and bigger teams. Moreover, he managed to build a team from scratch and expand it to almost 50 people. Due to his effective communication skills, conflict resolution, and technical knowledge, he is always able to deliver, while creating a positive atmosphere in the team.
+                                    </p>
+                                    <div class="flex items-center">
+                                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold">Tamara Sente</p>
+                                            <p class="text-gray-600 text-sm">Data Engineer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="testimonial-slide min-w-full p-5">
+                                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-gray-700 italic mb-3">
+                                        Jinesh is one of those exceptional talents, who will relentlessly deliver innovative and outstanding solutions to business/technical problems. His is an avid learner and always on the lookout to bring something new to the table. Jinesh can work on complex problems with minimal supervision and he has a knack to look at problems from different and often unique perspectives.
+                                    </p>
+                                    <div class="flex items-center">
+                                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold">Shimant Das</p>
+                                            <p class="text-gray-600 text-sm">Market Risk | Data, Analytics and Reporting</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-gray-700 italic mb-3">
-                        Jinesh is a highly skilled professional who leverages his expertise in Azure, Palantir, and data modeling to simplify even the most complex concepts. His dedication to continuous learning and upskilling is evident in the way he stays ahead of industry trends and shares his knowledge through well-crafted blogs and insightful content.
-                    </p>
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Maanvitha Allampalli</p>
-                            <p class="text-gray-600 text-sm">API Engineer at Synchrony</p>
-                        </div>
+                    <div class="testimonial-dots flex justify-center mt-4">
+                        <button class="h-2 w-2 rounded-full bg-gray-300 mx-1 testimonial-dot active" data-index="0"></button>
+                        <button class="h-2 w-2 rounded-full bg-gray-300 mx-1 testimonial-dot" data-index="1"></button>
+                        <button class="h-2 w-2 rounded-full bg-gray-300 mx-1 testimonial-dot" data-index="2"></button>
+                        <button class="h-2 w-2 rounded-full bg-gray-300 mx-1 testimonial-dot" data-index="3"></button>
                     </div>
                 </div>
-                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-gray-700 italic mb-3">
-                        I got a chance working with Jinesh and it was one of the greatest cooperations I had. He has experience in managing smaller and bigger teams. Moreover, he managed to build a team from scratch and expand it to almost 50 people. Due to his effective communication skills, conflict resolution, and technical knowledge, he is always able to deliver, while creating a positive atmosphere in the team.
-                    </p>
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Tamara Sente</p>
-                            <p class="text-gray-600 text-sm">Data Engineer</p>
-                        </div>
-                    </div>
+                <div class="mt-6 text-center">
+                    <a href="https://www.linkedin.com/in/jineshranawat-java-dataengineer/details/recommendations/" target="_blank" class="inline-block px-4 py-2 bg-primary text-white rounded hover:bg-green-700 transition-colors">
+                        View All Recommendations <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
                 </div>
-                <div class="testimonial p-5 bg-gray-50 rounded-lg border border-gray-200">
-                    <p class="text-gray-700 italic mb-3">
-                        Jinesh is one of those exceptional talents, who will relentlessly deliver innovative and outstanding solutions to business/technical problems. His is an avid learner and always on the lookout to bring something new to the table. Jinesh can work on complex problems with minimal supervision and he has a knack to look at problems from different and often unique perspectives.
-                    </p>
-                    <div class="flex items-center">
-                        <div class="h-12 w-12 rounded-full bg-gray-300 mr-3 flex items-center justify-center text-gray-600">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <p class="font-semibold">Shimant Das</p>
-                            <p class="text-gray-600 text-sm">Market Risk | Data, Analytics and Reporting</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-6 text-center">
-                <a href="https://www.linkedin.com/in/jineshranawat-java-dataengineer/details/recommendations/" target="_blank" class="inline-block px-4 py-2 bg-primary text-white rounded hover:bg-green-700 transition-colors">
-                    View All Recommendations <i class="fas fa-external-link-alt ml-1"></i>
-                </a>
             </div>
         </section>
 
         <!-- Skills Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <div id="skills" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <!-- Technical Skills -->
             <section class="bg-white rounded-lg shadow-md p-6 col-span-1 lg:col-span-2">
-                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="skills-content">
                     <i class="fas fa-code text-primary mr-2"></i>
                     Technical Skills
+                    <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Cloud Platforms (AWS, Azure)</p>
-                            <p class="text-gray-600">95%</p>
+                <div id="skills-content" class="collapse-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Cloud Platforms (AWS, Azure)</p>
+                                <p class="text-gray-600">95%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 95%"></div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Data Engineering</p>
+                                <p class="text-gray-600">98%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Data Engineering</p>
-                            <p class="text-gray-600">98%</p>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Python & Java</p>
+                                <p class="text-gray-600">90%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 98%"></div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Databricks, Spark</p>
+                                <p class="text-gray-600">92%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Python & Java</p>
-                            <p class="text-gray-600">90%</p>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Neo4j, Graph Databases</p>
+                                <p class="text-gray-600">85%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 90%"></div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">CI/CD, DevOps (Bazel)</p>
+                                <p class="text-gray-600">88%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Databricks, Spark</p>
-                            <p class="text-gray-600">92%</p>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Real-time Processing</p>
+                                <p class="text-gray-600">94%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 92%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Neo4j, Graph Databases</p>
-                            <p class="text-gray-600">85%</p>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 85%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">CI/CD, DevOps (Bazel)</p>
-                            <p class="text-gray-600">88%</p>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 88%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Real-time Processing</p>
-                            <p class="text-gray-600">94%</p>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 94%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <p class="font-medium">Generative AI</p>
-                            <p class="text-gray-600">85%</p>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-value" style="width: 85%"></div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <p class="font-medium">Generative AI</p>
+                                <p class="text-gray-600">85%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -531,254 +775,278 @@
 
             <!-- Certifications -->
             <section class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-bold mb-4 flex items-center">
+                <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="certifications-content">
                     <i class="fas fa-certificate text-primary mr-2"></i>
                     Certifications
+                    <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
                 </h2>
-                <ul class="space-y-4">
-                    <li class="flex items-start">
-                        <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                            <i class="fab fa-microsoft text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium">Azure Certified Architect</p>
-                            <p class="text-sm text-gray-500">AZ-303 & AZ-304</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start">
-                        <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-database text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium">Databricks Certified Data Engineer</p>
-                            <p class="text-sm text-gray-500">Associate Level</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start">
-                        <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-brain text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium">Generative AI Fundamentals</p>
-                            <p class="text-sm text-gray-500">Databricks Academy</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start">
-                        <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-laptop-code text-blue-600"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium">Palantir Certified Professional</p>
-                            <p class="text-sm text-gray-500">Data Integration Specialist</p>
-                        </div>
-                    </li>
-                </ul>
+                <div id="certifications-content" class="collapse-content">
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fab fa-microsoft text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Azure Certified Architect</p>
+                                <p class="text-sm text-gray-500">AZ-303 & AZ-304</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-database text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Databricks Certified Data Engineer</p>
+                                <p class="text-sm text-gray-500">Associate Level</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-brain text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Generative AI Fundamentals</p>
+                                <p class="text-sm text-gray-500">Databricks Academy</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="h-10 w-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-laptop-code text-blue-600"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium">Palantir Certified Professional</p>
+                                <p class="text-sm text-gray-500">Data Integration Specialist</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </section>
         </div>
 
         <!-- Professional Advisory & Community Engagement -->
         <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="advisory-content">
                 <i class="fas fa-handshake text-primary mr-2"></i>
                 Professional Advisory & Community Engagement
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
             </h2>
-            <p class="text-gray-700 mb-4">
-                On weekends, I provide professional advisory services to organizations and individuals in the areas of Site Reliability Engineering (SRE), cloud architecture, and data engineering. This focused engagement allows me to contribute to the broader technology community while sharing specialized knowledge across various industries.
-            </p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="border border-gray-200 rounded-lg p-4">
-                    <h3 class="font-semibold mb-2">Technical Advisory</h3>
-                    <ul class="list-disc list-inside text-gray-700 space-y-1">
-                        <li>SRE implementation for cloud-native applications</li>
-                        <li>Data infrastructure reliability and optimization</li>
-                        <li>Cloud architecture for enterprise workloads</li>
-                        <li>ML/AI platform engineering</li>
-                        <li>Data observability and governance frameworks</li>
-                    </ul>
-                    <p class="text-gray-600 text-sm mt-3">
-                        Provided strategic direction to multiple organizations implementing cloud-native architectures and SRE practices.
-                    </p>
+            <div id="advisory-content" class="collapse-content">
+                <p class="text-gray-700 mb-4">
+                    On weekends, I provide professional advisory services to organizations and individuals in the areas of Site Reliability Engineering (SRE), cloud architecture, and data engineering. This focused engagement allows me to contribute to the broader technology community while sharing specialized knowledge across various industries.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h3 class="font-semibold mb-2">Technical Advisory</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                            <li>SRE implementation for cloud-native applications</li>
+                            <li>Data infrastructure reliability and optimization</li>
+                            <li>Cloud architecture for enterprise workloads</li>
+                            <li>ML/AI platform engineering</li>
+                            <li>Data observability and governance frameworks</li>
+                        </ul>
+                        <p class="text-gray-600 text-sm mt-3">
+                            Provided strategic direction to multiple organizations implementing cloud-native architectures and SRE practices.
+                        </p>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h3 class="font-semibold mb-2">Knowledge Sharing</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                            <li>Architecture review sessions for technical teams</li>
+                            <li>Technical mentoring for mid-senior engineers</li>
+                            <li>Technical content development for organizations</li>
+                            <li>Best practices implementation guidance</li>
+                            <li>Performance optimization methodologies</li>
+                        </ul>
+                        <p class="text-gray-600 text-sm mt-3">
+                            Engaged with over 300 professionals through structured knowledge-sharing initiatives focused on practical implementation.
+                        </p>
+                    </div>
                 </div>
                 
                 <div class="border border-gray-200 rounded-lg p-4">
-                    <h3 class="font-semibold mb-2">Knowledge Sharing</h3>
+                    <h3 class="font-semibold mb-2">Community Initiatives</h3>
                     <ul class="list-disc list-inside text-gray-700 space-y-1">
-                        <li>Architecture review sessions for technical teams</li>
-                        <li>Technical mentoring for mid-senior engineers</li>
-                        <li>Technical content development for organizations</li>
-                        <li>Best practices implementation guidance</li>
-                        <li>Performance optimization methodologies</li>
+                        <li>Mentor for FUEL NGO supporting technology graduates in career development</li>
+                        <li>Technical advisor for early-stage startups in data infrastructure</li>
+                        <li>Author of technical publications on Medium</li>
+                        <li>Contributor to open-source data engineering projects</li>
+                        <li>Advocate for cost-efficient cloud architectures and practices</li>
                     </ul>
-                    <p class="text-gray-600 text-sm mt-3">
-                        Engaged with over 300 professionals through structured knowledge-sharing initiatives focused on practical implementation.
-                    </p>
                 </div>
-            </div>
-            
-            <div class="border border-gray-200 rounded-lg p-4">
-                <h3 class="font-semibold mb-2">Community Initiatives</h3>
-                <ul class="list-disc list-inside text-gray-700 space-y-1">
-                    <li>Mentor for FUEL NGO supporting technology graduates in career development</li>
-                    <li>Technical advisor for early-stage startups in data infrastructure</li>
-                    <li>Author of technical publications on Medium</li>
-                    <li>Contributor to open-source data engineering projects</li>
-                    <li>Advocate for cost-efficient cloud architectures and practices</li>
-                </ul>
             </div>
         </section>
 
         <!-- Project Portfolio in Detail -->
         <section class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="portfolio-content">
                 <i class="fas fa-project-diagram text-primary mr-2"></i>
                 Project Portfolio in Detail
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
             </h2>
-            
-            <!-- Project 1 -->
-            <div class="mb-8 border-b border-gray-200 pb-6">
-                <h3 class="text-xl font-bold mb-2">Real-time Geospatial Vessel Tracking</h3>
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spark Structured Streaming</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Event Hubs</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GeoJSON</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">AIS Data</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Power BI</span>
+            <div id="portfolio-content" class="collapse-content">
+                <!-- Projects Tabs -->
+                <div class="mb-6">
+                    <div class="flex border-b border-gray-200">
+                        <button class="project-tab py-2 px-4 border-b-2 border-primary text-primary font-medium" data-target="project-1">
+                            Geospatial Analytics
+                        </button>
+                        <button class="project-tab py-2 px-4 border-b-2 border-transparent text-gray-500 font-medium" data-target="project-2">
+                            LOC8 Data Discovery
+                        </button>
+                        <button class="project-tab py-2 px-4 border-b-2 border-transparent text-gray-500 font-medium" data-target="project-3">
+                            Azure Storage Optimizer
+                        </button>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <p class="font-semibold">Problem:</p>
-                    <p class="text-gray-700 mb-2">
-                        BP needed a real-time monitoring system to track vessel movements near offshore platforms to enhance safety and operational awareness. Traditional tracking systems had significant latency issues (5-10 minutes), making them inadequate for safety-critical applications.
-                    </p>
-                    <p class="font-semibold">Solution:</p>
-                    <p class="text-gray-700 mb-2">
-                        Designed and implemented a high-performance geospatial tracking platform that ingests, processes, and visualizes AIS (Automatic Identification System) vessel data in milliseconds. The system provides real-time alerts for proximity violations and captures historical vessel trajectories.
-                    </p>
-                    <p class="font-semibold">Technical Implementation:</p>
-                    <ul class="list-disc list-inside text-gray-700 mb-2">
-                        <li>Built ingestion pipeline using Azure Event Hubs for AIS data from multiple providers</li>
-                        <li>Implemented Spark Structured Streaming with Python for real-time data processing</li>
-                        <li>Created geospatial functions for proximity calculations and trajectory analytics</li>
-                        <li>Developed alert system for vessels approaching restricted zones or platforms</li>
-                        <li>Designed dashboard for operational visibility using Power BI and custom visualizations</li>
-                    </ul>
-                    <p class="font-semibold">Impact:</p>
-                    <ul class="list-disc list-inside text-gray-700">
-                        <li>Reduced vessel tracking latency from minutes to milliseconds</li>
-                        <li>Improved offshore safety by providing proactive alerts for potential vessel collisions</li>
-                        <li>System now monitors over 30,000 vessels daily across BP's global operations</li>
-                        <li>Solution extended to Castrol division for supply chain optimization</li>
-                        <li>Recognized with "Play to Win" award for technical excellence</li>
-                    </ul>
+                
+                <!-- Project Content -->
+                <div class="project-content" id="project-1">
+                    <h3 class="text-xl font-bold mb-2">Real-time Geospatial Vessel Tracking</h3>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spark Structured Streaming</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Event Hubs</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GeoJSON</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">AIS Data</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Power BI</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="font-semibold">Problem:</p>
+                        <p class="text-gray-700 mb-2">
+                            BP needed a real-time monitoring system to track vessel movements near offshore platforms to enhance safety and operational awareness. Traditional tracking systems had significant latency issues (5-10 minutes), making them inadequate for safety-critical applications.
+                        </p>
+                        <p class="font-semibold">Solution:</p>
+                        <p class="text-gray-700 mb-2">
+                            Designed and implemented a high-performance geospatial tracking platform that ingests, processes, and visualizes AIS (Automatic Identification System) vessel data in milliseconds. The system provides real-time alerts for proximity violations and captures historical vessel trajectories.
+                        </p>
+                        <p class="font-semibold">Technical Implementation:</p>
+                        <ul class="list-disc list-inside text-gray-700 mb-2">
+                            <li>Built ingestion pipeline using Azure Event Hubs for AIS data from multiple providers</li>
+                            <li>Implemented Spark Structured Streaming with Python for real-time data processing</li>
+                            <li>Created geospatial functions for proximity calculations and trajectory analytics</li>
+                            <li>Developed alert system for vessels approaching restricted zones or platforms</li>
+                            <li>Designed dashboard for operational visibility using Power BI and custom visualizations</li>
+                        </ul>
+                        <p class="font-semibold">Impact:</p>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>Reduced vessel tracking latency from minutes to milliseconds</li>
+                            <li>Improved offshore safety by providing proactive alerts for potential vessel collisions</li>
+                            <li>System now monitors over 30,000 vessels daily across BP's global operations</li>
+                            <li>Solution extended to Castrol division for supply chain optimization</li>
+                            <li>Recognized with "Play to Win" award for technical excellence</li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Project 2 -->
-            <div class="mb-8 border-b border-gray-200 pb-6">
-                <h3 class="text-xl font-bold mb-2">LOC8 Pattern-Based Data Discovery System</h3>
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Java</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spring Boot</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">React</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Machine Learning</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GraphQL</span>
+                
+                <div class="project-content hidden" id="project-2">
+                    <h3 class="text-xl font-bold mb-2">LOC8 Pattern-Based Data Discovery System</h3>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Java</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Spring Boot</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Neo4j</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">React</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Machine Learning</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">GraphQL</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="font-semibold">Problem:</p>
+                        <p class="text-gray-700 mb-2">
+                            Data scientists and analysts struggled to discover relevant datasets across BP's vast data ecosystem, often requiring weeks to locate and understand data sources. This resulted in duplicated efforts and missed insights.
+                        </p>
+                        <p class="font-semibold">Solution:</p>
+                        <p class="text-gray-700 mb-2">
+                            Created LOC8, a revolutionary pattern-based data discovery system that catalogs, analyzes, and surfaces data assets based on usage patterns and semantic understanding. The system provides an intuitive interface for search, exploration, and data lineage tracking.
+                        </p>
+                        <p class="font-semibold">Technical Implementation:</p>
+                        <ul class="list-disc list-inside text-gray-700 mb-2">
+                            <li>Built data catalog and lineage tracking using Neo4j graph database</li>
+                            <li>Implemented machine learning algorithms for pattern recognition and data classification</li>
+                            <li>Developed Spring Boot microservices for metadata harvesting and processing</li>
+                            <li>Created React frontend with advanced search and visualization capabilities</li>
+                            <li>Designed GraphQL API layer for efficient data retrieval and updates</li>
+                        </ul>
+                        <p class="font-semibold">Impact:</p>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>Reduced data discovery time from weeks to minutes</li>
+                            <li>Improved data governance and compliance through comprehensive lineage tracking</li>
+                            <li>Enabled self-service data exploration for 500+ data consumers</li>
+                            <li>Integrated with existing data catalogs and governance tools</li>
+                            <li>Solution now tracks over 10,000 data assets across the organization</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <p class="font-semibold">Problem:</p>
-                    <p class="text-gray-700 mb-2">
-                        Data scientists and analysts struggled to discover relevant datasets across BP's vast data ecosystem, often requiring weeks to locate and understand data sources. This resulted in duplicated efforts and missed insights.
-                    </p>
-                    <p class="font-semibold">Solution:</p>
-                    <p class="text-gray-700 mb-2">
-                        Created LOC8, a revolutionary pattern-based data discovery system that catalogs, analyzes, and surfaces data assets based on usage patterns and semantic understanding. The system provides an intuitive interface for search, exploration, and data lineage tracking.
-                    </p>
-                    <p class="font-semibold">Technical Implementation:</p>
-                    <ul class="list-disc list-inside text-gray-700 mb-2">
-                        <li>Built data catalog and lineage tracking using Neo4j graph database</li>
-                        <li>Implemented machine learning algorithms for pattern recognition and data classification</li>
-                        <li>Developed Spring Boot microservices for metadata harvesting and processing</li>
-                        <li>Created React frontend with advanced search and visualization capabilities</li>
-                        <li>Designed GraphQL API layer for efficient data retrieval and updates</li>
-                    </ul>
-                    <p class="font-semibold">Impact:</p>
-                    <ul class="list-disc list-inside text-gray-700">
-                        <li>Reduced data discovery time from weeks to minutes</li>
-                        <li>Improved data governance and compliance through comprehensive lineage tracking</li>
-                        <li>Enabled self-service data exploration for 500+ data consumers</li>
-                        <li>Integrated with existing data catalogs and governance tools</li>
-                        <li>Solution now tracks over 10,000 data assets across the organization</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <!-- Project 3 -->
-            <div class="mb-8 border-b border-gray-200 pb-6">
-                <h3 class="text-xl font-bold mb-2">Azure Storage Cost Optimization Solution</h3>
-                <div class="flex flex-wrap gap-2 mb-3">
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Blob Storage</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Functions</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Terraform</span>
-                    <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">PowerShell</span>
-                </div>
-                <div class="mb-4">
-                    <p class="font-semibold">Problem:</p>
-                    <p class="text-gray-700 mb-2">
-                        BP was experiencing rapidly escalating Azure storage costs with petabytes of data in blob storage, much of which was infrequently accessed. Manual management of storage tiers was impractical at this scale.
-                    </p>
-                    <p class="font-semibold">Solution:</p>
-                    <p class="text-gray-700 mb-2">
-                        Developed an intelligent storage optimization solution that automatically analyzes access patterns, applies appropriate lifecycle policies, and transitions data between storage tiers while maintaining access requirements and compliance.
-                    </p>
-                    <p class="font-semibold">Technical Implementation:</p>
-                    <ul class="list-disc list-inside text-gray-700 mb-2">
-                        <li>Created Python scripts for analyzing blob storage access patterns</li>
-                        <li>Developed intelligent algorithm for determining optimal storage tier based on access frequency</li>
-                        <li>Implemented Azure Functions for automated tier transitions and cleanup operations</li>
-                        <li>Built reporting dashboard for cost tracking and savings visualization</li>
-                        <li>Deployed infrastructure-as-code using Terraform for consistent environment setup</li>
-                    </ul>
-                    <p class="font-semibold">Impact:</p>
-                    <ul class="list-disc list-inside text-gray-700">
-                        <li>Reduced Azure storage costs by millions annually</li>
-                        <li>Decreased hot storage usage by 60% through intelligent tiering</li>
-                        <li>Automated blob lifecycle management for petabytes of data</li>
-                        <li>Implemented solution across multiple business units</li>
-                        <li>Featured in internal BP technical publications and shared as a case study</li>
-                    </ul>
+                
+                <div class="project-content hidden" id="project-3">
+                    <h3 class="text-xl font-bold mb-2">Azure Storage Cost Optimization Solution</h3>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Python</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Blob Storage</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Azure Functions</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">Terraform</span>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">PowerShell</span>
+                    </div>
+                    <div class="mb-4">
+                        <p class="font-semibold">Problem:</p>
+                        <p class="text-gray-700 mb-2">
+                            BP was experiencing rapidly escalating Azure storage costs with petabytes of data in blob storage, much of which was infrequently accessed. Manual management of storage tiers was impractical at this scale.
+                        </p>
+                        <p class="font-semibold">Solution:</p>
+                        <p class="text-gray-700 mb-2">
+                            Developed an intelligent storage optimization solution that automatically analyzes access patterns, applies appropriate lifecycle policies, and transitions data between storage tiers while maintaining access requirements and compliance.
+                        </p>
+                        <p class="font-semibold">Technical Implementation:</p>
+                        <ul class="list-disc list-inside text-gray-700 mb-2">
+                            <li>Created Python scripts for analyzing blob storage access patterns</li>
+                            <li>Developed intelligent algorithm for determining optimal storage tier based on access frequency</li>
+                            <li>Implemented Azure Functions for automated tier transitions and cleanup operations</li>
+                            <li>Built reporting dashboard for cost tracking and savings visualization</li>
+                            <li>Deployed infrastructure-as-code using Terraform for consistent environment setup</li>
+                        </ul>
+                        <p class="font-semibold">Impact:</p>
+                        <ul class="list-disc list-inside text-gray-700">
+                            <li>Reduced Azure storage costs by millions annually</li>
+                            <li>Decreased hot storage usage by 60% through intelligent tiering</li>
+                            <li>Automated blob lifecycle management for petabytes of data</li>
+                            <li>Implemented solution across multiple business units</li>
+                            <li>Featured in internal BP technical publications and shared as a case study</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Contact Form -->
-        <section class="bg-white rounded-lg shadow-md p-6 mb-8 no-print">
-            <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <section id="contact" class="bg-white rounded-lg shadow-md p-6 mb-8 no-print">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="contact-content">
                 <i class="fas fa-envelope text-primary mr-2"></i>
                 Get In Touch
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
             </h2>
-            <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
-                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                </div>
-                <div>
-                    <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
-                    <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                </div>
-                <div class="md:col-span-2">
-                    <label for="subject" class="block text-gray-700 font-medium mb-1">Subject</label>
-                    <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
-                </div>
-                <div class="md:col-span-2">
-                    <label for="message" class="block text-gray-700 font-medium mb-1">Message</label>
-                    <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
-                </div>
-                <div class="md:col-span-2">
-                    <button type="submit" class="px-6 py-2 bg-primary text-white rounded-md hover:bg-green-700 transition-colors">Send Message</button>
-                </div>
-            </form>
+            <div id="contact-content" class="collapse-content">
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-gray-700 font-medium mb-1">Name</label>
+                        <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 font-medium mb-1">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="subject" class="block text-gray-700 font-medium mb-1">Subject</label>
+                        <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="message" class="block text-gray-700 font-medium mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                    </div>
+                    <div class="md:col-span-2">
+                        <button type="submit" class="px-6 py-2 bg-primary text-white rounded-md hover:bg-green-700 transition-colors">Send Message</button>
+                    </div>
+                </form>
+            </div>
         </section>
     </main>
 
@@ -839,16 +1107,210 @@
         </div>
     </footer>
 
-    <!-- Print Button (visible only on screen) -->
-    <div class="fixed bottom-4 right-4 z-10 no-print">
+    <!-- Back to top button -->
+    <div class="fixed bottom-4 right-4 z-10 no-print flex flex-col gap-2">
+        <button id="backToTop" class="bg-primary text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors opacity-0">
+            <i class="fas fa-arrow-up"></i>
+        </button>
         <button onclick="window.print()" class="bg-primary text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors">
             <i class="fas fa-print"></i>
         </button>
     </div>
 
-    <!-- Script for form submission (for demo purposes) -->
+    <!-- Script for interactions -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Section toggling
+            const sectionHeaders = document.querySelectorAll('.section-header');
+            sectionHeaders.forEach(header => {
+                const targetId = header.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                const icon = header.querySelector('.fa-chevron-down');
+                
+                header.addEventListener('click', () => {
+                    content.classList.toggle('collapse-open');
+                    if (icon) {
+                        icon.style.transform = content.classList.contains('collapse-open') ? 'rotate(180deg)' : 'rotate(0)';
+                    }
+                });
+            });
+            
+            // Project card expansion
+            const projectExpanders = document.querySelectorAll('.project-expand');
+            projectExpanders.forEach(button => {
+                button.addEventListener('click', () => {
+                    const card = button.closest('.project-card');
+                    const details = card.querySelector('.project-details');
+                    const isHidden = details.classList.contains('hidden');
+                    
+                    details.classList.toggle('hidden');
+                    button.innerHTML = isHidden ? 
+                        'Hide Details <i class="fas fa-chevron-up ml-1"></i>' : 
+                        'Show Details <i class="fas fa-chevron-down ml-1"></i>';
+                });
+            });
+            
+            // Experience items
+            const expanders = document.querySelectorAll('.experience-expand');
+            expanders.forEach(button => {
+                button.addEventListener('click', () => {
+                    const item = button.closest('.experience-item');
+                    const preview = item.querySelector('.experience-preview');
+                    const details = item.querySelector('.experience-details');
+                    
+                    preview.classList.add('hidden');
+                    details.classList.remove('hidden');
+                });
+            });
+            
+            const collapsers = document.querySelectorAll('.experience-collapse');
+            collapsers.forEach(button => {
+                button.addEventListener('click', () => {
+                    const item = button.closest('.experience-item');
+                    const preview = item.querySelector('.experience-preview');
+                    const details = item.querySelector('.experience-details');
+                    
+                    preview.classList.remove('hidden');
+                    details.classList.add('hidden');
+                });
+            });
+            
+            // Testimonial carousel
+            const carousel = document.getElementById('testimonial-carousel');
+            const dots = document.querySelectorAll('.testimonial-dot');
+            const nextBtn = document.getElementById('testimonial-next');
+            const prevBtn = document.getElementById('testimonial-prev');
+            let currentSlide = 0;
+            const totalSlides = dots.length;
+            
+            function goToSlide(index) {
+                if (index < 0) index = totalSlides - 1;
+                if (index >= totalSlides) index = 0;
+                
+                carousel.style.transform = `translateX(-${index * 100}%)`;
+                currentSlide = index;
+                
+                // Update dots
+                dots.forEach((dot, i) => {
+                    if (i === index) {
+                        dot.classList.add('bg-primary');
+                        dot.classList.remove('bg-gray-300');
+                    } else {
+                        dot.classList.remove('bg-primary');
+                        dot.classList.add('bg-gray-300');
+                    }
+                });
+            }
+            
+            nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+            prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+            
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => goToSlide(index));
+            });
+            
+            // Project tabs
+            const projectTabs = document.querySelectorAll('.project-tab');
+            const projectContents = document.querySelectorAll('.project-content');
+            
+            projectTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-target');
+                    
+                    // Hide all content
+                    projectContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    
+                    // Show target content
+                    document.getElementById(target).classList.remove('hidden');
+                    
+                    // Update tabs
+                    projectTabs.forEach(t => {
+                        t.classList.remove('border-primary', 'text-primary');
+                        t.classList.add('border-transparent', 'text-gray-500');
+                    });
+                    
+                    tab.classList.remove('border-transparent', 'text-gray-500');
+                    tab.classList.add('border-primary', 'text-primary');
+                });
+            });
+            
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            menuToggle.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                menuToggle.innerHTML = mobileMenu.classList.contains('hidden') ?
+                    '<i class="fas fa-bars text-xl"></i>' :
+                    '<i class="fas fa-times text-xl"></i>';
+            });
+            
+            // Scroll progress indicator
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.body.scrollHeight - window.innerHeight;
+                const progress = (window.pageYOffset / totalHeight) * 100;
+                scrollIndicator.style.width = `${progress}%`;
+                
+                // Show/hide back to top button
+                const backToTop = document.getElementById('backToTop');
+                if (window.pageYOffset > 300) {
+                    backToTop.style.opacity = '1';
+                } else {
+                    backToTop.style.opacity = '0';
+                }
+                
+                // Highlight active nav section
+                const sections = document.querySelectorAll('section[id]');
+                let currentSection = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (window.pageYOffset >= sectionTop - 100) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+                
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active-section');
+                    if (item.getAttribute('href') === `#${currentSection}`) {
+                        item.classList.add('active-section');
+                    }
+                });
+            });
+            
+            // Back to top button
+            document.getElementById('backToTop').addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Animate skills bars on scroll
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const progressBars = entry.target.querySelectorAll('.progress-value');
+                        progressBars.forEach(bar => {
+                            const value = bar.parentElement.previousElementSibling.querySelector('.text-gray-600').textContent;
+                            bar.style.width = value;
+                            bar.style.transition = 'width 1s ease-in-out';
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            const skillsSection = document.querySelector('#skills-content');
+            if (skillsSection) {
+                observer.observe(skillsSection);
+            }
+            
+            // Contact form submission
             const form = document.querySelector('form');
             
             form.addEventListener('submit', function(e) {
