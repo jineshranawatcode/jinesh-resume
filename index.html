@@ -150,6 +150,10 @@
                     <span class="text-lg font-bold">Jinesh Ranawat</span>
                 </div>
                 <div class="hidden md:flex space-x-6">
+                    <a href="#vision" class="nav-item py-2 px-1 relative group">
+                        <span class="text-gray-700 hover:text-primary transition-colors">Vision</span>
+                        <div class="section-indicator absolute bottom-0 left-0"></div>
+                    </a>
                     <a href="#about" class="nav-item py-2 px-1 relative group">
                         <span class="text-gray-700 hover:text-primary transition-colors">About</span>
                         <div class="section-indicator absolute bottom-0 left-0"></div>
@@ -184,6 +188,7 @@
             <!-- Mobile Menu -->
             <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
                 <div class="flex flex-col space-y-3">
+                    <a href="#vision" class="text-gray-700 hover:text-primary transition-colors">Vision</a>
                     <a href="#about" class="text-gray-700 hover:text-primary transition-colors">About</a>
                     <a href="#projects" class="text-gray-700 hover:text-primary transition-colors">Projects</a>
                     <a href="#experience" class="text-gray-700 hover:text-primary transition-colors">Experience</a>
@@ -200,8 +205,8 @@
         <div class="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="flex items-center mb-6 md:mb-0">
-                    <div class="h-20 w-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold mr-6 shadow-lg">
-                        JR
+                    <div class="h-20 w-20 bg-primary rounded-full flex items-center justify-center text-white overflow-hidden mr-6 shadow-lg">
+                        <img src="jinesh.jpeg" alt="Jinesh Ranawat" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='JR'; this.parentElement.classList.add('font-bold', 'text-2xl');">
                     </div>
                     <div>
                         <h1 class="text-3xl font-bold">Jinesh Ranawat</h1>
@@ -211,6 +216,8 @@
                             <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Azure</span>
                             <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Palantir</span>
                             <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Gen AI</span>
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Ollama</span>
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">LLMs</span>
                         </div>
                     </div>
                 </div>
@@ -245,7 +252,7 @@
         <div class="container mx-auto px-4">
             <div class="bp-feature p-4 rounded-lg flex flex-col md:flex-row items-center justify-between animate-pulse">
                 <div class="flex items-center mb-4 md:mb-0">
-                    <img src="bp_logo.jpeg" alt="BP Logo" class="h-10 mr-4" />
+                    <img src="/api/placeholder/80/40" alt="BP Logo" class="h-10 mr-4" />
                     <div>
                         <h3 class="font-bold text-lg">Featured on BP's Global Website</h3>
                         <p class="text-gray-600">My story of innovation and leadership featured on BP's global careers page</p>
@@ -305,6 +312,67 @@
                             <p class="text-gray-500 text-sm">Leadership Awards</p>
                             <h3 class="text-2xl font-bold text-primary">17</h3>
                         </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow md:col-span-2">
+                        <div class="text-primary text-lg font-bold mb-2 flex items-center">
+                            <i class="fas fa-users-cog mr-2"></i>
+                            Leadership Development & Industry Influence
+                        </div>
+                        <p class="text-gray-700">
+                            As a member of BP's Advanced FLL (Future Leaders League) leadership group and the prestigious Changemaker Program, I'm receiving specialized training in leadership management while contributing to strategic initiatives across the organization. These programs have strengthened my capabilities in leading cross-functional teams, driving organizational change, and fostering innovation cultures. The combination of technical expertise and leadership development has positioned me to guide BP's digital transformation journey while mentoring the next generation of data and AI professionals.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vision & Aspiration Section -->
+        <section id="vision" class="bg-gradient-to-r from-green-50 to-blue-50 rounded-lg shadow-md p-6 mb-8 border-l-4 border-primary">
+            <h2 class="text-2xl font-bold mb-4 flex items-center section-header" data-target="vision-content">
+                <i class="fas fa-rocket text-primary mr-2"></i>
+                My Vision & Aspirations
+                <i class="fas fa-chevron-down ml-auto transition-transform duration-300"></i>
+            </h2>
+            <div id="vision-content" class="collapse-content collapse-open">
+                <p class="text-gray-700 mb-4 italic font-medium">
+                    "To democratize data engineering excellence and create systems that empower everyone to harness the full potential of data, regardless of their technical expertise."
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="text-primary text-lg font-bold mb-2 flex items-center">
+                            <i class="fas fa-cubes mr-2"></i>
+                            Revolutionizing Pipeline Development
+                        </div>
+                        <p class="text-gray-700">
+                            I'm leading BP's data engineering monorepo initiative using Bazel for build optimization. Our one-click pipeline generation system has reduced development time from weeks to hours, enabling engineers to create complex transformation pipelines with minimal manual coding. This system now supports over 10,000 pipelines with 99.9% reliability across multiple business units.
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="text-primary text-lg font-bold mb-2 flex items-center">
+                            <i class="fas fa-bolt mr-2"></i>
+                            Accelerating Data Engineering
+                        </div>
+                        <p class="text-gray-700">
+                            I've architected a suite of data engineering accelerators providing a 360-degree view of technical assets and data products. These accelerators integrate with ServiceNow for seamless workflow management and include pre-built templates for common tasks. The platform has reduced implementation time by 40% while improving quality and consistency, resulting in estimated savings of $2.5M annually.
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="text-primary text-lg font-bold mb-2 flex items-center">
+                            <i class="fas fa-brain mr-2"></i>
+                            AI Innovation & Democratization
+                        </div>
+                        <p class="text-gray-700">
+                            I'm leading the development of advanced AI systems using Ollama and fine-tuning deepseek and llama models to create domain-specific AI assistants. These systems can be deployed on standard laptops, democratizing access to advanced AI capabilities. My current focus is making data more accessible through conversational interfaces that allow non-technical users to interact with complex data systems through natural language. My innovations include AI agents that automate routine data engineering tasks, provide intelligent suggestions for pipeline optimization, and reduce the expertise barrier for new team members.
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="text-primary text-lg font-bold mb-2 flex items-center">
+                            <i class="fas fa-book mr-2"></i>
+                            Building Knowledge Libraries
+                        </div>
+                        <p class="text-gray-700">
+                            I've created a comprehensive 'recipe library' of data engineering patterns and best practices, enabling teams to tackle common challenges with proven solutions. This standardized approach has improved code quality, reduced technical debt, and accelerated onboarding of new team members. The library continues to grow as we discover new efficient patterns.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -762,8 +830,15 @@
                         </div>
                         <div>
                             <div class="flex justify-between mb-1">
-                                <p class="font-medium">Generative AI</p>
-                                <p class="text-gray-600">85%</p>
+                                <p class="font-medium">Generative AI & LLMs</p>
+                                <p class="text-gray-600">90%</p>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between mt-4 mb-1">
+                                <p class="font-medium">AI Model Fine-tuning</p>
+                                <p class="text-gray-600">88%</p>
                             </div>
                             <div class="progress-bar">
                                 <div class="progress-value" style="width: 0%"></div>
