@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TensorFlow Guide for Beginners</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <!-- Loading Font Awesome for simplified icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-heading {
+            background: linear-gradient(90deg, #FF6B6B 0%, #FF8E53 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .concept-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .concept-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .concept-content {
+            display: none;
+        }
+        .concept-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-btn, .concept-tab {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #4F46E5;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+        .concept-tab.active {
+            background-color: #4F46E5;
+            color: white;
+        }
+        .creator-signature {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-style: italic;
+            background: linear-gradient(90deg, #6366F1, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Code blocks */
+        pre {
+            position: relative;
+            border-radius: 0.5rem;
+        }
+        code {
+            font-family: 'Fira Code', monospace;
+        }
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-indigo-600 to-blue-500 py-20 px-6">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Understanding TensorFlow</h1>
+            <p class="text-xl text-white opacity-90 max-w-3xl mx-auto">A comprehensive guide for beginners to understand TensorFlow concepts and implementation</p>
+            <p class="text-md text-white opacity-80 mt-4 creator-signature">Created by Jinesh Ranawat</p>
+        </div>
+    </div>
+    
+    <!-- Main Navigation Tabs -->
+    <div class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex overflow-x-auto py-3 space-x-4" id="main-tabs">
+                <button class="tab-btn active px-4 py-2 font-medium rounded-lg text-gray-700 hover:bg-gray-100" data-tab="intro-section">Introduction</button>
+                <button class="tab-btn px-4 py-2 font-medium rounded-lg text-gray-700 hover:bg-gray-100" data-tab="concepts-section">Core Concepts</button>
+                <button class="tab-btn px-4 py-2 font-medium rounded-lg text-gray-700 hover:bg-gray-100" data-tab="vs-traditional-section">TF vs Traditional ML</button>
+                <button class="tab-btn px-4 py-2 font-medium rounded-lg text-gray-700 hover:bg-gray-100" data-tab="code-section">Code Walkthrough</button>
+                <button class="tab-btn px-4 py-2 font-medium rounded-lg text-gray-700 hover:bg-gray-100" data-tab="resources-section">Resources</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        <!-- Introduction Section -->
+        <section id="intro-section" class="tab-content active mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-heading">What is TensorFlow?</h2>
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <p class="text-lg mb-4">TensorFlow is an open-source machine learning framework developed by Google that provides comprehensive tools for building and deploying machine learning models. Think of it as a powerful library that makes complex machine learning tasks accessible through Python (and other languages).</p>
+                
+                <div class="my-8 bg-gray-50 border-l-4 border-blue-500 p-4">
+                    <h3 class="text-xl font-bold mb-2">The Kitchen Analogy</h3>
+                    <p>If data science were cooking, TensorFlow would be your fully equipped professional kitchen. Traditional ML libraries might give you basic utensils and ingredients, but TensorFlow provides industrial-grade appliances (GPUs/TPUs), specialized tools (optimizers, layers), recipe collections (pre-trained models), and the ability to serve thousands of customers simultaneously (scalable deployment). Just as a chef designs their workflow in a kitchen, you design computational graphs in TensorFlow to process your data ingredients into refined prediction dishes.</p>
+                </div>
+                
+                <p class="text-lg mb-6">At its core, TensorFlow enables you to build computational graphs that represent mathematical operations and data flow, making it ideal for developing neural networks and other machine learning algorithms. Unlike traditional programming where operations execute immediately, TensorFlow first builds a blueprint of your computation and then executes it efficiently.</p>
+                
+                <div class="bg-yellow-50 p-4 rounded-lg mb-8">
+                    <h3 class="text-lg font-semibold mb-2">Why "Tensor" + "Flow"?</h3>
+                    <p><strong>Tensor:</strong> Multi-dimensional arrays that hold your data (1D vectors, 2D matrices, 3D volumes, and beyond)</p>
+                    <p><strong>Flow:</strong> These tensors "flow" through a computational graph of mathematical operations</p>
+                    <p class="mt-2">Just as water flows through pipes in a network, data flows through operations in TensorFlow's computational graph.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mt-8">
+                    <div class="bg-blue-50 p-6 rounded-lg concept-card">
+                        <h3 class="text-xl font-semibold mb-3 text-blue-700 flex items-center">
+                            <i class="fas fa-shield-alt text-blue-600 mr-2"></i>
+                            Key Strengths
+                        </h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Automatic differentiation:</strong> Calculates gradients automatically for optimization</li>
+                            <li><strong>Hardware acceleration:</strong> Seamlessly uses GPUs and TPUs for faster computation</li>
+                            <li><strong>Scalability:</strong> From smartphones to distributed clusters</li>
+                            <li><strong>Production-ready:</strong> Deploy models across platforms (cloud, browser, mobile)</li>
+                            <li><strong>Visualization:</strong> TensorBoard helps visualize model architecture and performance</li>
+                            <li><strong>Ecosystem:</strong> Rich libraries and tools for specialized tasks</li>
+                        </ul>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg concept-card">
+                        <h3 class="text-xl font-semibold mb-3 text-purple-700 flex items-center">
+                            <i class="fas fa-flask text-purple-600 mr-2"></i>
+                            Common Applications
+                        </h3>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li><strong>Computer Vision:</strong> Image classification, object detection, facial recognition</li>
+                            <li><strong>Natural Language Processing:</strong> Translation, sentiment analysis, chatbots</li>
+                            <li><strong>Time Series:</strong> Stock prediction, weather forecasting, demand planning</li>
+                            <li><strong>Recommender Systems:</strong> Product recommendations, content personalization</li>
+                            <li><strong>Anomaly Detection:</strong> Fraud prevention, system monitoring, quality control</li>
+                            <li><strong>Reinforcement Learning:</strong> Game AI, robotics, autonomous systems</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-6 bg-indigo-50 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-tv text-indigo-600 mr-2"></i>
+                        Real-World Example: The Netflix Recommendation Engine
+                    </h3>
+                    <p class="mb-3">Consider how Netflix recommends shows you might like. Behind the scenes, a system similar to what you could build with TensorFlow:</p>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li>Represents movies and users as high-dimensional tensors (embedding vectors)</li>
+                        <li>Processes your viewing history through layers of neural networks</li>
+                        <li>Computes similarities between content using tensor operations</li>
+                        <li>Predicts your rating for unwatched content</li>
+                        <li>Serves personalized recommendations in real-time</li>
+                    </ol>
+                    <p class="mt-3">This requires processing enormous amounts of data, complex mathematical operations, and efficient deployment – all strengths of TensorFlow.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Core Concepts Section -->
+        <section id="concepts-section" class="tab-content mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-heading">Core Concepts of TensorFlow</h2>
+            
+            <!-- Concept Navigation Sub-tabs -->
+            <div class="bg-white rounded-lg shadow-md p-4 mb-8">
+                <div class="flex flex-wrap gap-2" id="concept-tabs">
+                    <button class="concept-tab active px-4 py-2 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200" data-target="tensors-content">Tensors</button>
+                    <button class="concept-tab px-4 py-2 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200" data-target="comp-graph-content">Computational Graph</button>
+                    <button class="concept-tab px-4 py-2 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200" data-target="keras-content">Keras API</button>
+                    <button class="concept-tab px-4 py-2 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200" data-target="layers-content">Neural Network Layers</button>
+                    <button class="concept-tab px-4 py-2 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200" data-target="training-content">Training Process</button>
+                </div>
+            </div>
+            
+            <!-- Tensor Content -->
+            <div id="tensors-content" class="concept-content active">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="flex items-center justify-center h-16 w-16 bg-yellow-100 rounded-full mr-4">
+                            <i class="fas fa-cube text-yellow-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Tensors: The Foundation of TensorFlow</h3>
+                    </div>
+                    
+                    <p class="text-lg mb-6">Tensors are the fundamental data structures in TensorFlow — multi-dimensional arrays that represent your data throughout the entire machine learning pipeline. The name "TensorFlow" itself comes from these data structures "flowing" through the computational graph.</p>
+                    
+                    <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3">The LEGO Brick Analogy</h4>
+                        <p>Think of tensors as specialized LEGO bricks of different shapes and sizes. Just as LEGO bricks can be simple 1x1 blocks (like scalars), flat 2D plates (like matrices), or complex 3D structural pieces (like 3D arrays). More advanced LEGO creations might use specialized 4D or 5D arrangements (like video data). These different pieces fit together in specific ways to build increasingly complex models. Just as master LEGO builders combine simple bricks to create elaborate structures, TensorFlow engineers combine operations on tensors to build sophisticated neural networks.</p>
+                    </div>
+                    
+                    <h4 class="text-xl font-semibold mb-4">Tensor Dimensions Explained</h4>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <div class="bg-white border border-gray-300 rounded-lg p-4 mb-4">
+                                <h5 class="font-bold mb-2">Scalar (Rank 0)</h5>
+                                <p class="mb-2">A single number with 0 dimensions.</p>
+                                <div class="bg-gray-100 p-3 rounded">
+                                    <code class="text-purple-600">42</code>
+                                </div>
+                                <p class="mt-2"><strong>Example:</strong> A temperature reading (98.6°F)</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-300 rounded-lg p-4">
+                                <h5 class="font-bold mb-2">Vector (Rank 1)</h5>
+                                <p class="mb-2">A 1D array of numbers.</p>
+                                <div class="bg-gray-100 p-3 rounded">
+                                    <code class="text-purple-600">[1, 2, 3, 4, 5]</code>
+                                </div>
+                                <p class="mt-2"><strong>Example:</strong> A series of daily stock prices for a week</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="bg-white border border-gray-300 rounded-lg p-4 mb-4">
+                                <h5 class="font-bold mb-2">Matrix (Rank 2)</h5>
+                                <p class="mb-2">A 2D grid of numbers (rows and columns).</p>
+                                <div class="bg-gray-100 p-3 rounded">
+                                    <code class="text-purple-600">[[1, 2, 3], <br>[4, 5, 6], <br>[7, 8, 9]]</code>
+                                </div>
+                                <p class="mt-2"><strong>Example:</strong> A grayscale image or Excel spreadsheet</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-300 rounded-lg p-4">
+                                <h5 class="font-bold mb-2">Higher Dimensions (Rank 3+)</h5>
+                                <p class="mb-2">3D, 4D, or higher arrays of numbers.</p>
+                                <div class="bg-gray-100 p-3 rounded">
+                                    <code class="text-purple-600">Rank 3: [[[...], [...]], [[...], [...]]]</code>
+                                </div>
+                                <p class="mt-2"><strong>Examples:</strong> 
+                                    <br>- Rank 3: Color image (height × width × color channels)
+                                    <br>- Rank 4: Batch of images (batch_size × height × width × channels)
+                                    <br>- Rank 5: Video (batch_size × frames × height × width × channels)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Added section about operations you can perform with tensors -->
+                    <div class="bg-blue-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3 flex items-center">
+                            <i class="fas fa-tools text-blue-600 mr-2"></i>
+                            Common Operations on Tensors
+                        </h4>
+                        <ul class="space-y-2">
+                            <li><strong>Element-wise operations:</strong> Addition, subtraction, multiplication of corresponding elements</li>
+                            <li><strong>Matrix multiplication:</strong> Common in neural network layers with weights and inputs</li>
+                            <li><strong>Reshaping:</strong> Change the dimensions of a tensor without changing the data</li>
+                            <li><strong>Slicing/Indexing:</strong> Extract specific parts of tensors for processing</li>
+                            <li><strong>Concatenation:</strong> Joining tensors along specified dimensions</li>
+                            <li><strong>Reduction:</strong> Calculating sums, means, maximums across dimensions</li>
+                            <li><strong>Broadcasting:</strong> Automatic expansion of smaller tensors to match larger ones</li>
+                            <li><strong>Gradient computation:</strong> Calculating derivatives for optimization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <h4 class="text-xl font-semibold mb-4">Tensor Operations in Python</h4>
+                        <div class="bg-gray-900 text-white p-4 rounded mb-4">
+                            <pre><code class="language-python">
+import tensorflow as tf
+
+# Creating tensors
+scalar = tf.constant(7)                           # Rank 0 (scalar)
+vector = tf.constant([1, 2, 3, 4])                # Rank 1 (vector)
+matrix = tf.constant([[1, 2], [3, 4], [5, 6]])    # Rank 2 (matrix)
+cube = tf.constant([[[1], [2]], [[3], [4]]])      # Rank 3 (3D tensor)
+
+# Tensor properties
+print("Shape:", matrix.shape)      # (3, 2) - 3 rows, 2 columns
+print("Rank:", matrix.ndim)        # 2 - two dimensions
+print("Data type:", matrix.dtype)  # int32
+
+# Basic operations
+a = tf.constant([[1, 2], [3, 4]])
+b = tf.constant([[5, 6], [7, 8]])
+print("Addition:", a + b)          # Element-wise addition
+print("Multiplication:", a * b)    # Element-wise multiplication
+print("Matrix multiplication:", tf.matmul(a, b))  # Matrix multiplication
+                            </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Computational Graph Content -->
+            <div id="comp-graph-content" class="concept-content hidden">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="flex items-center justify-center h-16 w-16 bg-green-100 rounded-full mr-4">
+                            <i class="fas fa-project-diagram text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Computational Graph: The Blueprint</h3>
+                    </div>
+                    
+                    <p class="text-lg mb-6">A computational graph is a core concept in TensorFlow that represents a series of mathematical operations as a directed graph. Unlike traditional programming where operations execute immediately, TensorFlow first builds a blueprint of your computation and then executes it efficiently.</p>
+                    
+                    <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3">The Assembly Line Analogy</h4>
+                        <p>Think of a computational graph like a factory assembly line. Raw materials (input tensors) enter the factory and progress through various workstations (operations) that transform them. Each workstation performs a specific task—cutting, welding, painting (like addition, multiplication, activation functions). The materials flow from one station to the next along conveyor belts (edges in the graph) until they emerge as finished products (output tensors). The beauty of this design is that:
+                        <ul class="list-disc mt-2 pl-5">
+                            <li>The factory layout (graph) can be designed once and used repeatedly</li>
+                            <li>Multiple parts can be processed simultaneously (parallelization)</li>
+                            <li>Quality control can track errors back to specific workstations (backpropagation)</li>
+                            <li>The entire factory can be optimized for throughput (graph optimization)</li>
+                        </ul>
+                        Just as factory engineers design optimal assembly lines, TensorFlow engineers design computational graphs for efficient machine learning.
+                        </p>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4">Key Components</h4>
+                            <div class="bg-white border border-gray-300 rounded-lg p-4 mb-4">
+                                <h5 class="font-bold mb-2 flex items-center">
+                                    <i class="fas fa-cogs text-gray-600 mr-2"></i>
+                                    Nodes (Operations)
+                                </h5>
+                                <p>Mathematical operations like addition, matrix multiplication, or activation functions. Each node takes zero or more tensors as input and produces a tensor as output.</p>
+                            </div>
+                            
+                            <div class="bg-white border border-gray-300 rounded-lg p-4">
+                                <h5 class="font-bold mb-2 flex items-center">
+                                    <i class="fas fa-exchange-alt text-gray-600 mr-2"></i>
+                                    Edges (Tensors)
+                                </h5>
+                                <p>The connections between operations, representing the flow of data (tensors) from one operation to another.</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-xl font-semibold mb-4">Benefits</h4>
+                            <ul class="bg-blue-50 p-5 rounded-lg list-disc pl-5 space-y-2">
+                                <li><strong>Automatic differentiation:</strong> TensorFlow automatically computes gradients for optimization</li>
+                                <li><strong>Parallelization:</strong> Operations can run simultaneously on different CPU/GPU cores</li>
+                                <li><strong>Optimization:</strong> The graph can be optimized for speed and memory usage</li>
+                                <li><strong>Portability:</strong> The same graph can run on various hardware (CPU, GPU, TPU)</li>
+                                <li><strong>Distributed execution:</strong> Operations can be distributed across multiple devices</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <h4 class="text-xl font-semibold mb-4">Computational Graph Example</h4>
+                        <div class="bg-gray-900 text-white p-4 rounded mb-4">
+                            <pre><code class="language-python">
+import tensorflow as tf
+
+# TensorFlow 2.x uses eager execution by default (operations execute immediately)
+# But the graph concept still exists underneath
+
+# Building a simple computation
+x = tf.constant([[1, 2], [3, 4]], dtype=tf.float32)
+y = tf.constant([[5, 6], [7, 8]], dtype=tf.float32)
+
+# Operations form a graph behind the scenes
+z = tf.matmul(x, y)  # Matrix multiplication
+w = tf.reduce_mean(z)  # Average of all elements
+
+print("Result matrix:", z.numpy())
+print("Average value:", w.numpy())
+
+# Using tf.function to explicitly create a graph
+@tf.function  # This decorator converts the function to a graph
+def graph_operations(x, y):
+    z = tf.matmul(x, y)
+    w = tf.reduce_mean(z)
+    return z, w
+
+# This call is executed as a graph
+result_matrix, average = graph_operations(x, y)
+print("Graph execution results:", result_matrix.numpy(), average.numpy())
+                            </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Keras API Content -->
+            <div id="keras-content" class="concept-content hidden">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="flex items-center justify-center h-16 w-16 bg-blue-100 rounded-full mr-4">
+                            <i class="fas fa-layer-group text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Keras API: The High-Level Interface</h3>
+                    </div>
+                    
+                    <p class="text-lg mb-6">Keras is TensorFlow's high-level API for building and training deep learning models. It provides a more user-friendly, intuitive interface that simplifies the process of constructing neural networks while still giving you access to TensorFlow's powerful capabilities.</p>
+                    
+                    <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3">The Restaurant Kitchen Analogy</h4>
+                        <p>Think of Keras as a modern restaurant kitchen designed for efficiency. If TensorFlow is the complete set of cooking equipment and ingredients, Keras provides the standardized recipes and cooking workflows:
+                        <ul class="list-disc mt-2 pl-5">
+                            <li><strong>Pre-prepared ingredients</strong> (pre-built layers) save you from chopping vegetables from scratch</li>
+                            <li><strong>Standard recipes</strong> (model templates) mean you don't have to reinvent common dishes</li>
+                            <li><strong>Modular cooking stations</strong> (layer architecture) let you assemble components in logical order</li>
+                            <li><strong>Cooking timers</strong> (callbacks) notify you when specific events occur</li>
+                            <li><strong>Recipe variations</strong> (model customization) allow you to adapt standard approaches to your needs</li>
+                        </ul>
+                        Just as a restaurant kitchen makes professional cooking accessible, Keras makes deep learning accessible without sacrificing the power to create sophisticated models.
+                        </p>
+                    </div>
+                    
+                    <h4 class="text-xl font-semibold mb-4">The Keras Workflow</h4>
+                    <div class="bg-indigo-50 p-6 rounded-lg mb-8">
+                        <ol class="space-y-4">
+                            <li class="flex">
+                                <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">1</span>
+                                <div>
+                                    <h5 class="font-bold text-indigo-700">Define the Model</h5>
+                                    <p>Create the architecture by specifying layers, connections, and input shapes</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">2</span>
+                                <div>
+                                    <h5 class="font-bold text-indigo-700">Compile the Model</h5>
+                                    <p>Configure the learning process by specifying the loss function, optimizer, and metrics</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">3</span>
+                                <div>
+                                    <h5 class="font-bold text-indigo-700">Fit the Model</h5>
+                                    <p>Train the model on data, specifying epochs, batch size, and other parameters</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">4</span>
+                                <div>
+                                    <h5 class="font-bold text-indigo-700">Evaluate & Predict</h5>
+                                    <p>Measure performance on test data and use the model to make predictions</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">5</span>
+                                <div>
+                                    <h5 class="font-bold text-indigo-700">Save & Deploy</h5>
+                                    <p>Save the trained model and deploy it for use in applications</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <h4 class="text-xl font-semibold mb-4">Complete Keras Example</h4>
+                        <div class="bg-gray-900 text-white p-4 rounded mb-4">
+                            <pre><code class="language-python">
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+import numpy as np
+
+# 1. Prepare data
+# Generate synthetic data for demonstration
+X_train = np.random.random((1000, 20))  # 1000 samples, 20 features
+y_train = np.random.randint(2, size=(1000, 1))  # Binary targets
+X_test = np.random.random((200, 20))  # 200 test samples
+y_test = np.random.randint(2, size=(200, 1))  # Test targets
+
+# 2. Define model
+model = Sequential([
+    Dense(64, activation='relu', input_shape=(20,)),
+    Dense(32, activation='relu'),
+    Dense(16, activation='relu'),
+    Dense(1, activation='sigmoid')
+])
+
+# 3. Compile model
+model.compile(
+    optimizer='adam',  # Adaptive optimization algorithm
+    loss='binary_crossentropy',  # Loss function for binary classification
+    metrics=['accuracy']  # Metrics to track during training/testing
+)
+
+# Print model summary
+model.summary()
+
+# 4. Fit model
+history = model.fit(
+    X_train, y_train,
+    epochs=20,  # Number of passes through the dataset
+    batch_size=32,  # Samples per gradient update
+    validation_split=0.2,  # Use 20% of training data for validation
+    verbose=1  # Show progress bar
+)
+
+# 5. Evaluate model
+test_loss, test_accuracy = model.evaluate(X_test, y_test)
+print(f"Test accuracy: {test_accuracy:.4f}")
+
+# 6. Make predictions
+predictions = model.predict(X_test)
+                            </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Neural Network Layers Content -->
+            <div id="layers-content" class="concept-content hidden">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="flex items-center justify-center h-16 w-16 bg-red-100 rounded-full mr-4">
+                            <i class="fas fa-network-wired text-red-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Neural Network Layers: Building Blocks</h3>
+                    </div>
+                    
+                    <p class="text-lg mb-6">Layers are the fundamental building blocks of neural networks in TensorFlow. Each layer applies a specific transformation to its input data, gradually extracting and refining features needed for the task at hand.</p>
+                    
+                    <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3">The Building Construction Analogy</h4>
+                        <p>Think of neural network layers like specialized teams constructing a building:
+                        <ul class="list-disc mt-2 pl-5">
+                            <li><strong>Dense layers</strong> are like general contractors who connect everything together</li>
+                            <li><strong>Convolutional layers</strong> are like detail-oriented craftsmen who examine small sections at a time, looking for specific patterns</li>
+                            <li><strong>Pooling layers</strong> are like inspectors who summarize and condense information</li>
+                            <li><strong>Dropout layers</strong> act like quality control that randomly challenges different parts of the system to ensure robustness</li>
+                            <li><strong>Recurrent layers</strong> are like project managers who consider the history of construction when making new decisions</li>
+                        </ul>
+                        Each specialized team takes input from the previous team, applies their expertise, and passes modified plans to the next team, gradually transforming raw materials into a sophisticated final structure.
+                        </p>
+                    </div>
+                    
+                    <h4 class="text-xl font-semibold mb-6">Common Layer Types</h4>
+                    
+                    <div class="space-y-6">
+                        <!-- Dense Layer -->
+                        <div class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm">
+                            <h5 class="text-xl font-bold mb-3 text-blue-700 flex items-center">
+                                <i class="fas fa-th text-blue-600 mr-2"></i>
+                                Dense (Fully Connected) Layer
+                            </h5>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <p class="mb-3">Dense layers connect every neuron in the current layer to every neuron in the previous layer, applying weights, bias, and an activation function.</p>
+                                    <div class="bg-blue-50 p-3 rounded-lg mt-2">
+                                        <strong>Formula:</strong> output = activation(dot(input, kernel) + bias)
+                                    </div>
+                                    <div class="mt-4">
+                                        <strong>Key Parameters:</strong>
+                                        <ul class="list-disc pl-5 mt-1">
+                                            <li><code>units</code>: Number of neurons (output dimensions)</li>
+                                            <li><code>activation</code>: Activation function (relu, sigmoid, etc.)</li>
+                                            <li><code>input_shape</code>: Shape of input data (first layer only)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="bg-gray-100 p-3 rounded-lg">
+                                        <pre><code class="language-python">Dense(
+  units=64, 
+  activation='relu',
+  input_shape=(10,)
+)</code></pre>
+                                    </div>
+                                    <p class="mt-2 text-sm"><strong>Use Case:</strong> General-purpose layer used in most neural networks, especially for tabular data</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Convolutional Layer -->
+                        <div class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm">
+                            <h5 class="text-xl font-bold mb-3 text-green-700 flex items-center">
+                                <i class="fas fa-filter text-green-600 mr-2"></i>
+                                Convolutional Layer (Conv2D)
+                            </h5>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <p class="mb-3">Convolutional layers slide filters over input data to detect patterns regardless of their position. They're especially effective for spatial data like images.</p>
+                                    <div class="bg-green-50 p-3 rounded-lg mt-2">
+                                        <strong>How it works:</strong> Filters (small matrices) scan across the input, performing element-wise multiplication and summation to produce feature maps.
+                                    </div>
+                                    <div class="mt-4">
+                                        <strong>Key Parameters:</strong>
+                                        <ul class="list-disc pl-5 mt-1">
+                                            <li><code>filters</code>: Number of output filters (feature detectors)</li>
+                                            <li><code>kernel_size</code>: Size of the filter (e.g., (3,3) for a 3×3 filter)</li>
+                                            <li><code>strides</code>: Step size when sliding the filter</li>
+                                            <li><code>padding</code>: How to handle edges ('valid' or 'same')</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="bg-gray-100 p-3 rounded-lg">
+                                        <pre><code class="language-python">Conv2D(
+  filters=32, 
+  kernel_size=(3, 3),
+  activation='relu',
+  padding='same'
+)</code></pre>
+                                    </div>
+                                    <p class="mt-2 text-sm"><strong>Use Case:</strong> Image processing, computer vision, pattern recognition in spatial data</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Training Process Content -->
+            <div id="training-content" class="concept-content hidden">
+                <div class="bg-white rounded-lg shadow-lg p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="flex items-center justify-center h-16 w-16 bg-purple-100 rounded-full mr-4">
+                            <i class="fas fa-graduation-cap text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Training Process: Teaching Your Network</h3>
+                    </div>
+                    
+                    <p class="text-lg mb-6">Training a neural network involves adjusting its parameters (weights and biases) to minimize the difference between predicted outputs and actual targets. TensorFlow provides comprehensive tools to manage this complex process efficiently.</p>
+                    
+                    <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3">The Apprenticeship Analogy</h4>
+                        <p>Think of training a neural network as teaching an apprentice a craft:
+                        <ul class="list-disc mt-2 pl-5">
+                            <li><strong>Training data</strong> is like practice examples you show to your apprentice</li>
+                            <li><strong>Loss function</strong> measures how far your apprentice's work is from the ideal</li>
+                            <li><strong>Optimizer</strong> is the teaching method you use to provide feedback</li>
+                            <li><strong>Learning rate</strong> determines how quickly you expect them to adjust their technique</li>
+                            <li><strong>Epochs</strong> are like repeated practice sessions, going over similar examples multiple times</li>
+                            <li><strong>Batch size</strong> is how many examples you show before giving feedback</li>
+                            <li><strong>Validation</strong> is testing your apprentice on examples they haven't seen before</li>
+                        </ul>
+                        Just as an apprentice gradually improves through practice and feedback, neural networks learn by iteratively adjusting parameters based on their errors.
+                        </p>
+                    </div>
+
+                    <!-- Added section about tensor transformations during training -->
+                    <div class="bg-purple-50 p-6 rounded-lg mb-8">
+                        <h4 class="text-xl font-semibold mb-3 flex items-center">
+                            <i class="fas fa-sync-alt text-purple-600 mr-2"></i>
+                            How Tensors Transform During Training
+                        </h4>
+                        <div class="space-y-3">
+                            <p>During training, tensors undergo a series of transformations that are key to the learning process:</p>
+                            
+                            <div class="bg-white p-3 rounded-lg">
+                                <strong class="text-purple-700">1. Forward Pass:</strong> Input tensors flow through the network layers, with each layer applying transformations (matrix multiplications, activations, etc.) to produce output tensors.
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-lg">
+                                <strong class="text-purple-700">2. Loss Calculation:</strong> The output tensor is compared to the target tensor using a loss function, producing a scalar loss value tensor.
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-lg">
+                                <strong class="text-purple-700">3. Backward Pass:</strong> TensorFlow automatically computes gradient tensors that represent how much each parameter contributes to the error.
+                            </div>
+                            
+                            <div class="bg-white p-3 rounded-lg">
+                                <strong class="text-purple-700">4. Parameter Updates:</strong> Weight and bias tensors are adjusted by small amounts based on their corresponding gradient tensors.
+                            </div>
+                            
+                            <p class="mt-2">This entire process leverages TensorFlow's ability to efficiently handle tensor operations and automatic differentiation, allowing complex models to learn from data.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-100 p-6 rounded-lg">
+                        <h4 class="text-xl font-semibold mb-4">Training with Callbacks</h4>
+                        <div class="bg-gray-900 text-white p-4 rounded mb-4">
+                            <pre><code class="language-python">
+import tensorflow as tf
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+
+# Create callbacks
+callbacks = [
+    # Save the best model based on validation accuracy
+    ModelCheckpoint(
+        filepath='best_model.h5',
+        monitor='val_accuracy',
+        save_best_only=True,
+        verbose=1
+    ),
+    
+    # Stop training when validation loss stops improving
+    EarlyStopping(
+        monitor='val_loss',
+        patience=10,     # Number of epochs with no improvement
+        restore_best_weights=True,
+        verbose=1
+    ),
+    
+    # Reduce learning rate when validation loss plateaus
+    ReduceLROnPlateau(
+        monitor='val_loss',
+        factor=0.2,      # Factor by which to reduce learning rate
+        patience=5,      # Number of epochs with no improvement
+        min_lr=1e-6,     # Minimum learning rate
+        verbose=1
+    )
+]
+
+# Use callbacks during training
+model.fit(
+    X_train, y_train,
+    epochs=100,
+    batch_size=32,
+    validation_split=0.2,
+    callbacks=callbacks
+)
+                            </code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- TF vs Traditional ML Section -->
+        <section id="vs-traditional-section" class="tab-content mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-heading">TensorFlow vs Traditional Machine Learning</h2>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <p class="text-lg mb-6">While traditional machine learning libraries like scikit-learn provide excellent tools for many tasks, TensorFlow offers distinct advantages, especially for complex, deep learning projects. Let's compare these approaches to understand when to use each.</p>
+                
+                <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+                    <h4 class="text-xl font-semibold mb-3">The Transportation Analogy</h4>
+                    <p>Think of traditional ML algorithms like cars: they're accessible, easy to operate, and get you to nearby destinations efficiently. TensorFlow, on the other hand, is like a commercial aircraft: it requires more expertise to operate, has more complex controls, but can handle much larger payloads (data), travel much greater distances (complexity), and reach destinations that cars simply cannot access (cutting-edge AI applications).</p>
+                    <p class="mt-2">For a quick trip to the grocery store (simple classification task), a car is perfect. For crossing oceans with hundreds of passengers (processing millions of images for deep learning), you need an aircraft.</p>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-3 px-4 border-b text-left">Feature</th>
+                                <th class="py-3 px-4 border-b text-left">Traditional ML (e.g., scikit-learn)</th>
+                                <th class="py-3 px-4 border-b text-left">TensorFlow</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Learning Paradigm</td>
+                                <td class="py-3 px-4">Primarily shallow learning with predefined algorithms</td>
+                                <td class="py-3 px-4">Deep learning with customizable neural network architectures</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Flexibility</td>
+                                <td class="py-3 px-4">Fixed algorithms with limited customization</td>
+                                <td class="py-3 px-4">Highly flexible with custom model architectures and operations</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Data Scale</td>
+                                <td class="py-3 px-4">Best for smaller datasets that fit in memory</td>
+                                <td class="py-3 px-4">Can handle massive datasets with distributed processing</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Hardware Acceleration</td>
+                                <td class="py-3 px-4">Limited GPU support</td>
+                                <td class="py-3 px-4">Native GPU, TPU, and distributed computing support</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Model Complexity</td>
+                                <td class="py-3 px-4">Simple to moderate complexity</td>
+                                <td class="py-3 px-4">Can build extremely complex models with millions of parameters</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Learning Curve</td>
+                                <td class="py-3 px-4">Gentle, quick to get started</td>
+                                <td class="py-3 px-4">Steeper, more concepts to master</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Deployment</td>
+                                <td class="py-3 px-4">Simple deployment for lightweight models</td>
+                                <td class="py-3 px-4">Comprehensive deployment options across platforms</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-medium">Best Use Cases</td>
+                                <td class="py-3 px-4">Classification, regression, clustering with structured data</td>
+                                <td class="py-3 px-4">Computer vision, NLP, speech recognition, reinforcement learning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-8">
+                    <h4 class="text-xl font-semibold mb-4">When to Use Traditional ML vs TensorFlow</h4>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <h5 class="text-lg font-semibold mb-3 text-green-700 flex items-center">
+                                <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                                Choose Traditional ML When:
+                            </h5>
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>You have a small to medium-sized dataset</li>
+                                <li>Your problem is well-defined (classification, regression, clustering)</li>
+                                <li>You need a quick solution with minimal setup</li>
+                                <li>Interpretability of the model is critical</li>
+                                <li>You're working with structured/tabular data</li>
+                                <li>You have limited computational resources</li>
+                                <li>You're a beginner in machine learning</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <h5 class="text-lg font-semibold mb-3 text-blue-700 flex items-center">
+                                <i class="fas fa-rocket text-blue-600 mr-2"></i>
+                                Choose TensorFlow When:
+                            </h5>
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li>You're working with unstructured data (images, text, audio)</li>
+                                <li>You have a large dataset that doesn't fit in memory</li>
+                                <li>Your problem requires deep learning approaches</li>
+                                <li>You need state-of-the-art performance on complex tasks</li>
+                                <li>You want to leverage GPU/TPU acceleration</li>
+                                <li>You need to deploy across various platforms (web, mobile, edge)</li>
+                                <li>You're building a custom model architecture</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-indigo-50 p-6 rounded-lg">
+                    <h4 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-code-branch text-indigo-600 mr-2"></i>
+                        The Hybrid Approach
+                    </h4>
+                    <p>Many modern ML pipelines combine traditional ML and TensorFlow for different parts of the workflow:</p>
+                    <ol class="list-decimal pl-5 space-y-2 mt-2">
+                        <li><strong>Data preprocessing</strong> with pandas and scikit-learn</li>
+                        <li><strong>Feature extraction</strong> with TensorFlow deep learning models</li>
+                        <li><strong>Final classification</strong> with traditional algorithms</li>
+                        <li><strong>Hyperparameter tuning</strong> with scikit-learn's GridSearchCV</li>
+                        <li><strong>Model evaluation</strong> with scikit-learn's metrics module</li>
+                    </ol>
+                    <p class="mt-3">This combined approach leverages the strengths of both paradigms for optimal results.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Code Walkthrough Section -->
+        <section id="code-section" class="tab-content mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-heading">Code Walkthrough: Customer Churn Prediction</h2>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-project-diagram text-indigo-600 mr-2"></i>
+                    Project Overview
+                </h3>
+                <p class="text-lg mb-6">This example demonstrates how to build a neural network model to predict customer churn using TensorFlow. The model analyzes customer data to determine whether a customer is likely to leave the service (churn) or not.</p>
+                
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-yellow-600"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                This is a binary classification problem: predicting whether a customer will churn (1) or not (0).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 1: Data Preparation -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-table text-blue-600 mr-2"></i>
+                    Step 1: Data Preparation
+                </h3>
+                <p class="text-lg mb-6">First, we need to prepare our data by loading, cleaning, and splitting it into training and testing sets.</p>
+                
+                <div class="code-section bg-gray-900 rounded-lg p-4 mb-6">
+                    <pre><code class="language-python">
+# Import Data
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+# Load and prepare data
+df = pd.read_csv('Churn.csv')
+X = pd.get_dummies(df.drop(['Churn', 'Customer ID'], axis=1))
+y = df['Churn'].apply(lambda x: 1 if x=='Yes' else 0)
+
+# Convert to float32 for TensorFlow compatibility
+X = X.astype('float32')
+y = y.astype('float32')
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2)
+                    </code></pre>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-blue-700">What's Happening Here</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li>Loading customer data from a CSV file</li>
+                            <li>Converting categorical variables to numeric using one-hot encoding</li>
+                            <li>Creating a binary target variable (1 for churn, 0 for no churn)</li>
+                            <li>Converting data to float32 (TensorFlow's preferred data type)</li>
+                            <li>Splitting data into training (80%) and testing (20%) sets</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-green-700">TensorFlow Concepts</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Data formatting:</strong> TensorFlow works best with numerical data</li>
+                            <li><strong>Data types:</strong> TensorFlow operations are optimized for float32</li>
+                            <li><strong>Feature preprocessing:</strong> One-hot encoding converts categorical data to a format neural networks can process</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 2: Model Architecture -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-layer-group text-purple-600 mr-2"></i>
+                    Step 2: Model Architecture
+                </h3>
+                <p class="text-lg mb-6">Next, we define the structure of our neural network using Keras's Sequential API.</p>
+                
+                <div class="code-section bg-gray-900 rounded-lg p-4 mb-6">
+                    <pre><code class="language-python">
+# Import Dependencies
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense
+
+# Build and Compile Model
+model = Sequential()
+model.add(Dense(units=32, activation='relu', input_dim=len(X_train.columns)))
+model.add(Dense(units=64, activation='relu'))
+model.add(Dense(units=1, activation='sigmoid'))
+
+model.compile(loss='binary_crossentropy', optimizer='sgd', metrics='accuracy')
+                    </code></pre>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-blue-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-blue-700">What's Happening Here</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li>Creating a Sequential model (layers stacked linearly)</li>
+                            <li>Adding three Dense (fully connected) layers</li>
+                            <li>Using ReLU activation for hidden layers</li>
+                            <li>Using Sigmoid activation for the output (produces value between 0-1)</li>
+                            <li>Compiling the model with loss function, optimizer, and metrics</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-green-700">TensorFlow Concepts</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Sequential API:</strong> Linear stack of layers</li>
+                            <li><strong>Dense layers:</strong> Fully connected neural network layers</li>
+                            <li><strong>Activation functions:</strong> Introduce non-linearity to the model</li>
+                            <li><strong>Compilation:</strong> Prepares model for training with specific settings</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-100 p-6 rounded-lg">
+                    <h4 class="text-lg font-semibold mb-3">Layer-by-Layer Breakdown</h4>
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 bg-gray-200 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Layer</th>
+                                <th class="px-6 py-3 bg-gray-200 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Description</th>
+                                <th class="px-6 py-3 bg-gray-200 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Input Layer<br>(Dense, 32units)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">First fully connected layer with ReLU activation</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">Receives input features and begins extracting patterns</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Hidden Layer<br>(Dense, 64 units)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Second fully connected layer with ReLU activation</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">Learns more complex patterns and abstractions</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Output Layer<br>(Dense, 1 unit)</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">Output layer with Sigmoid activation</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">Produces probability (0-1) of customer churning</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Step 3: Training and Evaluation -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-cogs text-green-600 mr-2"></i>
+                    Step 3: Training and Evaluation
+                </h3>
+                <p class="text-lg mb-6">Now, we train our model on the training data and evaluate its performance on the test data.</p>
+                
+                <div class="code-section bg-gray-900 rounded-lg p-4 mb-6">
+                    <pre><code class="language-python">
+# Fit the model
+model.fit(X_train, y_train, epochs=200, batch_size=32)
+
+# Make predictions
+y_hat = model.predict(X_test)
+y_hat = [0 if val < 0.5 else 1 for val in y_hat]
+
+# Calculate accuracy
+from sklearn.metrics import accuracy_score
+accuracy_score(y_test, y_hat)
+                    </code></pre>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-blue-700">What's Happening Here</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li>Training the model for 200 epochs</li>
+                            <li>Using batches of 32 samples per gradient update</li>
+                            <li>Making predictions on the test data</li>
+                            <li>Converting probability outputs to binary predictions</li>
+                            <li>Evaluating the model's accuracy</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-green-700">TensorFlow Concepts</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Epochs:</strong> Complete passes through the training dataset</li>
+                            <li><strong>Batch size:</strong> Number of samples processed before updating model weights</li>
+                            <li><strong>Prediction:</strong> Using trained model to make inferences</li>
+                            <li><strong>Model evaluation:</strong> Measuring model performance on unseen data</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 4: Model Saving and Loading -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h3 class="text-2xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-save text-indigo-600 mr-2"></i>
+                    Step 4: Model Saving and Reloading
+                </h3>
+                <p class="text-lg mb-6">Finally, we save our trained model and demonstrate how to reload it for future use.</p>
+                
+                <div class="code-section bg-gray-900 rounded-lg p-4 mb-6">
+                    <pre><code class="language-python">
+# Save the model
+model.save('tfmodel')
+
+# Later, reload the model
+from tensorflow.keras.models import load_model
+loaded_model = load_model('tfmodel')
+
+# Use the loaded model for predictions
+new_predictions = loaded_model.predict(X_test)
+                    </code></pre>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-blue-700">What's Happening Here</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li>Saving the complete model to disk</li>
+                            <li>Loading the model back from disk</li>
+                            <li>Using the loaded model to make new predictions</li>
+                        </ul>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-green-700">TensorFlow Concepts</h4>
+                        <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <li><strong>Model persistence:</strong> Saving weights, architecture, and optimizer state</li>
+                            <li><strong>Deployment readiness:</strong> Saved models can be deployed to production</li>
+                            <li><strong>Format compatibility:</strong> SavedModel format works across TensorFlow platforms</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-indigo-50 p-6 rounded-lg">
+                    <h4 class="text-xl font-bold mb-3">Complete Implementation Flowchart</h4>
+                    <div class="flex flex-col space-y-2">
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-indigo-500">
+                            <h5 class="font-bold flex items-center">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-2">1</span>
+                                Data Preparation
+                            </h5>
+                            <p>Load data → Process features → Convert types → Split train/test</p>
+                        </div>
+                        <div class="text-center text-indigo-500">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-indigo-500">
+                            <h5 class="font-bold flex items-center">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-2">2</span>
+                                Model Architecture
+                            </h5>
+                            <p>Create Sequential model → Add layers → Compile with optimizer and loss</p>
+                        </div>
+                        <div class="text-center text-indigo-500">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-indigo-500">
+                            <h5 class="font-bold flex items-center">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-2">3</span>
+                                Training
+                            </h5>
+                            <p>Fit model on training data → Specify epochs and batch size</p>
+                        </div>
+                        <div class="text-center text-indigo-500">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-indigo-500">
+                            <h5 class="font-bold flex items-center">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-2">4</span>
+                                Evaluation
+                            </h5>
+                            <p>Make predictions → Convert probabilities to binary → Calculate accuracy</p>
+                        </div>
+                        <div class="text-center text-indigo-500">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-indigo-500">
+                            <h5 class="font-bold flex items-center">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-2">5</span>
+                                Deployment
+                            </h5>
+                            <p>Save model → Load model when needed → Make new predictions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Resources Section -->
+        <section id="resources-section" class="tab-content mb-16">
+            <h2 class="text-3xl font-bold mb-6 gradient-heading">Learning Resources</h2>
+            
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <p class="text-lg mb-6">Continue your TensorFlow journey with these carefully selected resources, from beginner-friendly tutorials to advanced guides.</p>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm concept-card">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-book text-blue-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Official Documentation</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://www.tensorflow.org/guide" class="text-blue-600 hover:underline font-semibold">TensorFlow Guide</a>
+                                    <p class="text-sm text-gray-600">Comprehensive documentation covering all aspects of TensorFlow</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://www.tensorflow.org/tutorials" class="text-blue-600 hover:underline font-semibold">TensorFlow Tutorials</a>
+                                    <p class="text-sm text-gray-600">Hands-on tutorials covering various use cases and applications</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://www.tensorflow.org/api_docs" class="text-blue-600 hover:underline font-semibold">API Reference</a>
+                                    <p class="text-sm text-gray-600">Detailed documentation of all TensorFlow classes and functions</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm concept-card">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-video text-purple-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Courses & Learning Paths</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://developers.google.com/machine-learning/crash-course" class="text-blue-600 hover:underline font-semibold">Google's Machine Learning Crash Course</a>
+                                    <p class="text-sm text-gray-600">Fast-paced introduction to ML with TensorFlow</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://www.coursera.org/specializations/tensorflow-in-practice" class="text-blue-600 hover:underline font-semibold">TensorFlow in Practice Specialization</a>
+                                    <p class="text-sm text-gray-600">Coursera specialization by deeplearning.ai</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://www.udacity.com/course/intro-to-tensorflow-for-deep-learning--ud187" class="text-blue-600 hover:underline font-semibold">Intro to TensorFlow for Deep Learning</a>
+                                    <p class="text-sm text-gray-600">Free course by Udacity and Google</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm concept-card">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-users text-red-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Community Resources</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://www.tensorflow.org/community" class="text-blue-600 hover:underline font-semibold">TensorFlow Community</a>
+                                    <p class="text-sm text-gray-600">Join forums, mailing lists, and social media groups</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://stackoverflow.com/questions/tagged/tensorflow" class="text-blue-600 hover:underline font-semibold">Stack Overflow TensorFlow Tag</a>
+                                    <p class="text-sm text-gray-600">Ask questions and find solutions to common problems</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <a href="https://github.com/tensorflow/tensorflow" class="text-blue-600 hover:underline font-semibold">GitHub Repository</a>
+                                    <p class="text-sm text-gray-600">Explore the source code and contribute to TensorFlow</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-300 rounded-lg p-6 shadow-sm concept-card">
+                        <div class="flex items-center mb-4">
+                            <div class="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-file-alt text-green-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Books & Publications</h3>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-semibold">Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow</span>
+                                    <p class="text-sm text-gray-600">By Aurélien Géron</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-semibold">Deep Learning with Python</span>
+                                    <p class="text-sm text-gray-600">By François Chollet (Creator of Keras)</p>
+                                </div>
+                            </li>
+                            <li class="p-2 bg-gray-50 rounded flex items-start">
+                                <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                                <div>
+                                    <span class="font-semibold">TensorFlow: The Definitive Guide</span>
+                                    <p class="text-sm text-gray-600">By Tom Hope, Yehezkel S. Resheff, and Itay Lieder</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-10 bg-indigo-50 p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-map-signs text-indigo-600 mr-2"></i>
+                        Learning Path for Beginners
+                    </h3>
+                    <ol class="space-y-4">
+                        <li class="flex">
+                            <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">1</span>
+                            <div>
+                                <h4 class="font-bold text-indigo-700">Start with Python Basics</h4>
+                                <p>Ensure you're comfortable with Python, NumPy, and pandas before diving into TensorFlow</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">2</span>
+                            <div>
+                                <h4 class="font-bold text-indigo-700">Complete Official Tutorials</h4>
+                                <p>Follow the beginner tutorials on the TensorFlow website to get hands-on experience</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">3</span>
+                            <div>
+                                <h4 class="font-bold text-indigo-700">Build Simple Projects</h4>
+                                <p>Create straightforward projects like image classifiers, text analyzers, or regression models</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">4</span>
+                            <div>
+                                <h4 class="font-bold text-indigo-700">Join the Community</h4>
+                                <p>Participate in forums, ask questions, and learn from others' projects</p>
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-600 text-white rounded-full font-bold mr-3">5</span>
+                            <div>
+                                <h4 class="font-bold text-indigo-700">Tackle Advanced Topics</h4>
+                                <p>Explore model deployment, custom training loops, and specialized architectures</p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="text-2xl font-bold">TensorFlow Guide for Beginners</h2>
+                    <p class="mt-2 text-gray-400">Created by Jinesh Ranawat</p>
+                </div>
+                <div>
+                    <p class="text-gray-400">For more information, visit:</p>
+                    <div class="flex space-x-4 mt-2">
+                        <a href="https://www.tensorflow.org" class="text-white hover:text-blue-400 transition-colors">TensorFlow.org</a>
+                        <a href="https://github.com/tensorflow/tensorflow" class="text-white hover:text-blue-400 transition-colors">GitHub</a>
+                        <a href="https://www.tensorflow.org/community" class="text-white hover:text-blue-400 transition-colors">Community</a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                <p>© 2025 - This guide is for educational purposes</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript for tab functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Main tab functionality
+            const mainTabs = document.querySelectorAll('#main-tabs .tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            mainTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    mainTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all tab contents
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show corresponding tab content
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Concept tab functionality
+            const conceptTabs = document.querySelectorAll('#concept-tabs .concept-tab');
+            const conceptContents = document.querySelectorAll('.concept-content');
+            
+            conceptTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    conceptTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Hide all concept contents
+                    conceptContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Show corresponding concept content
+                    const targetId = tab.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+            
+            // Initialize syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightBlock(block);
+            });
+        });
+    </script>
+</body>
+</html>
