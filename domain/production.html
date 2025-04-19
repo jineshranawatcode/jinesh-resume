@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P&O Domain Knowledge Dashboard</title>
+    <style>
+        :root {
+            --primary: #0F9D58;
+            --secondary: #1a5276;
+            --accent: #3498db;
+            --light: #eef5f9;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #c0392b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3, h4 {
+            margin-top: 0;
+        }
+        
+        .dashboard-intro {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            list-style-type: none;
+            background-color: var(--dark);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-link {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            color: white;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-link.active {
+            border-bottom: 3px solid var(--primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        
+        .data-table thead tr {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dddddd;
+        }
+        
+        .data-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+            background-color: white;
+        }
+        
+        .data-table tbody tr:nth-of-type(even) {
+            background-color: #f5f5f5;
+        }
+        
+        .data-table tbody tr:last-of-type {
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        /* Domain Cards */
+        .domain-container {
+            margin-top: 30px;
+        }
+        
+        .domain-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .domain-header {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .domain-header:hover {
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+        
+        .domain-icon {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .domain-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+        }
+        
+        .domain-card.expanded .domain-content {
+            padding: 20px;
+            max-height: 3000px;
+        }
+        
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+        
+        .domain-card.expanded .chevron {
+            transform: rotate(180deg);
+        }
+        
+        /* Domain Content Styles */
+        .data-types {
+            background-color: var(--light);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        
+        .data-type-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .data-type-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .why-we-do-it {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid var(--success);
+            margin-bottom: 15px;
+        }
+        
+        .metrics-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 15px;
+            flex: 1 1 calc(50% - 15px);
+            min-width: 200px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--primary);
+        }
+        
+        .metric-card h4 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+        
+        .percentage {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--success);
+            margin: 10px 0;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 0 0 8px 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .metrics-container {
+                flex-direction: column;
+            }
+            
+            .tab-link {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>P&O Domain Knowledge Dashboard</h1>
+            <p>A comprehensive exploration of Production & Operations domains, data types, and business impact</p>
+        </header>
+        
+        <!-- Navigation Tabs -->
+        <ul class="tabs">
+            <li class="tab-link active" onclick="openTab('overview')">Overview</li>
+            <li class="tab-link" onclick="openTab('domains')">Domain Data</li>
+            <li class="tab-link" onclick="openTab('perspectives')">Functional Perspectives</li>
+            <li class="tab-link" onclick="openTab('governance')">Data Governance</li>
+            <li class="tab-link" onclick="openTab('impact')">Business Impact</li>
+        </ul>
+        
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="dashboard-intro">
+                <h2>P&O Domain Knowledge: Overview</h2>
+                <p>Production and Operations (P&O) in the oil and gas industry focuses on exploration, production, and operational excellence. Our domain knowledge encompasses various aspects of upstream operations, including discovering hydrocarbon reserves, drilling wells, and extracting resources efficiently and safely.</p>
+                <p>This dashboard provides a comprehensive view of our domain expertise across key areas, illustrating how we leverage knowledge to drive operational excellence and business value.</p>
+            </div>
+            
+            <!-- Comprehensive Data Table -->
+            <h2>Comprehensive Domain Overview</h2>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Domain</th>
+                            <th>Key Data Types</th>
+                            <th>Purpose</th>
+                            <th>Key Performance Indicator (KPI)</th>
+                            <th>Frequency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Projects</td>
+                            <td>Project plans, schedules, budgets, resource allocations</td>
+                            <td>Define scope, objectives, and deliverables for upstream projects</td>
+                            <td>% of projects completed on time, budget adherence</td>
+                            <td>Monthly (plans, budgets), Weekly (schedules)</td>
+                        </tr>
+                        <tr>
+                            <td>Subsurface</td>
+                            <td>Geological data, reservoir models, well logs</td>
+                            <td>Map subsurface formations to identify hydrocarbon deposits</td>
+                            <td>Accuracy of geological models, reserve estimation</td>
+                            <td>Quarterly (geological, models), Daily during drilling</td>
+                        </tr>
+                        <tr>
+                            <td>Wells</td>
+                            <td>Drilling data, well completion reports, production logs</td>
+                            <td>Track drilling parameters, document completion activities</td>
+                            <td>Drilling efficiency, completion success rate</td>
+                            <td>Daily (drilling, production), Per well (completion)</td>
+                        </tr>
+                        <tr>
+                            <td>Production</td>
+                            <td>Daily production volumes, equipment performance metrics</td>
+                            <td>Measure oil, gas, and water output, track equipment performance</td>
+                            <td>Production volume (BOE/day), equipment uptime (%)</td>
+                            <td>Daily</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Domains Tab -->
+        <div id="domains" class="tab-content">
+            <div class="dashboard-intro">
+                <h2>Key P&O Domains & Data Types</h2>
+                <p>Our production and operations are organized into specialized domains, each with unique data requirements, processes, and KPIs. Expand each domain below to explore the data types, sources, and business impact in detail.</p>
+            </div>
+            
+            <!-- Expandable Domain Sections -->
+            <div class="domain-container">
+                <!-- Projects Domain -->
+                <div class="domain-card" id="projectsDomain">
+                    <div class="domain-header" onclick="toggleDomain('projectsDomain')">
+                        <h2>Projects Domain</h2>
+                        <div style="display: flex; align-items: center;">
+                            <div class="domain-icon">📊</div>
+                            <span class="chevron">▼</span>
+                        </div>
+                    </div>
+                    <div class="domain-content">
+                        <div class="data-types">
+                            <h3>Key Data Types</h3>
+                            <div class="data-type-item">Project plans</div>
+                            <div class="data-type-item">Schedules</div>
+                            <div class="data-type-item">Budgets</div>
+                            <div class="data-type-item">Resource allocations</div>
+                            <div class="data-type-item">Maintenance scheduling optimization</div>
+                        </div>
+                        
+                        <div class="why-we-do-it">
+                            <h3>Why It's Important</h3>
+                            <p>Project data helps plan drilling campaigns and other upstream projects effectively. This ensures we meet production targets on time, avoiding costly delays. Accurate planning directly impacts production timelines, cost control, and resource optimization.</p>
+                        </div>
+                        
+                        <div class="metrics-container">
+                            <div class="metric-card">
+                                <h4>% Projects On Time</h4>
+                                <div class="percentage">85%</div>
+                                <p>Monthly tracking</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Budget Adherence</h4>
+                                <div class="percentage">±7%</div>
+                                <p>Monthly variance</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Resource Utilization</h4>
+                                <div class="percentage">78%</div>
+                                <p>Weekly monitoring</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Downtime Reduction</h4>
+                                <div class="percentage">20%</div>
+                                <p>Through maintenance optimization</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subsurface Domain -->
+                <div class="domain-card" id="subsurfaceDomain">
+                    <div class="domain-header" onclick="toggleDomain('subsurfaceDomain')">
+                        <h2>Subsurface Domain</h2>
+                        <div style="display: flex; align-items: center;">
+                            <div class="domain-icon">🌍</div>
+                            <span class="chevron">▼</span>
+                        </div>
+                    </div>
+                    <div class="domain-content">
+                        <div class="data-types">
+                            <h3>Key Data Types</h3>
+                            <div class="data-type-item">Geological data</div>
+                            <div class="data-type-item">Reservoir models</div>
+                            <div class="data-type-item">Well logs</div>
+                            <div class="data-type-item">Seismic data</div>
+                        </div>
+                        
+                        <div class="why-we-do-it">
+                            <h3>Why It's Important</h3>
+                            <p>Subsurface data analysis helps identify promising drilling sites and reduces exploration risks. Accurate subsurface modeling is critical for reservoir management and production planning. This data informs optimal recovery strategies and resource estimation.</p>
+                        </div>
+                        
+                        <div class="metrics-container">
+                            <div class="metric-card">
+                                <h4>Geological Model Accuracy</h4>
+                                <div class="percentage">85-90%</div>
+                                <p>Quarterly assessment</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Reserve Estimation Error</h4>
+                                <div class="percentage">±12%</div>
+                                <p>Quarterly review</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Seismic Resolution</h4>
+                                <div class="percentage">92%</div>
+                                <p>Quality factor</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Well Log Quality</h4>
+                                <div class="percentage">96%</div>
+                                <p>Daily during drilling</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wells Domain -->
+                <div class="domain-card" id="wellsDomain">
+                    <div class="domain-header" onclick="toggleDomain('wellsDomain')">
+                        <h2>Wells Domain</h2>
+                        <div style="display: flex; align-items: center;">
+                            <div class="domain-icon">🛢️</div>
+                            <span class="chevron">▼</span>
+                        </div>
+                    </div>
+                    <div class="domain-content">
+                        <div class="data-types">
+                            <h3>Key Data Types</h3>
+                            <div class="data-type-item">Drilling data</div>
+                            <div class="data-type-item">Well completion reports</div>
+                            <div class="data-type-item">Production logs</div>
+                            <div class="data-type-item">Maintenance records</div>
+                        </div>
+                        
+                        <div class="why-we-do-it">
+                            <h3>Why It's Important</h3>
+                            <p>Well data guides parameter adjustments during operations and tracks output and performance. Comprehensive maintenance records prevent expensive failures. This data ensures wells are drilled safely and efficiently, maximizing the productive life of each well.</p>
+                        </div>
+                        
+                        <div class="metrics-container">
+                            <div class="metric-card">
+                                <h4>Drilling Efficiency</h4>
+                                <div class="percentage">+15%</div>
+                                <p>Meters per day improvement</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Completion Success</h4>
+                                <div class="percentage">92%</div>
+                                <p>Per well tracking</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Production Rate</h4>
+                                <div class="percentage">98%</div>
+                                <p>Of target (daily monitoring)</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Mean Time Between Failures</h4>
+                                <div class="percentage">+30%</div>
+                                <p>Improvement with data-driven maintenance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Production Domain -->
+                <div class="domain-card" id="productionDomain">
+                    <div class="domain-header" onclick="toggleDomain('productionDomain')">
+                        <h2>Production Domain</h2>
+                        <div style="display: flex; align-items: center;">
+                            <div class="domain-icon">⚙️</div>
+                            <span class="chevron">▼</span>
+                        </div>
+                    </div>
+                    <div class="domain-content">
+                        <div class="data-types">
+                            <h3>Key Data Types</h3>
+                            <div class="data-type-item">Daily production volumes</div>
+                            <div class="data-type-item">Equipment performance metrics</div>
+                            <div class="data-type-item">Safety incident reports</div>
+                            <div class="data-type-item">Production & Injection Benchmarking Data</div>
+                            <div class="data-type-item">Daily Allocation</div>
+                        </div>
+                        
+                        <div class="why-we-do-it">
+                            <h3>Why It's Important</h3>
+                            <p>Production data continuously monitors output, equipment health, and safety conditions. Quickly detecting volume changes enables rapid intervention. This data ensures we meet production targets while maintaining our safety-first culture.</p>
+                        </div>
+                        
+                        <div class="metrics-container">
+                            <div class="metric-card">
+                                <h4>Production Volume</h4>
+                                <div class="percentage">97%</div>
+                                <p>Of target BOE/day</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Equipment Uptime</h4>
+                                <div class="percentage">95%</div>
+                                <p>Daily tracking</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Incident Frequency Rate</h4>
+                                <div class="percentage">-25%</div>
+                                <p>Year-over-year reduction</p>
+                            </div>
+                            <div class="metric-card">
+                                <h4>Response Time</h4>
+                                <div class="percentage">-40%</div>
+                                <p>To production anomalies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Functional Perspectives Tab -->
+        <div id="perspectives" class="tab-content">
+            <div class="dashboard-intro">
+                <h2>Functional Perspectives on P&O Data</h2>
+                <p>Different functions within our organization view and interact with equipment and operational data from their unique perspectives. Understanding these different viewpoints is essential for creating data governance solutions that meet everyone's needs.</p>
+            </div>
+            
+            <div class="perspectives-container">
+                <div class="perspectives-grid">
+                    <div class="perspective-card">
+                        <h3>Project Engineering</h3>
+                        <p>"I see equipment specifications and system requirements"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Warehouse</h3>
+                        <p>"I see equipment inventory and storage locations"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Accounting</h3>
+                        <p>"I see cost centers and financial metrics"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Procurement</h3>
+                        <p>"I see equipment specifications and vendor information"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Maintenance</h3>
+                        <p>"I see equipment maintenance schedules and history"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Engineering</h3>
+                        <p>"I see technical specifications and control systems"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Process Engineering</h3>
+                        <p>"I see process flows and operational parameters"</p>
+                    </div>
+                    <div class="perspective-card">
+                        <h3>Reliability</h3>
+                        <p>"I see equipment performance and failure patterns"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Palantir Foundry Tab -->
+        <div id="foundry" class="tab-content">
+            <div class="dashboard-intro">
+                <h2>Palantir Foundry in Oil & Gas Operations</h2>
+                <p>Our digital ecosystem leverages Palantir Foundry to integrate diverse data sources across our business units. This unified platform enables advanced analytics, cross-domain insights, and data-driven decision making throughout our upstream operations.</p>
+            </div>
+            
+            <div class="foundry-grid">
+                <div class="foundry-category">
+                    <div class="foundry-category-header">Production & Operations</div>
+                    <div class="foundry-subcategory">
+                        <h4>Upstream Production</h4>
+                        <div class="foundry-app palantir">Apex</div>
+                        <div class="foundry-app palantir">Vertex</div>
+                        <div class="foundry-app palantir">CIA</div>
+                        <div class="foundry-app palantir">ADDA/Sherlock</div>
+                        <div class="foundry-app palantir">Availability Bridge</div>
+                        <div class="foundry-app palantir">Measures Marketplace</div>
+                        <div class="foundry-app palantir">Reliability Health Monitoring</div>
+                        <div class="foundry-app palantir">Athena</div>
+                        <div class="foundry-app palantir">WPR</div>
+                        <div class="foundry-app palantir">Equipment Ontology</div>
+                        <div class="foundry-app palantir">Well Integrity</div>
+                        <div class="foundry-app bp">Field Development</div>
+                        <div class="foundry-app bp">Fiber Optics/DAS</div>
+                        <div class="foundry-app bp">Argus</div>
+                    </div>
+                    <div class="foundry-subcategory">
+                        <h4>Refinery Operations</h4>
+                        <div class="foundry-app bp">Blackline</div>
+                        <div class="foundry-app bp">Petchems OpEx</div>
+                        <div class="foundry-app bp">Refinery Enablement</div>
+                    </div>
+                </div>
+                
+                <div class="foundry-category">
+                    <div class="foundry-category-header">Gas & Low Carbon Energy</div>
+                    <div class="foundry-subcategory">
+                        <div class="foundry-app bp">Wind Data Lake</div>
+                        <div class="foundry-app bp">Wind MI Dashboard</div>
+                        <div class="foundry-app bp">Turbine Sensor Streaming</div>
+                        <div class="foundry-app bp">Wake Steering</div>
+                    </div>
+                </div>
+                
+                <div class="foundry-category">
+                    <div class="foundry-category-header">Strategy & Sustainability</div>
+                    <div class="foundry-subcategory">
+                        <div class="foundry-app palantir">bp Ambition Tracker</div>
+                        <div class="foundry-app palantir">Carbon Forecasting</div>
+                    </div>
+                </div>
+                
+                <div class="foundry-category">
+                    <div class="foundry-category-header">Trading & Shipping</div>
+                    <div class="foundry-subcategory">
+                        <h4>Compliance, Risk, and Trader Management</h4>
+                        <div class="foundry-app bp">DOA</div>
+                        <div class="foundry-app bp">ILA</div>
+                        <div class="foundry-app bp">Oil: EDW</div>
+                        <div class="foundry-app bp">IG Commodity Risk</div>
+                    </div>
+                    <div class="foundry-subcategory">
+                        <h4>Market Analytics</h4>
+                        <div class="foundry-app bp">Global Balances</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Governance Tab -->
+        <div id="governance" class="tab-content">
+            <div class="dashboard-intro">
+                <h2>Data Governance Framework</h2>
+                <p>Our approach to data governance focuses on aligning data strategy with business objectives, ensuring data quality, and extracting maximum value from our information assets. This comprehensive framework enables us to manage data as a strategic resource across all domains.</p>
+            </div>
+            
+            <div class="governance-framework">
+                <h3>Data Governance Activities</h3>
+                <p>In a well-managed data environment, data governance is well integrated with the business strategy. Modern governance incorporates automation and validation to ensure data quality and consistency.</p>
+                
+                <div class="framework-grid">
+                    <div class="framework-box strategy">
+                        <h4>Business Strategy</h4>
+                        <p>Defines company priorities, objectives, and goals across all domains and operations.</p>
+                    </div>
+                    
+                    <div class="framework-box">
+                        <h4>Data Governance</h4>
+                        <p>Ensures data quality, security, compliance, and accessibility throughout the organization.</p>
+                    </div>
+                    
+                    <div class="framework-arrow">↓</div>
+                    
+                    <div class="framework-arrow">↑</div>
+                    
+                    <div class="framework-box">
+                        <h4>Data Strategy</h4>
+                        <p>Aligns with business goals to define how data will be collected, managed, and utilized for maximum value.</p>
+                    </div>
+                    
+                    <div class="framework-arrow">↓</div>
+                    
+                    <div class="framework-box">
+                        <h4>Data Management & Operations</h4>
+                        <p>Day-to-day activities that implement the data strategy through systems, processes, and people.</p>
+                    </div>
+                </div>
+                
+                <div class="framework-description">
+                    <h4>Key Relationships:</h4>
+                    <ul>
+                        <li><strong>Business Strategy → Data Strategy:</strong> Alignment to business goals & objectives</li>
+                        <li><strong>Data Strategy → Data Management:</strong> Strategy drives actions</li>
+                        <li><strong>Data Management → Data Governance:</strong> Data quality and consistency</li>
+                        <li><strong>Data Governance → Data Strategy:</strong> Performance monitoring</li>
+                        <li><strong>Data Governance → Business Strategy:</strong> Impact on business outcomes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Business Impact Tab -->
+        <div id="impact" class="tab-content">
+            <div class="dashboard-intro">
+                <h2>Business Impact of Data-Driven Operations</h2>
+                <p>Our data governance initiatives deliver substantial value across all domains of operations. By ensuring data quality, accessibility, and integration, we enable faster decisions, reduce operational risks, and drive significant financial benefits.</p>
+            </div>
+            
+            <div class="governance-section">
+                <h3>Transforming Data into Actionable Insights</h3>
+                <p>Our data governance solutions have transformed how we use information to drive business outcomes:</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0;">
+                    <div style="background-color: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4>From Reactive to Predictive</h4>
+                        <p>Instead of responding to failures, we now predict and prevent them through advanced analytics and pattern recognition across integrated data sources.</p>
+                    </div>
+                    <div style="background-color: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4>From Siloed to Integrated</h4>
+                        <p>Breaking down barriers between domains enables comprehensive views of operations and reveals cross-functional optimization opportunities.</p>
+                    </div>
+                    <div style="background-color: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4>From Manual to Automated</h4>
+                        <p>Replacing manual data reconciliation with automated validation and correction workflows reduces errors while freeing staff for higher-value activities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>P&O Domain Knowledge Dashboard • Updated March 2025</p>
+    </footer>
+    
+    <script>
+        // Function to open tabs
+        function openTab(tabName) {
+            var i, tabContent, tabLinks;
+            
+            // Hide all tab content
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+            
+            // Remove "active" class from all tab links
+            tabLinks = document.getElementsByClassName("tab-link");
+            for (i = 0; i < tabLinks.length; i++) {
+                tabLinks[i].className = tabLinks[i].className.replace(" active", "");
+            }
+            
+            // Show the current tab and add "active" class to the button
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+        
+        // Function to toggle domain expansion
+        function toggleDomain(domainId) {
+            const domainElement = document.getElementById(domainId);
+            domainElement.classList.toggle('expanded');
+        }
+    </script>
+</body>
+</html>
