@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Mind Map</title>
+    <style>
+        .node {
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px;
+            display: inline-block;
+            position: absolute;
+            background: white;
+            cursor: pointer;
+            user-select: none;
+            min-width: 200px;
+            max-width: 250px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .node .title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .node .description {
+            font-size: 0.9em;
+            color: #666;
+            display: none;
+            text-align: left;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+        
+        .node:hover .description {
+            display: block;
+        }
+        
+        .node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        
+        .node.root {
+            background: #2196F3;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .node.level1 {
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .node.level2 {
+            background: #FFC107;
+            font-weight: 500;
+        }
+        
+        #mindmap {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            overflow: auto;
+            background: #f5f5f5;
+        }
+        
+        .connector {
+            position: absolute;
+            height: 3px;
+            background: #666;
+            transform-origin: left center;
+            pointer-events: none;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        
+        .connector.active {
+            background: #2196F3;
+            opacity: 1;
+            height: 4px;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="mindmap"></div>
+    <div class="controls">
+        <button onclick="zoomIn()">Zoom In (+)</button>
+        <button onclick="zoomOut()">Zoom Out (-)</button>
+        <button onclick="resetView()">Reset</button>
+    </div>
+
+    <script>
+        const mindmapData = {
+            text: "Programming Paradigms",
+            description: "Different approaches to structuring and organizing code",
+            children: [
+                {
+                    text: "Object-Oriented",
+                    description: "Based on objects containing data and code. Features inheritance, encapsulation, and polymorphism. Examples: Java, C++, Python.",
+                    children: []
+                },
+                {
+                    text: "Functional",
+                    description: "Treats computation as mathematical functions. Emphasizes immutable data and pure functions. Examples: Haskell, Clojure, Erlang.",
+                    children: []
+                },
+                {
+                    text: "Procedural",
+                    description: "Based on procedure calls, organizing code into routines and subroutines. Examples: C, Pascal, early BASIC.",
+                    children: []
+                },
+                {
+                    text: "Declarative",
+                    description: "Expresses logic without describing control flow. Focuses on what to accomplish rather than how. Examples: SQL, HTML, Prolog.",
+                    children: []
+                },
+                {
+                    text: "Event-Driven",
+                    description: "Program flow is determined by events like user actions or messages from other programs. Examples: JavaScript, Node.js.",
+                    children: []
+                }
+            ]
+        };
+
+        let scale = 1;
+        let draggedNode = null;
+        let offsetX = 0;
+        let offsetY = 0;
+        const container = document.getElementById('mindmap');
+
+        function createMindMap(data, x = 600, y = 400, level = 0) {
+            const node = document.createElement('div');
+            node.className = `node ${level === 0 ? 'root' : 'level1'}`;
+            
+            // Create title and description elements
+            const title = document.createElement('div');
+            title.className = 'title';
+            title.textContent = data.text;
+            node.appendChild(title);
+
+            if (data.description) {
+                const desc = document.createElement('div');
+                desc.className = 'description';
+                desc.textContent = data.description;
+                node.appendChild(desc);
+            }
+
+            node.style.left = x + 'px';
+            node.style.top = y + 'px';
+
+            // Store original position for connector updates
+            node.dataset.x = x;
+            node.dataset.y = y;
+
+            // Make nodes draggable
+            node.onmousedown = function(e) {
+                draggedNode = node;
+                offsetX = e.clientX - node.offsetLeft;
+                offsetY = e.clientY - node.offsetTop;
+                e.preventDefault();
+                
+                // Highlight connected edges
+                const connectors = document.querySelectorAll('.connector');
+                connectors.forEach(conn => {
+                    if (conn.dataset.source === node.id || conn.dataset.target === node.id) {
+                        conn.classList.add('active');
+                    }
+                });
+            };
+
+            node.id = 'node_' + Math.random().toString(36).substr(2, 9);
+            container.appendChild(node);
+
+            if (data.children) {
+                const angleStep = (Math.PI * 1.5) / (data.children.length + 1);
+                const radius = 300;  // Fixed radius for better spacing
+
+                data.children.forEach((child, i) => {
+                    const childAngle = angleStep * (i + 1) + Math.PI / 4;  // Start from top-right
+                    const childX = x + Math.cos(childAngle) * radius;
+                    const childY = y + Math.sin(childAngle) * radius;
+                    
+                    // Create connector line
+                    const connector = document.createElement('div');
+                    connector.className = 'connector';
+                    connector.dataset.source = node.id;
+                    
+                    const childNode = createMindMap(child, childX, childY, level + 1);
+                    connector.dataset.target = childNode.id;
+                    
+                    updateConnector(connector, x, y, childX, childY);
+                    container.appendChild(connector);
+                });
+            }
+
+            return node;
+        }
+
+        function updateConnector(connector, x1, y1, x2, y2) {
+            const deltaX = x2 - x1;
+            const deltaY = y2 - y1;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const rotationAngle = Math.atan2(deltaY, deltaX);
+            
+            connector.style.width = distance + 'px';
+            connector.style.left = x1 + 'px';
+            connector.style.top = y1 + 'px';
+            connector.style.transform = `rotate(${rotationAngle}rad)`;
+        }
+
+        // Update handle dragging to update connectors
+        document.onmousemove = function(e) {
+            if (draggedNode) {
+                const newX = e.clientX - offsetX;
+                const newY = e.clientY - offsetY;
+                draggedNode.style.left = newX + 'px';
+                draggedNode.style.top = newY + 'px';
+
+                // Update all connectors related to this node
+                const connectors = document.querySelectorAll('.connector');
+                connectors.forEach(conn => {
+                    if (conn.dataset.source === draggedNode.id) {
+                        const target = document.getElementById(conn.dataset.target);
+                        updateConnector(conn, newX, newY, 
+                            target.offsetLeft, target.offsetTop);
+                    }
+                    if (conn.dataset.target === draggedNode.id) {
+                        const source = document.getElementById(conn.dataset.source);
+                        updateConnector(conn, source.offsetLeft, source.offsetTop,
+                            newX, newY);
+                    }
+                });
+            }
+        };
+
+        document.onmouseup = function() {
+            if (draggedNode) {
+                // Remove highlight from edges
+                const connectors = document.querySelectorAll('.connector');
+                connectors.forEach(conn => conn.classList.remove('active'));
+                draggedNode = null;
+            }
+        };
+
+        // Zoom functions
+        function zoomIn() {
+            scale *= 1.1;
+            container.style.transform = `scale(${scale})`;
+        }
+
+        function zoomOut() {
+            scale *= 0.9;
+            container.style.transform = `scale(${scale})`;
+        }
+
+        function resetView() {
+            scale = 1;
+            container.style.transform = `scale(${scale})`;
+        }
+
+        // Initialize mind map
+        createMindMap(mindmapData);
+    </script>
+</body>
+</html> 

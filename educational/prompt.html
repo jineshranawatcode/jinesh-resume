@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Prompt Engineering Mind Map</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4F46E5;
+            --secondary-color: #10B981;
+            --tertiary-color: #F59E0B;
+            --background-color: #F9FAFB;
+            --text-color: #1F2937;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        #mindmap-container {
+            overflow: auto;
+            position: relative;
+            min-height: 600px;
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .node {
+            border-radius: 12px;
+            padding: 12px 16px;
+            max-width: 220px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            font-weight: 500;
+        }
+        
+        .node:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .node.root {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+        
+        .node.level-1 {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: 600;
+            z-index: 9;
+        }
+        
+        .node.level-2 {
+            background-color: var(--tertiary-color);
+            color: white;
+            z-index: 8;
+        }
+        
+        .node.level-3 {
+            background-color: white;
+            color: var(--text-color);
+            border: 2px solid #E5E7EB;
+            z-index: 7;
+        }
+        
+        .node .expand-icon {
+            margin-left: 8px;
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .node.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .connector {
+            position: absolute;
+            background-color: #D1D5DB;
+            z-index: 5;
+            transform-origin: left center;
+        }
+        
+        .node-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            font-weight: normal;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        
+        .node.expanded .node-content {
+            max-height: 300px;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+        
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            font-size: 1rem;
+        }
+        
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-top: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 30;
+        }
+        
+        .search-result-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .search-result-item:hover {
+            background-color: #F9FAFB;
+        }
+        
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .node-example {
+            font-style: italic;
+            color: #6B7280;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #F3F4F6;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: #1F2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            max-width: 250px;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .tutorial-card {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+        
+        .tutorial-step {
+            display: none;
+        }
+        
+        .tutorial-step.active {
+            display: block;
+        }
+        
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+        }
+        
+        /* Dark Mode Styles */
+        .dark-mode {
+            --background-color: #1F2937;
+            --text-color: #F9FAFB;
+        }
+        
+        .dark-mode .search-input,
+        .dark-mode .search-results,
+        .dark-mode .tutorial-card,
+        .dark-mode .node.level-3 {
+            background-color: #374151;
+            color: white;
+            border-color: #4B5563;
+        }
+        
+        .dark-mode .search-result-item {
+            border-color: #4B5563;
+        }
+        
+        .dark-mode .search-result-item:hover {
+            background-color: #4B5563;
+        }
+        
+        .dark-mode .node-example {
+            background-color: #374151;
+            color: #D1D5DB;
+        }
+        
+        .dark-mode .connector {
+            background-color: #6B7280;
+        }
+        
+        .dark-mode .control-btn {
+            background-color: #374151;
+            color: white;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+        
+        .dark-mode .loading-overlay {
+            background-color: rgba(31, 41, 55, 0.8);
+        }
+        
+        .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 16px 24px;
+            border-radius: 8px;
+            background-color: #EF4444;
+            color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            z-index: 50;
+            display: none;
+        }
+        
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 24px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 200;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .dark-mode .popup {
+            background-color: #374151;
+            color: white;
+        }
+        
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+            display: none;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .technique-tab {
+            padding: 10px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .technique-tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .dark-mode .technique-tab.active {
+            color: #93C5FD;
+            border-bottom-color: #93C5FD;
+        }
+        
+        .technique-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .technique-content.active {
+            display: block;
+        }
+        
+        .prompt-example {
+            background-color: #F3F4F6;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 16px 0;
+            white-space: pre-wrap;
+        }
+        
+        .dark-mode .prompt-example {
+            background-color: #1F2937;
+        }
+        
+        @media (max-width: 640px) {
+            .node {
+                max-width: 180px;
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .popup {
+                width: 95%;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay">
+        <div class="spinner"></div>
+        <div>Building your mind map...</div>
+    </div>
+    
+    <!-- Alert -->
+    <div class="alert">
+        <span id="alert-message">Alert message here</span>
+    </div>
+    
+    <!-- Header -->
+    <header class="bg-white shadow-md dark:bg-gray-800 transition-colors duration-300">
+        <div class="container mx-auto py-6 px-4">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                Interactive Prompt Engineering Mind Map
+            </h1>
+            <p class="mt-2 text-gray-600 dark:text-gray-300">
+                Explore the art and science of effective communication with AI language models
+            </p>
+        </div>
+    </header>
+    
+    <!-- Search -->
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search techniques, components, examples...">
+        <div class="search-results"></div>
+    </div>
+    
+    <!-- Dark Mode Toggle -->
+    <div class="mode-toggle">
+        <button id="mode-toggle-btn" class="control-btn">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pt-24 pb-16">
+        <div id="mindmap-container" class="border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 transition-colors duration-300">
+            <!-- Mind map will be generated here -->
+        </div>
+    </main>
+    
+    <!-- Controls -->
+    <div class="controls">
+        <button id="zoom-in-btn" class="control-btn" title="Zoom In">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button id="zoom-out-btn" class="control-btn" title="Zoom Out">
+            <i class="fas fa-minus"></i>
+        </button>
+        <button id="reset-btn" class="control-btn" title="Reset View">
+            <i class="fas fa-sync-alt"></i>
+        </button>
+        <button id="expand-all-btn" class="control-btn" title="Expand All">
+            <i class="fas fa-expand-arrows-alt"></i>
+        </button>
+        <button id="collapse-all-btn" class="control-btn" title="Collapse All">
+            <i class="fas fa-compress-arrows-alt"></i>
+        </button>
+        <button id="help-btn" class="control-btn" title="Help">
+            <i class="fas fa-question"></i>
+        </button>
+    </div>
+    
+    <!-- Tooltip -->
+    <div class="tooltip"></div>
+    
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" style="display: none;">
+        <div class="tutorial-card">
+            <h2 class="text-xl font-bold mb-4">Welcome to the Prompt Engineering Mind Map</h2>
+            
+            <div class="tutorial-step active" data-step="1">
+                <p>This interactive mind map helps you explore the world of prompt engineering - the art and science of effectively communicating with AI language models.</p>
+                <p class="mt-2">Here's how to use this tool:</p>
+            </div>
+            
+            <div class="tutorial-step" data-step="2">
+                <p><strong>Navigation:</strong> Click and drag anywhere on the map to move around. Use the zoom controls in the bottom right to zoom in and out.</p>
+                <div class="mt-2 text-center">
+                    <i class="fas fa-hand-pointer text-3xl"></i>
+                    <i class="fas fa-arrows-alt text-3xl ml-4"></i>
+                </div>
+            </div>
+            
+            <div class="tutorial-step" data-step="3">
+                <p><strong>Expand & Collapse:</strong> Click on any node to expand or collapse its children. This helps you focus on specific areas of interest.</p>
+                <div class="mt-2 text-center">
+                    <i class="fas fa-plus-circle text-3xl"></i>
+                    <i class="fas fa-minus-circle text-3xl ml-4"></i>
+                </div>
+            </div>
+            
+            <div class="tutorial-step" data-step="4">
+                <p><strong>Search:</strong> Use the search bar at the top to quickly find specific techniques or concepts.</p>
+                <div class="mt-2 text-center">
+                    <i class="fas fa-search text-3xl"></i>
+                </div>
+            </div>
+            
+            <div class="tutorial-step" data-step="5">
+                <p><strong>Details:</strong> Click on any leaf node (techniques, components, etc.) to see detailed information, examples, and use cases.</p>
+                <div class="mt-2 text-center">
+                    <i class="fas fa-info-circle text-3xl"></i>
+                </div>
+            </div>
+            
+            <div class="tutorial-step" data-step="6">
+                <p>Ready to explore the world of prompt engineering? Let's begin!</p>
+                <p class="mt-2 italic">Tip: You can always access this tutorial again by clicking the help button (?) in the bottom right corner.</p>
+            </div>
+            
+            <div class="tutorial-navigation">
+                <button id="prev-step" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition-colors">Previous</button>
+                <div class="tutorial-progress">
+                    <span id="current-step">1</span>/<span id="total-steps">6</span>
+                </div>
+                <button id="next-step" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">Next</button>
+            </div>
+            
+            <button id="skip-tutorial" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                Skip
+            </button>
+        </div>
+    </div>
+    
+    <!-- Technique Popup -->
+    <div class="popup-overlay"></div>
+    <div class="popup" id="technique-popup">
+        <span class="popup-close"><i class="fas fa-times"></i></span>
+        <h2 id="popup-title" class="text-2xl font-bold mb-4">Technique Name</h2>
+        
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 dark:border-gray-700 mb-4">
+            <div class="technique-tab active" data-tab="overview">Overview</div>
+            <div class="technique-tab" data-tab="examples">Examples</div>
+            <div class="technique-tab" data-tab="use-cases">When to Use</div>
+            <div class="technique-tab" data-tab="tips">Tips & Tricks</div>
+        </div>
+        
+        <!-- Content -->
+        <div class="technique-content active" id="overview-content">
+            <p id="overview-text">Description goes here...</p>
+        </div>
+        
+        <div class="technique-content" id="examples-content">
+            <div id="examples-text">Examples go here...</div>
+        </div>
+        
+        <div class="technique-content" id="use-cases-content">
+            <div id="use-cases-text">Use cases go here...</div>
+        </div>
+        
+        <div class="technique-content" id="tips-content">
+            <div id="tips-text">Tips go here...</div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let scale = 1;
+            let translateX = 0;
+            let translateY = 0;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let nodes = [];
+            let connections = [];
+            let searchResults = [];
+            let currentTutorialStep = 1;
+            const totalTutorialSteps = 6;
+            
+            // Check if tutorial has been viewed before
+            const tutorialViewed = localStorage.getItem('mindmap-tutorial-viewed');
+            
+            // Mind map data structure
+            const mindMapData = {
+                id: 'root',
+                text: 'Prompt Engineering Guide',
+                level: 0,
+                description: 'A comprehensive guide to crafting effective prompts for AI models.',
+                children: [
+                    {
+                        id: 'components',
+                        text: 'Core Components',
+                        level: 1,
+                        description: 'Essential elements of effective prompts.',
+                        children: [
+                            {
+                                id: 'context',
+                                text: 'Context',
+                                level: 2,
+                                description: 'Background information that frames your request.',
+                                example: `Write a marketing email for a luxury watch company targeting professionals aged 35-50 who value craftsmanship and status symbols.`,
+                                details: {
+                                    overview: `Context provides the background information that helps AI understand the situation, audience, constraints, and goals related to your request. It's like giving someone a map before asking them for directions.`,
+                                    examples: [
+                                        {
+                                            bad: `Write a marketing email.`,
+                                            good: `Write a marketing email for a luxury watch company targeting professionals aged 35-50 who value craftsmanship and status symbols. The email should promote our new limited edition collection that combines traditional watchmaking with modern technology.`,
+                                            explanation: `The good example provides specific details about the target audience, product features, and marketing goals.`
+                                        },
+                                        {
+                                            bad: `Help me with my presentation.`,
+                                            good: `I'm preparing a 15-minute presentation for senior executives about our Q2 marketing performance. Our main KPIs improved, but we're still below our annual targets. Help me structure this presentation to be clear, direct, and actionable.`,
+                                            explanation: `The good example specifies the audience, duration, topic, and objectives of the presentation.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `When generating content for specific audiences`,
+                                        `For creative tasks that require particular themes or styles`,
+                                        `When adapting content for different platforms or mediums`,
+                                        `For projects with specific brand guidelines or tone requirements`,
+                                        `When targeting particular demographics or user segments`
+                                    ],
+                                    tips: [
+                                        `Include relevant demographic information`,
+                                        `Specify any brand voice or style requirements`,
+                                        `Mention industry-specific considerations`,
+                                        `Define success metrics or objectives`,
+                                        `Provide examples of what you like/dislike`
+                                    ]
+                                }
+                            },
+                            {
+                                id: 'instructions',
+                                text: 'Instructions',
+                                level: 2,
+                                description: 'Clear directives about what you want the AI to do.',
+                                example: `Summarize the main arguments from the following research paper in 5 bullet points.`,
+                                details: {
+                                    overview: `Instructions tell the AI exactly what you want it to do. They're like recipes for the AI to follow - the clearer and more precise, the better the output will match what you're looking for.`,
+                                    examples: [
+                                        {
+                                            bad: `Tell me about climate change.`,
+                                            good: `Summarize the key findings from the latest IPCC report on climate change, focusing on: 1) Current temperature trends, 2) Projected impacts by 2050, 3) Recommended mitigation strategies, and 4) Economic implications. Use bullet points and include specific data where available.`,
+                                            explanation: `The good example provides clear structure and specific aspects to cover.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `When you need specific output formats`,
+                                        `For tasks requiring particular steps or methods`,
+                                        `When precision is crucial`,
+                                        `For complex tasks that need clear structure`,
+                                        `When you want to ensure consistent output`
+                                    ],
+                                    tips: [
+                                        `Be specific about what you want`,
+                                        `Include any formatting requirements`,
+                                        `Specify the level of detail needed`,
+                                        `Mention any constraints or limitations`,
+                                        `Break down complex tasks into clear steps`
+                                    ]
+                                }
+                            },
+                            {
+                                id: 'input-data',
+                                text: 'Input Data',
+                                level: 2,
+                                description: 'The information the AI needs to process to complete your request.',
+                                example: `Translate the following text from English to French: 'The quick brown fox jumps over the lazy dog.'`,
+                                details: {
+                                    overview: `Input data is the raw material you provide for the AI to work with. Like giving clay to a sculptor before asking them to create a specific shape, input data is what the AI will transform, analyze, or use to complete your request.`,
+                                    examples: [
+                                        {
+                                            bad: `Translate to Spanish.`,
+                                            good: `Translate this customer feedback to Spanish: 'I really enjoyed your product, but the instruction manual was confusing.'`,
+                                            explanation: `The good example includes the specific text that needs translation.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `When providing data for analysis or transformation`,
+                                        `For translation or language processing tasks`,
+                                        `When asking for feedback on specific content`,
+                                        `For code review or debugging requests`,
+                                        `When asking for modifications to existing content`
+                                    ],
+                                    tips: [
+                                        `Include all necessary data in your prompt`,
+                                        `Format data clearly and consistently`,
+                                        `Specify any constraints or requirements for the data`,
+                                        `Clearly delineate input data (e.g., with quotation marks or markdown)`,
+                                        `For longer inputs, consider using formatting (line breaks, bullet points)`,
+                                        `If input data contains technical terms, ensure they're properly formatted`,
+                                        `For references to external sources or data, provide enough context`,
+                                        `When asking about code, include the relevant code snippet and specify the language`
+                                    ]
+                                }
+                            },
+                            {
+                                id: 'chain-of-thought',
+                                text: 'Chain-of-Thought Prompting',
+                                level: 2,
+                                description: 'Encouraging step-by-step reasoning by asking the model to explain its thinking process.',
+                                example: `Solve this math problem step by step: If a store has 15 apples and sells 3 each day for 4 days, how many apples remain?`,
+                                details: {
+                                    overview: `Chain-of-thought prompting encourages the model to break down complex problems into smaller steps and explain its reasoning process. This technique helps the model arrive at more accurate conclusions by making its thinking explicit, similar to how a teacher might walk a student through a difficult problem.`,
+                                    examples: [
+                                        {
+                                            prompt: `Let's solve this problem step by step:\n\nProblem: A bakery sells 24 cupcakes each day. Each cupcake costs $3. If they have a 20% discount on Mondays, how much money do they make on a Monday?`,
+                                            explanation: `This prompt explicitly asks for step-by-step reasoning, which helps the model break down the calculation into logical parts.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `For complex mathematical or logical problems`,
+                                        `When you need to verify the model's reasoning process`,
+                                        `For tasks requiring multiple steps or calculations`,
+                                        `When debugging or troubleshooting complex issues`,
+                                        `For educational purposes to demonstrate problem-solving approaches`
+                                    ],
+                                    tips: [
+                                        `Explicitly ask for step-by-step reasoning`,
+                                        `Break complex problems into smaller sub-problems`,
+                                        `Ask the model to explain its assumptions`,
+                                        `Request verification of intermediate steps`,
+                                        `Encourage the model to identify potential errors in its reasoning`
+                                    ]
+                                }
+                            },
+                            {
+                                id: 'role-playing',
+                                text: 'Role-Playing Prompting',
+                                level: 2,
+                                description: 'Asking the model to adopt a specific persona or perspective.',
+                                example: `You are a professional chef with 20 years of experience. Please explain how to make a perfect risotto.`,
+                                details: {
+                                    overview: `Role-playing prompting involves asking the model to adopt a specific persona, expertise, or perspective when responding. This technique can help generate more authentic, specialized, or nuanced responses by leveraging the model's understanding of different roles and their characteristics.`,
+                                    examples: [
+                                        {
+                                            prompt: `You are a senior software architect reviewing a new project proposal. Please analyze the following architecture and provide feedback on scalability, security, and maintainability.`,
+                                            explanation: `This prompt asks the model to adopt the perspective of an experienced architect to provide specialized technical feedback.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `For specialized knowledge or expertise`,
+                                        `When you need a specific perspective or viewpoint`,
+                                        `For creative writing or storytelling`,
+                                        `When simulating different user personas`,
+                                        `For educational scenarios or training`
+                                    ],
+                                    tips: [
+                                        `Clearly define the role and its characteristics`,
+                                        `Specify relevant experience or expertise level`,
+                                        `Include context about the role's perspective`,
+                                        `Ask for role-specific insights or approaches`,
+                                        `Maintain consistency in the adopted persona`
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'techniques',
+                        text: 'Prompting Techniques',
+                        level: 1,
+                        description: 'Methods to guide AI models toward better responses.',
+                        children: [
+                            {
+                                id: 'zero-shot',
+                                text: 'Zero-Shot Prompting',
+                                level: 2,
+                                description: 'Asking the model to perform a task without examples.',
+                                example: `Classify this customer review as positive, negative, or neutral: 'The service was quick but the food was cold.'`,
+                                details: {
+                                    overview: `Zero-shot prompting is when you ask an AI model to perform a task without providing any examples. It relies on the model's pre-trained knowledge to understand and execute your request. This approach is like asking a skilled chef to prepare a dish without giving them a recipe - they rely on their training and experience.`,
+                                    examples: [
+                                        {
+                                            prompt: `Classify the sentiment of this tweet: "Just finished the new Spider-Man movie and wow, absolutely loved it!"`,
+                                            explanation: `This prompt asks for sentiment classification without providing examples of how to classify other tweets.`
+                                        },
+                                        {
+                                            prompt: `Translate the following English text to French: "I would like to order a coffee, please."`,
+                                            explanation: `This prompt requests a translation without showing examples of other translations.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `For straightforward tasks where the model likely understands what you want`,
+                                        `When you need quick results and don't have time to craft examples`,
+                                        `For standard tasks like classification, translation, or summarization`,
+                                        `When you want to test the model's baseline capabilities`,
+                                        `For creative tasks where examples might constrain the model's thinking`
+                                    ],
+                                    tips: [
+                                        `Be clear and specific about the task you want performed`,
+                                        `Define any categories or options explicitly (e.g., "classify as A, B, or C")`,
+                                        `If the zero-shot approach doesn't work well, try adding examples (few-shot prompting)`,
+                                        `Use clear, standard terminology that the model is likely to recognize`,
+                                        `For complex tasks, consider breaking them down into simpler zero-shot components`
+                                    ]
+                                }
+                            },
+                            {
+                                id: 'few-shot',
+                                text: 'Few-Shot Prompting',
+                                level: 2,
+                                description: 'Providing examples before asking the model to perform a similar task.',
+                                example: `Sentence: 'I'd like to inquire about your services.' Classification: Formal\n\nSentence: 'Hey, what's up with your prices?' Classification: Informal\n\nSentence: 'Could you please provide information regarding your refund policy?' Classification:`,
+                                details: {
+                                    overview: `Few-shot prompting involves providing one or more examples before asking the model to perform a similar task. This creates a pattern that the model can recognize and follow, improving accuracy especially for complex or unusual tasks. It's like showing someone a few solved math problems before asking them to solve a similar one.`,
+                                    examples: [
+                                        {
+                                            prompt: `Here are some examples of formal vs. informal language:\n\nFormal: 'I would appreciate your assistance with this matter.'\nInformal: 'Can you help me with this?'\n\nFormal: 'Please provide the requested documentation.'\nInformal: 'Send me the papers.'\n\nNow, classify this sentence: 'Hey there! Just checking if you got my email.'`,
+                                            explanation: `This prompt provides clear examples of formal and informal language before asking for classification.`
+                                        }
+                                    ],
+                                    useCases: [
+                                        `When the task requires specific formatting or style`,
+                                        `For complex or unusual tasks that need pattern recognition`,
+                                        `When you want to ensure consistent output format`,
+                                        `For tasks with multiple possible valid approaches`,
+                                        `When you need to demonstrate specific nuances or requirements`
+                                    ],
+                                    tips: [
+                                        `Provide diverse but relevant examples`,
+                                        `Make sure examples clearly demonstrate the pattern you want`,
+                                        `Include 2-5 examples for best results`,
+                                        `Keep examples concise and focused`,
+                                        `Ensure examples cover different aspects of the task`
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            };
+            
+            // Initialize the mind map
+            function initMindMap() {
+                const container = document.getElementById('mindmap-container');
+                
+                // Clear any existing content
+                container.innerHTML = '';
+                
+                // Set initial positioning
+                const containerWidth = container.offsetWidth;
+                const containerHeight = container.offsetHeight;
+                
+                // Create the root node
+                createNode(mindMapData, containerWidth / 2, containerHeight / 2, null);
+                
+                // Adjust the positions to ensure nodes don't overlap
+                adjustNodePositions();
+                
+                // Create connections between nodes
+                createConnections();
+                
+                // Apply initial zoom and centering
+                resetView();
+            }
+            
+            function createNode(nodeData, x, y, parentId) {
+                const node = document.createElement('div');
+                node.id = nodeData.id;
+                node.className = `node level-${nodeData.level}`;
+                node.setAttribute('data-level', nodeData.level);
+                
+                // Set position
+                node.style.left = `${x}px`;
+                node.style.top = `${y}px`;
+                
+                // Content
+                let nodeContent = nodeData.text;
+                
+                // Add expand icon if node has children
+                if (nodeData.children && nodeData.children.length > 0) {
+                    nodeContent += `<span class="expand-icon"><i class="fas fa-chevron-down"></i></span>`;
+                    node.setAttribute('data-has-children', 'true');
+                }
+                
+                // Add description and example if available
+                if (nodeData.description || nodeData.example) {
+                    let content = '<div class="node-content">';
+                    if (nodeData.description) {
+                        content += `<p>${nodeData.description}</p>`;
+                    }
+                    if (nodeData.example) {
+                        content += `<div class="node-example">${nodeData.example}</div>`;
+                    }
+                    content += '</div>';
+                    nodeContent += content;
+                }
+                
+                node.innerHTML = nodeContent;
+                
+                // Save node meta data
+                node.setAttribute('data-parent', parentId || '');
+                node.setAttribute('data-expanded', 'false');
+                nodes.push({
+                    id: nodeData.id,
+                    element: node,
+                    parentId: parentId,
+                    level: nodeData.level,
+                    x,
+                    y,
+                    children: []
+                });
+                
+                // Add event listener
+                node.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const nodeObj = nodes.find(n => n.id === nodeData.id);
+                    
+                    // Check if this is a leaf node with details
+                    if ((!nodeData.children || nodeData.children.length === 0) && nodeData.details) {
+                        showTechniquePopup(nodeData);
+                        return;
+                    }
+                    
+                    // Toggle expanded state
+                    const isExpanded = node.getAttribute('data-expanded') === 'true';
+                    node.setAttribute('data-expanded', !isExpanded);
+                    
+                    if (isExpanded) {
+                        // Collapse node
+                        node.classList.remove('expanded');
+                        
+                        // Hide children
+                        const childrenToHide = getAllDescendants(nodeData.id);
+                        childrenToHide.forEach(childId => {
+                            const childElement = document.getElementById(childId);
+                            if (childElement) {
+                                childElement.style.display = 'none';
+                                
+                                // Also hide connections to this child
+                                connections.forEach(conn => {
+                                    if (conn.getAttribute('data-target') === childId) {
+                                        conn.style.display = 'none';
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        // Expand node
+                        node.classList.add('expanded');
+                        
+                        // Show immediate children
+                        const immediateChildren = nodes.filter(n => n.parentId === nodeData.id);
+                        immediateChildren.forEach(child => {
+                            const childElement = document.getElementById(child.id);
+                            if (childElement) {
+                                childElement.style.display = 'block';
+                                
+                                // Also show connections to this child
+                                connections.forEach(conn => {
+                                    if (conn.getAttribute('data-source') === nodeData.id && 
+                                        conn.getAttribute('data-target') === child.id) {
+                                        conn.style.display = 'block';
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                
+                // Add to container
+                document.getElementById('mindmap-container').appendChild(node);
+                
+                // Calculate positions for children
+                if (nodeData.children && nodeData.children.length > 0) {
+                    const radius = 200 + (nodeData.children.length * 10);
+                    const angleStep = (2 * Math.PI) / nodeData.children.length;
+                    
+                    nodeData.children.forEach((child, index) => {
+                        const angle = index * angleStep;
+                        const childX = x + radius * Math.cos(angle);
+                        const childY = y + radius * Math.sin(angle);
+                        
+                        createNode(child, childX, childY, nodeData.id);
+                    });
+                }
+                
+                return node;
+            }
+            
+            function getAllDescendants(nodeId) {
+                const descendants = [];
+                
+                function collectDescendants(id) {
+                    const children = nodes.filter(n => n.parentId === id);
+                    children.forEach(child => {
+                        descendants.push(child.id);
+                        collectDescendants(child.id);
+                    });
+                }
+                
+                collectDescendants(nodeId);
+                return descendants;
+            }
+            
+            function adjustNodePositions() {
+                // Implement collision detection and resolution
+                // This is a simplified version
+                const minDistance = 150;
+                
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const nodeA = nodes[i];
+                        const nodeB = nodes[j];
+                        
+                        // Skip if they're parent-child
+                        if (nodeA.parentId === nodeB.id || nodeB.parentId === nodeA.id) {
+                            continue;
+                        }
+                        
+                        const dx = nodeB.x - nodeA.x;
+                        const dy = nodeB.y - nodeA.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < minDistance) {
+                            const angle = Math.atan2(dy, dx);
+                            const moveDistance = (minDistance - distance) / 2;
+                            
+                            // Move nodes away from each other
+                            nodeA.x -= Math.cos(angle) * moveDistance;
+                            nodeA.y -= Math.sin(angle) * moveDistance;
+                            nodeB.x += Math.cos(angle) * moveDistance;
+                            nodeB.y += Math.sin(angle) * moveDistance;
+                            
+                            // Update positions in DOM
+                            nodeA.element.style.left = `${nodeA.x}px`;
+                            nodeA.element.style.top = `${nodeA.y}px`;
+                            nodeB.element.style.left = `${nodeB.x}px`;
+                            nodeB.element.style.top = `${nodeB.y}px`;
+                        }
+                    }
+                }
+            }
+            
+            function createConnections() {
+                // Create connections between parent and child nodes
+                nodes.forEach(node => {
+                    if (node.parentId) {
+                        const parent = nodes.find(n => n.id === node.parentId);
+                        if (parent) {
+                            createConnection(parent, node);
+                        }
+                    }
+                });
+                
+                // Initially hide all children except level 1
+                nodes.forEach(node => {
+                    const element = document.getElementById(node.id);
+                    if (node.level !== 'root' && node.level !== 1) {
+                        element.style.display = 'none';
+                    }
+                });
+                
+                // Initially hide all connections except to level 1
+                connections.forEach(conn => {
+                    const targetId = conn.getAttribute('data-target');
+                    const targetNode = nodes.find(n => n.id === targetId);
+                    if (targetNode && targetNode.level !== 1) {
+                        conn.style.display = 'none';
+                    }
+                });
+            }
+            
+            function createConnection(sourceNode, targetNode) {
+                const connection = document.createElement('div');
+                connection.className = 'connector';
+                
+                // Calculate position and dimensions for the connection
+                const x1 = sourceNode.x;
+                const y1 = sourceNode.y;
+                const x2 = targetNode.x;
+                const y2 = targetNode.y;
+                
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                // Set position and dimensions
+                connection.style.width = `${distance}px`;
+                connection.style.height = '2px';
+                connection.style.left = `${x1}px`;
+                connection.style.top = `${y1}px`;
+                connection.style.transform = `rotate(${angle}deg)`;
+                
+                // Set data attributes for identification
+                connection.setAttribute('data-source', sourceNode.id);
+                connection.setAttribute('data-target', targetNode.id);
+                
+                // Add to container
+                document.getElementById('mindmap-container').appendChild(connection);
+                
+                // Save reference
+                connections.push(connection);
+            }
+            
+            function resetView() {
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                updateView();
+            }
+            
+            function updateView() {
+                const container = document.getElementById('mindmap-container');
+                container.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
+            }
+            
+            function showTechniquePopup(nodeData) {
+                const details = nodeData.details;
+                if (!details) return;
+                
+                // Set popup title
+                document.getElementById('popup-title').textContent = nodeData.text;
+                
+                // Fill in content sections
+                document.getElementById('overview-text').innerHTML = details.overview || 'No overview available.';
+                
+                // Examples section
+                let examplesHTML = '';
+                if (details.examples && details.examples.length > 0) {
+                    details.examples.forEach((example, index) => {
+                        examplesHTML += `<div class="mb-6">`;
+                        
+                        if (example.prompt) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="prompt-example">${example.prompt}</div>`;
+                        }
+                        else if (example.bad && example.good) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ Ineffective:</span>
+                                                <div class="prompt-example">${example.bad}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ Effective:</span>
+                                                <div class="prompt-example">${example.good}</div>
+                                            </div>`;
+                        }
+                        else if (example.setting) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">${example.setting}</h4>
+                                            <p><strong>Task:</strong> ${example.task}</p>
+                                            <p><strong>Result:</strong> ${example.result}</p>`;
+                        }
+                        else if (example.vague && example.specific) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ Vague:</span>
+                                                <div class="prompt-example">${example.vague}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ Specific:</span>
+                                                <div class="prompt-example">${example.specific}</div>
+                                            </div>`;
+                        }
+                        else if (example.withoutExample && example.withExample) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ Without Example:</span>
+                                                <div class="prompt-example">${example.withoutExample}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ With Example:</span>
+                                                <div class="prompt-example">${example.withExample}</div>
+                                            </div>`;
+                        }
+                        else if (example.overloaded && example.better) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ Overloaded:</span>
+                                                <div class="prompt-example">${example.overloaded}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ Better:</span>
+                                                <div class="prompt-example">${example.better}</div>
+                                            </div>`;
+                        }
+                        else if (example.contextless && example.withContext) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ Without Context:</span>
+                                                <div class="prompt-example">${example.contextless}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ With Context:</span>
+                                                <div class="prompt-example">${example.withContext}</div>
+                                            </div>`;
+                        }
+                        else if (example.undefined && example.defined) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ Undefined Audience:</span>
+                                                <div class="prompt-example">${example.undefined}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ Defined Audience:</span>
+                                                <div class="prompt-example">${example.defined}</div>
+                                            </div>`;
+                        }
+                        else if (example.unformatted && example.formatted) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Example ${index + 1}:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-red-500 font-medium">❌ No Format Specified:</span>
+                                                <div class="prompt-example">${example.unformatted}</div>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">✅ Format Specified:</span>
+                                                <div class="prompt-example">${example.formatted}</div>
+                                            </div>`;
+                        }
+                        else if (example.iteration1) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Iterative Example:</h4>
+                                            <div class="mb-2">
+                                                <span class="text-gray-700 font-medium">Iteration 1:</span>
+                                                <div class="prompt-example">${example.iteration1}</div>
+                                                <p><em>Result:</em> ${example.result1}</p>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-gray-700 font-medium">Iteration 2:</span>
+                                                <div class="prompt-example">${example.iteration2}</div>
+                                                <p><em>Result:</em> ${example.result2}</p>
+                                            </div>
+                                            <div class="mb-2">
+                                                <span class="text-green-500 font-medium">Iteration 3:</span>
+                                                <div class="prompt-example">${example.iteration3}</div>
+                                                <p><em>Result:</em> ${example.result3}</p>
+                                            </div>`;
+                        }
+                        else if (example.template) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">Template Example:</h4>
+                                            <div class="prompt-example">${example.template}</div>`;
+                        }
+                        else if (example.domain) {
+                            examplesHTML += `<h4 class="font-semibold mb-2">${example.domain}:</h4>
+                                            <div class="prompt-example">${example.prompt}</div>
+                                            <p class="mt-2 text-gray-700"><em>${example.explanation}</em></p>`;
+                        }
+                        
+                        if (example.explanation && !example.domain) {
+                            examplesHTML += `<p class="mt-2 text-gray-700"><em>${example.explanation}</em></p>`;
+                        }
+                        
+                        examplesHTML += `</div>`;
+                    });
+                } else {
+                    examplesHTML = '<p>No examples available.</p>';
+                }
+                document.getElementById('examples-text').innerHTML = examplesHTML;
+                
+                // Use cases section
+                let useCasesHTML = '<ul class="list-disc list-inside space-y-2">';
+                if (details.useCases && details.useCases.length > 0) {
+                    details.useCases.forEach(useCase => {
+                        useCasesHTML += `<li>${useCase}</li>`;
+                    });
+                } else {
+                    useCasesHTML = '<p>No use cases available.</p>';
+                }
+                useCasesHTML += '</ul>';
+                document.getElementById('use-cases-text').innerHTML = useCasesHTML;
+                
+                // Tips section
+                let tipsHTML = '<ul class="list-disc list-inside space-y-2">';
+                if (details.tips && details.tips.length > 0) {
+                    details.tips.forEach(tip => {
+                        tipsHTML += `<li>${tip}</li>`;
+                    });
+                } else {
+                    tipsHTML = '<p>No tips available.</p>';
+                }
+                tipsHTML += '</ul>';
+                document.getElementById('tips-text').innerHTML = tipsHTML;
+                
+                // Show popup
+                document.querySelector('.popup-overlay').style.display = 'block';
+                document.getElementById('technique-popup').style.display = 'block';
+            }
+            
+            function doSearch(query) {
+                if (!query.trim()) {
+                    document.querySelector('.search-results').style.display = 'none';
+                    return;
+                }
+                
+                query = query.toLowerCase();
+                searchResults = [];
+                
+                // Search function to traverse mindmap data
+                function searchNode(node) {
+                    const text = node.text.toLowerCase();
+                    const description = node.description ? node.description.toLowerCase() : '';
+                    const example = node.example ? node.example.toLowerCase() : '';
+                    
+                    if (text.includes(query) || description.includes(query) || example.includes(query)) {
+                        searchResults.push({
+                            id: node.id,
+                            text: node.text,
+                            description: node.description || ''
+                        });
+                    }
+                    
+                    if (node.children && node.children.length > 0) {
+                        node.children.forEach(child => searchNode(child));
+                    }
+                }
+                
+                // Start search from root
+                searchNode(mindMapData);
+                
+                // Display results
+                const resultsContainer = document.querySelector('.search-results');
+                if (searchResults.length > 0) {
+                    let resultsHTML = '';
+                    searchResults.forEach(result => {
+                        resultsHTML += `<div class="search-result-item" data-id="${result.id}">
+                                           <div class="font-medium">${result.text}</div>
+                                           <div class="text-sm text-gray-600">${result.description}</div>
+                                       </div>`;
+                    });
+                    resultsContainer.innerHTML = resultsHTML;
+                    resultsContainer.style.display = 'block';
+                    
+                    // Add click handlers
+                    document.querySelectorAll('.search-result-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const id = item.getAttribute('data-id');
+                            navigateToNode(id);
+                            resultsContainer.style.display = 'none';
+                            document.querySelector('.search-input').value = '';
+                        });
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<div class="search-result-item">No results found</div>';
+                    resultsContainer.style.display = 'block';
+                }
+            }
+            
+            function navigateToNode(id) {
+                // Find node
+                const node = nodes.find(n => n.id === id);
+                if (!node) return;
+                
+                // Expand parents if needed
+                let parentId = node.parentId;
+                const parentsToExpand = [];
+                
+                while (parentId) {
+                    parentsToExpand.push(parentId);
+                    const parent = nodes.find(n => n.id === parentId);
+                    parentId = parent ? parent.parentId : null;
+                }
+                
+                // Expand from root down
+                parentsToExpand.reverse().forEach(pid => {
+                    const parentElement = document.getElementById(pid);
+                    if (parentElement && parentElement.getAttribute('data-expanded') !== 'true') {
+                        parentElement.click();
+                    }
+                });
+                
+                // Show the node
+                const element = document.getElementById(id);
+                element.style.display = 'block';
+                
+                // Center view on node
+                const container = document.getElementById('mindmap-container');
+                const containerRect = container.getBoundingClientRect();
+                
+                translateX = -(node.x - containerRect.width/2);
+                translateY = -(node.y - containerRect.height/2);
+                
+                updateView();
+                
+                // Highlight the node temporarily
+                element.style.boxShadow = '0 0 0 4px rgba(79, 70, 229, 0.6)';
+                setTimeout(() => {
+                    element.style.boxShadow = '';
+                }, 2000);
+            }
+            
+            // Tutorial functions
+            function showTutorial() {
+                document.querySelector('.tutorial-overlay').style.display = 'flex';
+                currentTutorialStep = 1;
+                updateTutorialStep();
+            }
+            
+            function updateTutorialStep() {
+                // Hide all steps
+                document.querySelectorAll('.tutorial-step').forEach(step => {
+                    step.classList.remove('active');
+                });
+                
+                // Show current step
+                document.querySelector(`.tutorial-step[data-step="${currentTutorialStep}"]`).classList.add('active');
+                
+                // Update progress
+                document.getElementById('current-step').textContent = currentTutorialStep;
+                document.getElementById('total-steps').textContent = totalTutorialSteps;
+                
+                // Update buttons
+                document.getElementById('prev-step').style.visibility = currentTutorialStep > 1 ? 'visible' : 'hidden';
+                document.getElementById('next-step').textContent = currentTutorialStep < totalTutorialSteps ? 'Next' : 'Get Started';
+            }
+            
+            function hideTutorial() {
+                document.querySelector('.tutorial-overlay').style.display = 'none';
+                localStorage.setItem('mindmap-tutorial-viewed', 'true');
+            }
+            
+            function showAlert(message, duration = 3000) {
+                const alert = document.querySelector('.alert');
+                document.getElementById('alert-message').textContent = message;
+                alert.style.display = 'block';
+                
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, duration);
+            }
+            
+            function expandAll() {
+                // Expand all nodes
+                nodes.forEach(node => {
+                    if (node.element.getAttribute('data-has-children') === 'true') {
+                        node.element.setAttribute('data-expanded', 'true');
+                        node.element.classList.add('expanded');
+                    }
+                    
+                    // Show all nodes
+                    node.element.style.display = 'block';
+                });
+                
+                // Show all connections
+                connections.forEach(conn => {
+                    conn.style.display = 'block';
+                });
+            }
+            
+            function collapseAll() {
+                // Only root and level 1 nodes should be visible
+                nodes.forEach(node => {
+                    if (node.level !== 'root' && node.level !== 1) {
+                        node.element.style.display = 'none';
+                    }
+                    
+                    // Collapse all nodes
+                    node.element.setAttribute('data-expanded', 'false');
+                    node.element.classList.remove('expanded');
+                });
+                
+                // Only connections to level 1 should be visible
+                connections.forEach(conn => {
+                    const targetId = conn.getAttribute('data-target');
+                    const targetNode = nodes.find(n => n.id === targetId);
+                    
+                    if (targetNode && targetNode.level !== 1) {
+                        conn.style.display = 'none';
+                    } else {
+                        conn.style.display = 'block';
+                    }
+                });
+            }
+            
+            // Event Listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize once page is loaded
+                    initMindMap();
+                    
+                    // Show tutorial if first time
+                    if (!tutorialViewed) {
+                        showTutorial();
+                    }
+                
+                // Dragging functionality
+                const container = document.getElementById('mindmap-container');
+                
+                container.addEventListener('mousedown', (e) => {
+                    // Only initiate drag if clicking on the container but not on a node
+                    if (e.target === container || e.target.closest('#mindmap-container') === container) {
+                        isDragging = true;
+                        dragStartX = e.clientX - translateX;
+                        dragStartY = e.clientY - translateY;
+                        container.style.cursor = 'grabbing';
+                    }
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        translateX = e.clientX - dragStartX;
+                        translateY = e.clientY - dragStartY;
+                        updateView();
+                    }
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    container.style.cursor = 'grab';
+                });
+                
+                // Zoom controls
+                document.getElementById('zoom-in-btn').addEventListener('click', () => {
+                    scale += 0.1;
+                    updateView();
+                });
+                
+                document.getElementById('zoom-out-btn').addEventListener('click', () => {
+                    if (scale > 0.2) {
+                        scale -= 0.1;
+                        updateView();
+                    }
+                });
+                
+                document.getElementById('reset-btn').addEventListener('click', resetView);
+                
+                document.getElementById('expand-all-btn').addEventListener('click', expandAll);
+                
+                document.getElementById('collapse-all-btn').addEventListener('click', collapseAll);
+                
+                document.getElementById('help-btn').addEventListener('click', showTutorial);
+                
+                // Search functionality
+                const searchInput = document.querySelector('.search-input');
+                
+                searchInput.addEventListener('input', (e) => {
+                    doSearch(e.target.value);
+                });
+                
+                searchInput.addEventListener('focus', () => {
+                    if (searchInput.value.trim()) {
+                        document.querySelector('.search-results').style.display = 'block';
+                    }
+                });
+                
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.search-container')) {
+                        document.querySelector('.search-results').style.display = 'none';
+                    }
+                });
+                
+                // Technique popup tabs
+                document.querySelectorAll('.technique-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        // Update active tab
+                        document.querySelectorAll('.technique-tab').forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        // Show corresponding content
+                        const contentId = tab.getAttribute('data-tab');
+                        document.querySelectorAll('.technique-content').forEach(content => content.classList.remove('active'));
+                        document.getElementById(`${contentId}-content`).classList.add('active');
+                    });
+                });
+                
+                // Close popup
+                document.querySelector('.popup-close').addEventListener('click', () => {
+                    document.querySelector('.popup-overlay').style.display = 'none';
+                    document.getElementById('technique-popup').style.display = 'none';
+                });
+                
+                document.querySelector('.popup-overlay').addEventListener('click', () => {
+                    document.querySelector('.popup-overlay').style.display = 'none';
+                    document.getElementById('technique-popup').style.display = 'none';
+                });
+                
+                // Tutorial navigation
+                document.getElementById('next-step').addEventListener('click', () => {
+                    if (currentTutorialStep < totalTutorialSteps) {
+                        currentTutorialStep++;
+                        updateTutorialStep();
+                    } else {
+                        hideTutorial();
+                    }
+                });
+                
+                document.getElementById('prev-step').addEventListener('click', () => {
+                    if (currentTutorialStep > 1) {
+                        currentTutorialStep--;
+                        updateTutorialStep();
+                    }
+                });
+                
+                document.getElementById('skip-tutorial').addEventListener('click', hideTutorial);
+                
+                // Dark mode toggle
+                document.getElementById('mode-toggle-btn').addEventListener('click', () => {
+                    document.body.classList.toggle('dark-mode');
+                    
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    document.getElementById('mode-toggle-btn').innerHTML = isDarkMode ? 
+                        '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+                    
+                    // Save preference
+                    localStorage.setItem('mindmap-dark-mode', isDarkMode ? 'true' : 'false');
+                });
+                
+                // Check saved dark mode preference
+                if (localStorage.getItem('mindmap-dark-mode') === 'true') {
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('mode-toggle-btn').innerHTML = '<i class="fas fa-sun"></i>';
+                }
+                
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Escape to close popups
+                    if (e.key === 'Escape') {
+                        document.querySelector('.popup-overlay').style.display = 'none';
+                        document.getElementById('technique-popup').style.display = 'none';
+                        document.querySelector('.tutorial-overlay').style.display = 'none';
+                    }
+                    
+                    // Ctrl/Cmd + Plus to zoom in
+                    if ((e.ctrlKey || e.metaKey) && e.key === '+') {
+                        e.preventDefault();
+                        scale += 0.1;
+                        updateView();
+                    }
+                    
+                    // Ctrl/Cmd + Minus to zoom out
+                    if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+                        e.preventDefault();
+                        if (scale > 0.2) {
+                            scale -= 0.1;
+                            updateView();
+                        }
+                    }
+                    
+                    // Ctrl/Cmd + 0 to reset view
+                    if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+                        e.preventDefault();
+                        resetView();
+                    }
+                    
+                    // Ctrl/Cmd + F to focus search
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                        e.preventDefault();
+                        searchInput.focus();
+                    }
+                });
+                
+                // Mouse wheel zoom
+                container.addEventListener('wheel', (e) => {
+                    if (e.ctrlKey || e.metaKey) {
+                        e.preventDefault();
+                        
+                        if (e.deltaY < 0) {
+                            // Zoom in
+                            scale += 0.05;
+                        } else {
+                            // Zoom out
+                            if (scale > 0.2) {
+                                scale -= 0.05;
+                            }
+                        }
+                        
+                        updateView();
+                    }
+                });
+                
+                // Tooltip for nodes
+                const tooltip = document.querySelector('.tooltip');
+                
+                document.addEventListener('mousemove', (e) => {
+                    tooltip.style.left = `${e.pageX + 15}px`;
+                    tooltip.style.top = `${e.pageY + 15}px`;
+                });
+                
+                // Tooltip show/hide for control buttons
+                document.querySelectorAll('.control-btn').forEach(btn => {
+                    btn.addEventListener('mouseenter', () => {
+                        tooltip.textContent = btn.getAttribute('title');
+                        tooltip.style.opacity = '1';
+                        tooltip.style.visibility = 'visible';
+                    });
+                    
+                    btn.addEventListener('mouseleave', () => {
+                        tooltip.style.opacity = '0';
+                        tooltip.style.visibility = 'hidden';
+                    });
+                    });
+                });
+            });
+    </script>
+</body>
+</html>

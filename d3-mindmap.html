@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>D3 Mind Map</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+        }
+        
+        #mindmap {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            fill: white;
+            stroke: #555;
+            stroke-width: 2px;
+            transition: all 0.3s;
+        }
+
+        .node.root circle {
+            fill: #4CAF50;
+            stroke: #2E7D32;
+            r: 25;
+        }
+
+        .node.level1 circle {
+            fill: #2196F3;
+            stroke: #1565C0;
+            r: 20;
+        }
+
+        .node.level2 circle {
+            fill: #FFC107;
+            stroke: #FFA000;
+            r: 15;
+        }
+
+        .node text {
+            font-size: 12px;
+            fill: #333;
+            text-anchor: middle;
+            dy: 35px;
+        }
+
+        .node.root text {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+        }
+
+        .node:hover circle {
+            filter: brightness(1.2);
+            transform: scale(1.1);
+        }
+
+        .tooltip {
+            position: absolute;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            max-width: 200px;
+        }
+
+        .controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            background: #2196F3;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button onclick="centerView()">Center View</button>
+        <button onclick="expandAll()">Expand All</button>
+        <button onclick="collapseAll()">Collapse All</button>
+    </div>
+    <div id="mindmap"></div>
+    <div class="tooltip"></div>
+
+    <script>
+        // Mind map data
+        const data = {
+            name: "Programming",
+            description: "The art and science of creating software",
+            children: [
+                {
+                    name: "Languages",
+                    description: "Different programming languages and their purposes",
+                    children: [
+                        {
+                            name: "Frontend",
+                            description: "Languages for building user interfaces",
+                            children: [
+                                { name: "HTML", description: "Structure of web pages" },
+                                { name: "CSS", description: "Styling of web pages" },
+                                { name: "JavaScript", description: "Interactive behavior" }
+                            ]
+                        },
+                        {
+                            name: "Backend",
+                            description: "Server-side programming languages",
+                            children: [
+                                { name: "Python", description: "Versatile general-purpose language" },
+                                { name: "Java", description: "Enterprise-level applications" },
+                                { name: "Node.js", description: "JavaScript runtime for servers" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Concepts",
+                    description: "Core programming concepts and paradigms",
+                    children: [
+                        {
+                            name: "OOP",
+                            description: "Object-Oriented Programming principles",
+                            children: [
+                                { name: "Inheritance", description: "Code reuse and hierarchy" },
+                                { name: "Encapsulation", description: "Data hiding and abstraction" },
+                                { name: "Polymorphism", description: "Multiple forms of objects" }
+                            ]
+                        },
+                        {
+                            name: "Functional",
+                            description: "Functional programming concepts",
+                            children: [
+                                { name: "Pure Functions", description: "Functions without side effects" },
+                                { name: "Immutability", description: "Unchangeable data structures" },
+                                { name: "Recursion", description: "Self-referential functions" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Set up SVG
+        const width = 1200;
+        const height = 800;
+        const margin = { top: 40, right: 120, bottom: 40, left: 120 };
+
+        const svg = d3.select("#mindmap")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Create tree layout
+        const tree = d3.tree()
+            .size([height - margin.top - margin.bottom, width - margin.left - margin.right]);
+
+        // Convert data to hierarchy
+        const root = d3.hierarchy(data);
+        root.x0 = height / 2;
+        root.y0 = 0;
+
+        // Initialize display
+        update(root);
+
+        function update(source) {
+            const duration = 750;
+
+            // Compute the new tree layout
+            const nodes = tree(root);
+            const links = nodes.links();
+
+            // Normalize for fixed-depth
+            nodes.each(d => d.y = d.depth * 180);
+
+            // Update nodes
+            const node = svg.selectAll("g.node")
+                .data(nodes.descendants(), d => d.id || (d.id = ++i));
+
+            // Enter new nodes
+            const nodeEnter = node.enter().append("g")
+                .attr("class", d => `node ${d.depth === 0 ? 'root' : d.depth === 1 ? 'level1' : 'level2'}`)
+                .attr("transform", d => `translate(${source.y0},${source.x0})`)
+                .on("click", clicked);
+
+            nodeEnter.append("circle")
+                .attr("r", 1e-6);
+
+            nodeEnter.append("text")
+                .text(d => d.data.name);
+
+            // Update nodes
+            const nodeUpdate = nodeEnter.merge(node);
+
+            nodeUpdate.transition()
+                .duration(duration)
+                .attr("transform", d => `translate(${d.y},${d.x})`);
+
+            nodeUpdate.select("circle")
+                .attr("r", d => d.depth === 0 ? 25 : d.depth === 1 ? 20 : 15);
+
+            // Remove old nodes
+            const nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", d => `translate(${source.y},${source.x})`)
+                .remove();
+
+            nodeExit.select("circle")
+                .attr("r", 1e-6);
+
+            // Update links
+            const link = svg.selectAll("path.link")
+                .data(links, d => d.target.id);
+
+            // Enter new links
+            const linkEnter = link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", d3.linkHorizontal()
+                    .x(d => source.y0)
+                    .y(d => source.x0));
+
+            // Update links
+            link.merge(linkEnter).transition()
+                .duration(duration)
+                .attr("d", d3.linkHorizontal()
+                    .x(d => d.y)
+                    .y(d => d.x));
+
+            // Remove old links
+            link.exit().transition()
+                .duration(duration)
+                .attr("d", d3.linkHorizontal()
+                    .x(d => source.y)
+                    .y(d => source.x))
+                .remove();
+
+            // Store old positions for transition
+            nodes.each(d => {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+        }
+
+        // Toggle children on click
+        function clicked(event, d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update(d);
+        }
+
+        // Add tooltip behavior
+        const tooltip = d3.select(".tooltip");
+
+        svg.selectAll(".node")
+            .on("mouseover", function(event, d) {
+                if (d.data.description) {
+                    tooltip.style("opacity", 1)
+                        .html(`<strong>${d.data.name}</strong><br>${d.data.description}`)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 10) + "px");
+                }
+            })
+            .on("mouseout", function() {
+                tooltip.style("opacity", 0);
+            });
+
+        // Control functions
+        function centerView() {
+            svg.transition()
+                .duration(750)
+                .attr("transform", "translate(0,0)");
+        }
+
+        function expandAll() {
+            root.descendants().forEach(d => {
+                if (d._children) {
+                    d.children = d._children;
+                    d._children = null;
+                }
+            });
+            update(root);
+        }
+
+        function collapseAll() {
+            root.descendants().forEach(d => {
+                if (d.depth > 0 && d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                }
+            });
+            update(root);
+        }
+
+        // Add zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([0.5, 2])
+            .on("zoom", (event) => {
+                svg.attr("transform", event.transform);
+            });
+
+        d3.select("#mindmap svg").call(zoom);
+
+        // Initial transform to center the root node
+        svg.attr("transform", `translate(${margin.left},${margin.top})`);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,2473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Data Engineering Course Demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block {
+            position: relative;
+        }
+        .code-block button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+        }
+        .code-block:hover button {
+            display: block;
+        }
+        /* Animated arrows */
+        .arrow-animation {
+            animation: moveArrow 2s infinite;
+        }
+        @keyframes moveArrow {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+        /* Tab system */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Service color coding */
+        .adf-color { background-color: #0078D4; }
+        .databricks-color { background-color: #FF3621; }
+        .synapse-color { background-color: #8661C5; }
+        /* Flow diagram animation */
+        .flow-line {
+            stroke-dasharray: 15;
+            animation: flowLine 3s linear infinite;
+        }
+        @keyframes flowLine {
+            to { stroke-dashoffset: -30; }
+        }
+        /* Pulse animation for nodes */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-gradient-to-r from-blue-900 to-indigo-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="font-bold text-2xl">Azure Data Engineering Mastery</span>
+                        <span class="ml-2 text-sm text-blue-200">by Jinesh Ranawat</span>
+                    </div>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-gray-200 hover:text-white focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="menu" class="hidden md:flex md:flex-row md:space-x-2 mt-4 md:mt-0">
+                    <a href="#" onclick="showTab('overview')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Overview</a>
+                    <a href="#" onclick="showTab('syllabus')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Syllabus</a>
+                    <a href="#" onclick="showTab('architecture')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Architecture</a>
+                    <a href="#" onclick="showTab('kpi')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Business KPIs</a>
+                    <a href="#" onclick="showTab('startup')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Startup Applications</a>
+                    <a href="#" onclick="showTab('demo')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Technical Demo</a>
+                    <a href="#" onclick="showTab('code')" class="tab-button px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 text-center">Python Example</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <!-- Overview Tab -->
+        <section id="overview" class="tab-content active mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-6 transform transition duration-300 hover:shadow-2xl">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-blue-100 pb-2">Azure Data Engineering Mastery Course</h2>
+                <div class="flex flex-col lg:flex-row items-center gap-8">
+                    <div class="lg:w-1/2">
+                        <p class="text-gray-700 mb-6 text-lg">
+                            Welcome to the comprehensive 35-hour Azure Data Engineering Mastery course designed by <span class="font-semibold text-blue-700">Jinesh Ranawat</span>. This program will equip you with cutting-edge skills in Azure's premier data services:
+                        </p>
+                        
+                        <div class="flex items-center mb-4 shadow-md p-3 rounded-lg bg-gradient-to-r from-red-50 to-white transform transition duration-500 hover:scale-105">
+                            <div class="w-6 h-6 rounded-full databricks-color mr-3 flex-shrink-0"></div>
+                            <div>
+                                <span class="font-semibold">Azure Databricks</span>
+                                <p class="text-gray-700 text-sm">Advanced analytics & Delta Lake technology with real-time processing capabilities</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center mb-4 shadow-md p-3 rounded-lg bg-gradient-to-r from-purple-50 to-white transform transition duration-500 hover:scale-105">
+                            <div class="w-6 h-6 rounded-full synapse-color mr-3 flex-shrink-0"></div>
+                            <div>
+                                <span class="font-semibold">Azure Synapse Analytics</span>
+                                <p class="text-gray-700 text-sm">Enterprise-grade data warehousing with serverless and dedicated SQL capabilities</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center mb-4 shadow-md p-3 rounded-lg bg-gradient-to-r from-blue-50 to-white transform transition duration-500 hover:scale-105">
+                            <div class="w-6 h-6 rounded-full adf-color mr-3 flex-shrink-0"></div>
+                            <div>
+                                <span class="font-semibold">Azure Data Factory</span>
+                                <p class="text-gray-700 text-sm">Orchestration platform with 90+ native connectors and visual ETL capabilities</p>
+                            </div>
+                        </div>
+                        
+                        <p class="text-gray-700 mt-4 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500 shadow-md">
+                            From foundational concepts to advanced implementations, you'll master the tools and techniques required to build scalable, performant data platforms in Azure. The course features live demonstrations, hands-on labs, and real-world scenarios with immediate business impact.
+                        </p>
+                    </div>
+                    
+                    <div class="lg:w-1/2">
+                        <div class="shadow-2xl rounded-lg p-3 bg-gradient-to-r from-blue-50 to-indigo-50">
+                            <svg width="600" height="340" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Data Sources -->
+                                <g class="pulse">
+                                    <rect x="20" y="20" width="120" height="60" rx="5" fill="#e5e7eb" stroke="#4b5563" stroke-width="2"/>
+                                    <text x="80" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#374151">Data Sources</text>
+                                    <text x="80" y="65" text-anchor="middle" font-size="12" fill="#4b5563">Files, APIs, DBs</text>
+                                </g>
+                                
+                                <!-- Azure Data Factory -->
+                                <g class="pulse">
+                                    <rect x="240" y="20" width="120" height="60" rx="5" fill="#0078D4" stroke="#005a9e" stroke-width="2"/>
+                                    <text x="300" y="50" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Azure Data Factory</text>
+                                    <text x="300" y="70" text-anchor="middle" font-size="12" fill="white">Orchestration</text>
+                                </g>
+                                
+                                <!-- Storage -->
+                                <g class="pulse">
+                                    <rect x="240" y="140" width="120" height="60" rx="5" fill="#5DB300" stroke="#458a00" stroke-width="2"/>
+                                    <text x="300" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Azure Storage</text>
+                                    <text x="300" y="190" text-anchor="middle" font-size="12" fill="white">ADLS Gen2</text>
+                                </g>
+                                
+                                <!-- Databricks -->
+                                <g class="pulse">
+                                    <rect x="110" y="260" width="120" height="60" rx="5" fill="#FF3621" stroke="#d42b1a" stroke-width="2"/>
+                                    <text x="170" y="290" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Azure Databricks</text>
+                                    <text x="170" y="310" text-anchor="middle" font-size="12" fill="white">Delta Lake</text>
+                                </g>
+                                
+                                <!-- Synapse -->
+                                <g class="pulse">
+                                    <rect x="370" y="260" width="120" height="60" rx="5" fill="#8661C5" stroke="#6d4fa6" stroke-width="2"/>
+                                    <text x="430" y="290" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Azure Synapse</text>
+                                    <text x="430" y="310" text-anchor="middle" font-size="12" fill="white">SQL & Spark</text>
+                                </g>
+                                
+                                <!-- BI & ML -->
+                                <g class="pulse">
+                                    <rect x="460" y="140" width="120" height="60" rx="5" fill="#FFB900" stroke="#d49c00" stroke-width="2"/>
+                                    <text x="520" y="170" text-anchor="middle" font-size="14" font-weight="bold" fill="white">BI & ML</text>
+                                    <text x="520" y="190" text-anchor="middle" font-size="12" fill="white">PowerBI, ML Models</text>
+                                </g>
+                                
+                                <!-- Connecting Lines -->
+                                <!-- Source to ADF -->
+                                <line x1="140" y1="50" x2="240" y2="50" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="235,45 245,50 235,55" fill="#4b5563" class="arrow-animation"/>
+                                
+                                <!-- ADF to Storage -->
+                                <line x1="300" y1="80" x2="300" y2="140" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="295,135 300,145 305,135" fill="#4b5563" class="arrow-animation"/>
+                                
+                                <!-- Storage to Databricks -->
+                                <line x1="260" y1="200" x2="191" y2="260" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="195,252 186,265 201,258" fill="#4b5563" class="arrow-animation"/>
+                                
+                                <!-- Storage to Synapse -->
+                                <line x1="340" y1="200" x2="409" y2="260" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="399,258 414,265 405,252" fill="#4b5563" class="arrow-animation"/>
+                                
+                                <!-- Synapse to BI -->
+                                <line x1="457" y1="260" x2="500" y2="200" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="493,208 505,195 501,210" fill="#4b5563" class="arrow-animation"/>
+                                
+                                <!-- Databricks to BI -->
+                                <line x1="230" y1="267" x2="460" y2="170" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="450,175 465,165 456,180" fill="#4b5563" class="arrow-animation"/>
+                                
+                                <!-- Databricks to Synapse -->
+                                <line x1="230" y1="290" x2="370" y2="290" stroke="#4b5563" stroke-width="2" class="flow-line"/>
+                                <polygon points="365,285 375,290 365,295" fill="#4b5563" class="arrow-animation"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div class="text-4xl font-bold text-blue-600 mb-2">35</div>
+                        <div class="text-gray-700">Hours of in-depth instruction</div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-xl shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div class="text-4xl font-bold text-purple-600 mb-2">9</div>
+                        <div class="text-gray-700">Comprehensive modules</div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 p-5 rounded-xl shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div class="text-4xl font-bold text-red-600 mb-2">12+</div>
+                        <div class="text-gray-700">Hands-on exercises</div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-xl shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div class="text-4xl font-bold text-green-600 mb-2">3</div>
+                        <div class="text-gray-700">Real-world capstone projects</div>
+                    </div>
+                </div>
+            </div>
+        </section>>
+        <!-- Syllabus Tab -->
+        <section id="syllabus" class="tab-content mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-6 transform transition duration-300 hover:shadow-2xl">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-blue-100 pb-2">35-Hour Azure Data Engineering Course Syllabus</h2>
+                <p class="text-gray-700 mb-6 text-lg">Developed by <span class="font-semibold text-blue-700">Jinesh Ranawat</span>, this comprehensive syllabus covers the entire Azure data engineering ecosystem, with a special focus on advanced Databricks, Synapse, and Data Factory concepts.</p>
+                
+                <div class="flex justify-end mb-4">
+                    <div class="inline-flex rounded-md shadow-sm" role="group">
+                        <button type="button" onclick="filterModules('all')" class="module-filter-btn active px-4 py-2 text-sm font-medium text-blue-900 bg-white border border-blue-200 rounded-l-lg hover:bg-blue-100 hover:text-blue-700 focus:z-10 focus:bg-blue-700 focus:text-white">
+                            All Modules
+                        </button>
+                        <button type="button" onclick="filterModules('databricks')" class="module-filter-btn px-4 py-2 text-sm font-medium text-blue-900 bg-white border-t border-b border-blue-200 hover:bg-blue-100 hover:text-blue-700 focus:z-10 focus:bg-blue-700 focus:text-white">
+                            Databricks
+                        </button>
+                        <button type="button" onclick="filterModules('synapse')" class="module-filter-btn px-4 py-2 text-sm font-medium text-blue-900 bg-white border-t border-b border-blue-200 hover:bg-blue-100 hover:text-blue-700 focus:z-10 focus:bg-blue-700 focus:text-white">
+                            Synapse
+                        </button>
+                        <button type="button" onclick="filterModules('adf')" class="module-filter-btn px-4 py-2 text-sm font-medium text-blue-900 bg-white border border-blue-200 rounded-r-lg hover:bg-blue-100 hover:text-blue-700 focus:z-10 focus:bg-blue-700 focus:text-white">
+                            Data Factory
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Module 1 -->
+                    <div class="module bg-gradient-to-r from-blue-50 to-white p-5 rounded-xl border-l-4 border-blue-600 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="all">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-blue-900">Module 1: Azure Data Engineering Foundations</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">4 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Azure Data Platform Overview</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Data Engineer Role & Responsibilities</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Data Architecture Patterns</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Azure Storage Solutions (Blob, ADLS Gen2)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Hands-on: Setting up Azure Environment</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 2 -->
+                    <div class="module bg-gradient-to-r from-blue-50 to-white p-5 rounded-xl border-l-4 border-blue-600 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="adf">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-blue-900">Module 2: Azure Data Factory Deep Dive</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">6 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>ADF Architecture & Components</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Pipelines, Activities & Triggers</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Data Flow Transformations</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Integration Runtime Types</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Monitoring & Debugging</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-blue-600 rounded-full mr-2"></span>
+                                <span>Hands-on: Building ETL Pipeline with ADF</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 3 -->
+                    <div class="module bg-gradient-to-r from-purple-50 to-white p-5 rounded-xl border-l-4 border-purple-600 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="synapse">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-purple-900">Module 3: Azure Synapse Analytics Fundamentals</h3>
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">6 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Synapse Architecture & Components</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Dedicated SQL Pools vs Serverless SQL</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>PolyBase & COPY Command</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Data Distribution Strategies</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Spark Pools in Synapse</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Hands-on: Data Warehousing with Synapse</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 4 -->
+                    <div class="module bg-gradient-to-r from-purple-50 to-white p-5 rounded-xl border-l-4 border-purple-600 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="synapse">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-purple-900">Module 4: Advanced Synapse Analytics</h3>
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">4 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Synapse Link for Real-time Analytics</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Synapse Pipelines & Triggers</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Integrating with Power BI</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Security & Access Control</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-purple-600 rounded-full mr-2"></span>
+                                <span>Hands-on: End-to-End Analytics Solution</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 5 -->
+                    <div class="module bg-gradient-to-r from-red-50 to-white p-5 rounded-xl border-l-4 border-red-500 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="databricks">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-red-900">Module 5: Azure Databricks Fundamentals</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">4 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Databricks Architecture & Workspace</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Cluster Management</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Notebook Development</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Spark Fundamentals in Databricks</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Hands-on: First Databricks ETL Job</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 6 -->
+                    <div class="module bg-gradient-to-r from-red-50 to-white p-5 rounded-xl border-l-4 border-red-500 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="databricks">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-red-900">Module 6: Databricks & Delta Lake</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">4 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Delta Lake Architecture</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>ACID Transactions in Delta</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Time Travel & Versioning</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Schema Evolution & Constraints</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Optimizations (Z-Ordering, Compaction)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Hands-on: Building a Delta Lake Solution</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 7 -->
+                    <div class="module bg-gradient-to-r from-red-50 to-white p-5 rounded-xl border-l-4 border-red-500 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="databricks">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-red-900">Module 7: Advanced Databricks</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">5 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Databricks SQL & Dashboards</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Unity Catalog & Governance</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>MLflow for ML Lifecycle</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Photon Engine & Query Optimization</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Structured Streaming</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-red-600 rounded-full mr-2"></span>
+                                <span>Hands-on: Real-time Streaming Pipeline</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 8 -->
+                    <div class="module bg-gradient-to-r from-green-50 to-white p-5 rounded-xl border-l-4 border-green-600 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="all">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-green-900">Module 8: Integration & Orchestration</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">4 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>ADF-Databricks Integration</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Synapse-Databricks Integration</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Event-driven Architectures</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>CI/CD for Data Solutions</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Monitoring & Observability</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Hands-on: Multi-service Orchestration</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 9 -->
+                    <div class="module bg-gradient-to-r from-green-50 to-white p-5 rounded-xl border-l-4 border-green-600 shadow-md transform transition duration-300 hover:shadow-xl hover:-translate-y-1" data-category="all">
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-lg text-green-900">Module 9: Capstone Project</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">2 hours</span>
+                        </div>
+                        <ul class="mt-3 space-y-2">
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>End-to-End Data Engineering Solution</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Incorporating ADF, Synapse, and Databricks</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Real-world Business Case</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-1.5 h-1.5 bg-green-600 rounded-full mr-2"></span>
+                                <span>Solution Architecture & Implementation</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-gradient-to-r from-indigo-50 to-indigo-100 p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-indigo-900 mb-3">Course Methodology</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex items-center mb-3">
+                                <div class="p-2 bg-indigo-100 rounded-full mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                </div>
+                                <h4 class="font-semibold text-lg">Learn by Doing</h4>
+                            </div>
+                            <p class="text-gray-700">60% of course time is dedicated to hands-on labs and exercises, working with real-world datasets</p>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex items-center mb-3">
+                                <div class="p-2 bg-indigo-100 rounded-full mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A9.507 9.507 0 0017.318 12a9.51 9.51 0 0003.862-7.748 9.51 9.51 0 00-10.073 9.536 9.53 9.53 0 00-4.771.501 9.509 9.509 0 014.59-8.38 9.505 9.505 0 0110.073-3.658 9.511 9.511 0 00-10.398 12.216 9.493 9.493 0 004.433 4.321 9.506 9.506 0 01-6.34-1.979 9.51 9.51 0 016.75 6.06 9.51 9.51 0 015.068-8.599A9.522 9.522 0 0121 13.255z" />
+                                    </svg>
+                                </div>
+                                <h4 class="font-semibold text-lg">Progressive Learning</h4>
+                            </div>
+                            <p class="text-gray-700">Each module builds upon previous knowledge, gradually increasing in complexity and technical depth</p>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg shadow-md">
+                            <div class="flex items-center mb-3">
+                                <div class="p-2 bg-indigo-100 rounded-full mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <h4 class="font-semibold text-lg">Collaborative Projects</h4>
+                            </div>
+                            <p class="text-gray-700">Work in teams to solve complex data engineering challenges, simulating real workplace scenarios</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                    <!-- Module 1 -->
+                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-600">
+                        <h3 class="font-bold text-lg text-blue-900">Module 1: Azure Data Engineering Foundations (4 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Azure Data Platform Overview</li>
+                            <li>Data Engineer Role & Responsibilities</li>
+                            <li>Data Architecture Patterns</li>
+                            <li>Azure Storage Solutions (Blob, ADLS Gen2)</li>
+                            <li>Hands-on: Setting up Azure Environment</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 2 -->
+                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-600">
+                        <h3 class="font-bold text-lg text-blue-900">Module 2: Azure Data Factory Deep Dive (6 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>ADF Architecture & Components</li>
+                            <li>Pipelines, Activities & Triggers</li>
+                            <li>Data Flow Transformations</li>
+                            <li>Integration Runtime Types</li>
+                            <li>Monitoring & Debugging</li>
+                            <li>Hands-on: Building ETL Pipeline with ADF</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 3 -->
+                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-600">
+                        <h3 class="font-bold text-lg text-blue-900">Module 3: Azure Synapse Analytics Fundamentals (6 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Synapse Architecture & Components</li>
+                            <li>Dedicated SQL Pools vs Serverless SQL</li>
+                            <li>PolyBase & COPY Command</li>
+                            <li>Data Distribution Strategies</li>
+                            <li>Spark Pools in Synapse</li>
+                            <li>Hands-on: Data Warehousing with Synapse</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 4 -->
+                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-600">
+                        <h3 class="font-bold text-lg text-blue-900">Module 4: Advanced Synapse Analytics (4 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Synapse Link for Real-time Analytics</li>
+                            <li>Synapse Pipelines & Triggers</li>
+                            <li>Integrating with Power BI</li>
+                            <li>Security & Access Control</li>
+                            <li>Hands-on: End-to-End Analytics Solution</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 5 -->
+                    <div class="bg-purple-50 p-4 rounded-md border-l-4 border-purple-600">
+                        <h3 class="font-bold text-lg text-purple-900">Module 5: Azure Databricks Fundamentals (4 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Databricks Architecture & Workspace</li>
+                            <li>Cluster Management</li>
+                            <li>Notebook Development</li>
+                            <li>Spark Fundamentals in Databricks</li>
+                            <li>Hands-on: First Databricks ETL Job</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 6 -->
+                    <div class="bg-purple-50 p-4 rounded-md border-l-4 border-purple-600">
+                        <h3 class="font-bold text-lg text-purple-900">Module 6: Databricks & Delta Lake (4 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Delta Lake Architecture</li>
+                            <li>ACID Transactions in Delta</li>
+                            <li>Time Travel & Versioning</li>
+                            <li>Schema Evolution & Constraints</li>
+                            <li>Optimizations (Z-Ordering, Compaction)</li>
+                            <li>Hands-on: Building a Delta Lake Solution</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 7 -->
+                    <div class="bg-purple-50 p-4 rounded-md border-l-4 border-purple-600">
+                        <h3 class="font-bold text-lg text-purple-900">Module 7: Advanced Databricks (5 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Databricks SQL & Dashboards</li>
+                            <li>Unity Catalog & Governance</li>
+                            <li>MLflow for ML Lifecycle</li>
+                            <li>Photon Engine & Query Optimization</li>
+                            <li>Structured Streaming</li>
+                            <li>Hands-on: Real-time Streaming Pipeline</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 8 -->
+                    <div class="bg-green-50 p-4 rounded-md border-l-4 border-green-600">
+                        <h3 class="font-bold text-lg text-green-900">Module 8: Integration & Orchestration (4 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>ADF-Databricks Integration</li>
+                            <li>Synapse-Databricks Integration</li>
+                            <li>Event-driven Architectures</li>
+                            <li>CI/CD for Data Solutions</li>
+                            <li>Monitoring & Observability</li>
+                            <li>Hands-on: Multi-service Orchestration</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Module 9 -->
+                    <div class="bg-green-50 p-4 rounded-md border-l-4 border-green-600">
+                        <h3 class="font-bold text-lg text-green-900">Module 9: Capstone Project (2 hours)</h3>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>End-to-End Data Engineering Solution</li>
+                            <li>Incorporating ADF, Synapse, and Databricks</li>
+                            <li>Real-world Business Case</li>
+                            <li>Solution Architecture & Implementation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KPI Tab -->
+        <section id="kpi" class="tab-content mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-6 transform transition duration-300 hover:shadow-2xl">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-blue-100 pb-2">Business KPIs Achieved with Azure Data Engineering</h2>
+                
+                <p class="text-gray-700 mb-8 text-lg">
+                    Organizations implementing Azure data engineering solutions with the techniques taught in this course have achieved significant, measurable business results. Here are the key performance indicators our clients have reported after implementing these modern data engineering patterns:
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 transform transition duration-300 hover:scale-105">
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="text-5xl font-bold text-blue-600 flex items-baseline">
+                                70<span class="text-xl ml-1">%</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mt-2 text-center">Reduction in ETL Processing Time</h3>
+                        </div>
+                        <p class="text-gray-700 text-center">
+                            By leveraging Databricks' optimized Spark engine and Delta Lake's efficient file formats, companies cut batch processing windows dramatically.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl shadow-lg p-6 transform transition duration-300 hover:scale-105">
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="text-5xl font-bold text-purple-600 flex items-baseline">
+                                4<span class="text-xl ml-1">×</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mt-2 text-center">Faster Time to Insights</h3>
+                        </div>
+                        <p class="text-gray-700 text-center">
+                            End-to-end integration between Azure services reduces the time from data collection to business insights by a factor of 4.
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-green-50 to-indigo-50 rounded-xl shadow-lg p-6 transform transition duration-300 hover:scale-105">
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="text-5xl font-bold text-green-600 flex items-baseline">
+                                63<span class="text-xl ml-1">%</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mt-2 text-center">Lower Infrastructure Costs</h3>
+                        </div>
+                        <p class="text-gray-700 text-center">
+                            Modern serverless and auto-scaling patterns eliminate overprovisioning while maintaining performance during peak loads.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-4">Operational Improvements</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex">
+                                <div class="w-full bg-gray-200 rounded-full h-4">
+                                    <div class="bg-blue-600 h-4 rounded-full" style="width: 92%"></div>
+                                </div>
+                                <span class="ml-3 text-gray-800 font-medium min-w-[60px]">92%</span>
+                                <span class="ml-2 text-gray-600">Reduction in data errors</span>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="w-full bg-gray-200 rounded-full h-4">
+                                    <div class="bg-blue-600 h-4 rounded-full" style="width: 84%"></div>
+                                </div>
+                                <span class="ml-3 text-gray-800 font-medium min-w-[60px]">84%</span>
+                                <span class="ml-2 text-gray-600">Improved data consistency</span>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="w-full bg-gray-200 rounded-full h-4">
+                                    <div class="bg-blue-600 h-4 rounded-full" style="width: 78%"></div>
+                                </div>
+                                <span class="ml-3 text-gray-800 font-medium min-w-[60px]">78%</span>
+                                <span class="ml-2 text-gray-600">Reduced maintenance time</span>
+                            </div>
+                            
+                            <div class="flex">
+                                <div class="w-full bg-gray-200 rounded-full h-4">
+                                    <div class="bg-blue-600 h-4 rounded-full" style="width: 95%"></div>
+                                </div>
+                                <span class="ml-3 text-gray-800 font-medium min-w-[60px]">95%</span>
+                                <span class="ml-2 text-gray-600">Pipeline reliability</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-md p-6 border border-gray-200">
+                        <h3 class="text-xl font-bold text-blue-900 mb-4">Business Value Metrics</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-blue-100 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-gray-700 font-medium">ROI Timeline</div>
+                                    <div class="text-xl font-bold text-gray-900">6-9 months <span class="text-green-600 text-base font-normal">(Industry avg: 18-24 months)</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="p-3 bg-blue-100 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-gray-700 font-medium">Revenue Impact</div>
+                                    <div class="text-xl font-bold text-gray-900">15-22% increase <span class="text-green-600 text-base font-normal">in data-driven sales</span></div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="p-3 bg-blue-100 rounded-full mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="text-gray-700 font-medium">Team Productivity</div>
+                                    <div class="text-xl font-bold text-gray-900">3× output <span class="text-green-600 text-base font-normal">per data engineer</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4">Industry-Specific Results</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                            <h4 class="font-bold text-lg text-gray-800 mb-2">Retail & E-commerce</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                                    <span>42% faster inventory insights</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                                    <span>Real-time pricing optimization</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
+                                    <span>360° customer view implementation</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
+                            <h4 class="font-bold text-lg text-gray-800 mb-2">Financial Services</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-purple-600 rounded-full mr-2"></div>
+                                    <span>85% faster fraud detection</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-purple-600 rounded-full mr-2"></div>
+                                    <span>Real-time risk assessment</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-purple-600 rounded-full mr-2"></div>
+                                    <span>Regulatory reporting automation</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
+                            <h4 class="font-bold text-lg text-gray-800 mb-2">Healthcare</h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
+                                    <span>Patient insights delivery in seconds</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
+                                    <span>68% improved resource allocation</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
+                                    <span>HIPAA-compliant data integration</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-xl text-blue-900 font-semibold">
+                        These KPIs were achieved using the exact techniques and architectures taught in this course.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Complete Azure Ecosystem Tab -->
+        <section id="ecosystem" class="tab-content mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-6 transform transition duration-300 hover:shadow-2xl">
+                <h2 class="text-3xl font-bold text-blue-900 mb-6 border-b-2 border-blue-100 pb-2">Complete Azure Data Engineering Ecosystem</h2>
+                
+                <p class="text-gray-700 mb-8 text-lg">
+                    While our course focuses on mastering the core Azure data engineering services (Databricks, Synapse, and Data Factory), we provide a comprehensive overview of the entire Azure data engineering ecosystem. This ensures you can integrate any of these components based on your specific project requirements.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <!-- Core Services (Highlighted) -->
+                    <div class="col-span-full">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-4">Core Focus Areas</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gradient-to-br from-red-100 to-red-50 rounded-xl shadow-lg p-6 border-2 border-red-200 transform transition duration-300 hover:scale-105">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-3 bg-red-200 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-semibold text-red-900">Azure Databricks</h4>
+                                </div>
+                                <p class="text-gray-700">Unified analytics platform optimized for big data processing and ML with Delta Lake as its foundation.</p>
+                                <div class="mt-3 text-red-800 font-medium">Covered in-depth</div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-purple-100 to-purple-50 rounded-xl shadow-lg p-6 border-2 border-purple-200 transform transition duration-300 hover:scale-105">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-3 bg-purple-200 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-semibold text-purple-900">Azure Synapse Analytics</h4>
+                                </div>
+                                <p class="text-gray-700">Integrated analytics service bringing together data integration, enterprise data warehousing, and big data analytics.</p>
+                                <div class="mt-3 text-purple-800 font-medium">Covered in-depth</div>
+                            </div>
+                            
+                            <div class="bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl shadow-lg p-6 border-2 border-blue-200 transform transition duration-300 hover:scale-105">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-3 bg-blue-200 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-semibold text-blue-900">Azure Data Factory</h4>
+                                </div>
+                                <p class="text-gray-700">Cloud-based data integration service for orchestrating and automating data movement and transformation.</p>
+                                <div class="mt-3 text-blue-800 font-medium">Covered in-depth</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Storage & Data Management -->
+                    <div class="col-span-full mt-6">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-4">Storage & Data Management</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-green-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-green-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-green-900">Azure Data Lake Storage</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Highly scalable data lake solution for big data analytics workloads with hierarchical namespace support.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Covered in Module 1</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-blue-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-blue-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-blue-900">Azure SQL Database</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Intelligent, scalable, relational database service built for the cloud with managed instance options.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 3</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-yellow-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-yellow-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-yellow-900">Azure Cosmos DB</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Globally distributed, multi-model database service for any scale with multiple API options.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Real-time & Streaming -->
+                    <div class="col-span-full mt-6">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-4">Real-time & Streaming Analytics</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-blue-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-blue-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-blue-900">Azure Stream Analytics</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Real-time analytics service for streaming data processing from devices, sensors, applications, and infrastructure.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 7</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-purple-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-purple-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-purple-900">Azure Event Hubs</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Big data streaming platform and event ingestion service capable of receiving and processing millions of events per second.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 7</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-green-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-green-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-green-900">Azure IoT Hub</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Managed service for bi-directional communication between IoT applications and devices they manage with millions of simultaneously connected devices.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Data Governance & Services -->
+                    <div class="col-span-full mt-6">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-4">Data Governance & Specialized Services</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-indigo-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-indigo-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-indigo-900">Microsoft Purview</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Unified data governance service that helps manage and govern on-premises, multi-cloud, and SaaS data with data map, catalog, and insights.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 1</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-orange-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-orange-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-orange-900">Azure Data Explorer</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Fast, fully managed data analytics service for real-time analysis of large volumes of data streaming from applications, websites, IoT devices, and more.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 8</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-gray-200 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-gray-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-gray-900">Azure Analysis Services</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Enterprise-grade analytics engine as a service that provides semantic modeling capabilities for business intelligence and client applications.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Serverless & Additional Components -->
+                    <div class="col-span-full mt-6">
+                        <h3 class="text-xl font-bold text-indigo-900 mb-4">Serverless & Additional Components</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-blue-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-blue-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-blue-900">Azure Functions</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Serverless compute service that enables you to run code on-demand without having to manage infrastructure with event-driven architecture.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 8</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-purple-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-purple-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-purple-900">Azure Logic Apps</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Cloud service that helps you schedule, automate, and orchestrate tasks, business processes, and workflows for integrating apps and data across organizations.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 2</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white rounded-xl shadow-md p-5 border border-orange-100 transform transition duration-300 hover:shadow-lg hover:-translate-y-1">
+                                <div class="flex items-center mb-3">
+                                    <div class="p-2 bg-orange-100 rounded-full mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-lg font-semibold text-orange-900">Azure HDInsight</h4>
+                                </div>
+                                <p class="text-gray-700 text-sm">Fully managed, open-source analytics service for enterprises with support for Apache Hadoop, Spark, Kafka, and more.</p>
+                                <div class="mt-3 text-sm text-gray-600">
+                                    <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded">Overview in Module 5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-10 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4">How We Approach the Complete Ecosystem</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <p class="text-gray-700 mb-4">
+                                Our course is designed to give you a thorough understanding of the complete Azure data engineering ecosystem while focusing deeply on the core services most critical to your success.
+                            </p>
+                            
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-5 h-5 text-blue-600 mt-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 text-gray-700">Learn when and why to use each service in the ecosystem</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-5 h-5 text-blue-600 mt-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 text-gray-700">Understand integration points between services</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-5 h-5 text-blue-600 mt-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 text-gray-700">Build reference architectures for different business scenarios</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <div class="flex-shrink-0 w-5 h-5 text-blue-600 mt-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <span class="ml-2 text-gray-700">Make informed architectural decisions based on requirements and constraints</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-bold text-lg text-indigo-900 mb-3">Our Teaching Approach</h4>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center">
+                                    <div class="h-4 w-4 rounded-full bg-red-500 mr-3"></div>
+                                    <div>
+                                        <div class="font-semibold">Deep Dive (13 hours)</div>
+                                        <p class="text-sm text-gray-600">Databricks, Synapse, ADF - comprehensive hands-on learning</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="h-4 w-4 rounded-full bg-blue-500 mr-3"></div>
+                                    <div>
+                                        <div class="font-semibold">Working Knowledge (10 hours)</div>
+                                        <p class="text-sm text-gray-600">Storage, integration services, governance - practical application</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="h-4 w-4 rounded-full bg-gray-400 mr-3"></div>
+                                    <div>
+                                        <div class="font-semibold">Awareness Level (6 hours)</div>
+                                        <p class="text-sm text-gray-600">Additional ecosystem services - when and how to use them</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="h-4 w-4 rounded-full bg-green-500 mr-3"></div>
+                                    <div>
+                                        <div class="font-semibold">Integration Focus (6 hours)</div>
+                                        <p class="text-sm text-gray-600">Building end-to-end solutions across multiple services</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <div class="inline-flex rounded-md shadow">
+                        <a href="#syllabus" onclick="showTab('syllabus')" class="px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                            View Full Course Syllabus
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">
+                        This demo showcases advanced Delta Lake capabilities within Azure Databricks, a critical component of modern data engineering practices. Delta Lake provides ACID transactions, schema enforcement, time travel, and optimized storage, solving key challenges in data lake architectures.
+                    </p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">1. Setting Up Delta Lake Environment</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Configure Spark to use Delta Lake
+from pyspark.sql import SparkSession
+from delta.tables import *
+import pyspark.sql.functions as F
+
+# Create Spark session with Delta Lake support
+spark = SparkSession.builder \
+    .appName("DeltaLakeDemo") \
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+    .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
+    .config("spark.databricks.delta.schema.autoMerge.enabled", "true") \
+    .getOrCreate()
+
+# Define data path (using DBFS in Databricks)
+delta_path = "/mnt/data/customer_orders_delta"
+
+print("Delta Lake environment configured successfully!")</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This initialization code sets up the Spark session with the necessary Delta Lake configurations, including schema auto-merging capability which simplifies schema evolution.
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">2. Creating a Delta Table with Complex Schema</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Generate sample data with nested structure
+from pyspark.sql.types import *
+import datetime
+import random
+
+# Define schema with nested structures
+customer_schema = StructType([
+    StructField("customer_id", StringType(), False),
+    StructField("name", StringType(), True),
+    StructField("email", StringType(), True),
+    StructField("registration_date", TimestampType(), True),
+    StructField("address", StructType([
+        StructField("street", StringType(), True),
+        StructField("city", StringType(), True),
+        StructField("state", StringType(), True),
+        StructField("zip", StringType(), True)
+    ]), True),
+    StructField("orders", ArrayType(StructType([
+        StructField("order_id", StringType(), True),
+        StructField("order_date", TimestampType(), True),
+        StructField("amount", DoubleType(), True),
+        StructField("items", ArrayType(StructType([
+            StructField("product_id", StringType(), True),
+            StructField("quantity", IntegerType(), True),
+            StructField("price", DoubleType(), True)
+        ])), True)
+    ])), True)
+])
+
+# Create sample data
+data = []
+cities = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix"]
+states = ["NY", "CA", "IL", "TX", "AZ"]
+products = ["P1001", "P1002", "P1003", "P1004", "P1005"]
+
+for i in range(1, 101):
+    customer_id = f"C{1000 + i}"
+    city_idx = random.randint(0, 4)
+    
+    orders = []
+    num_orders = random.randint(1, 5)
+    for j in range(1, num_orders + 1):
+        order_id = f"ORD-{customer_id}-{j}"
+        order_date = datetime.datetime.now() - datetime.timedelta(days=random.randint(1, 365))
+        
+        items = []
+        num_items = random.randint(1, 4)
+        order_amount = 0
+        for k in range(num_items):
+            product_id = products[random.randint(0, 4)]
+            quantity = random.randint(1, 5)
+            price = round(random.uniform(10, 100), 2)
+            item_total = quantity * price
+            order_amount += item_total
+            
+            items.append({
+                "product_id": product_id,
+                "quantity": quantity,
+                "price": price
+            })
+        
+        orders.append({
+            "order_id": order_id,
+            "order_date": order_date,
+            "amount": round(order_amount, 2),
+            "items": items
+        })
+    
+    customer = {
+        "customer_id": customer_id,
+        "name": f"Customer {i}",
+        "email": f"customer{i}@example.com",
+        "registration_date": datetime.datetime.now() - datetime.timedelta(days=random.randint(30, 730)),
+        "address": {
+            "street": f"{random.randint(100, 999)} Main St",
+            "city": cities[city_idx],
+            "state": states[city_idx],
+            "zip": f"{random.randint(10000, 99999)}"
+        },
+        "orders": orders
+    }
+    
+    data.append(customer)
+
+# Create DataFrame and write to Delta Lake
+customers_df = spark.createDataFrame(data, customer_schema)
+customers_df.write.format("delta").mode("overwrite").save(delta_path)
+
+# Create Delta table
+spark.sql(f"CREATE TABLE IF NOT EXISTS customer_orders USING DELTA LOCATION '{delta_path}'")
+
+print(f"Created Delta table with {customers_df.count()} records")
+display(spark.sql("DESCRIBE DETAIL customer_orders"))</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This code demonstrates creating a complex schema with nested structures (common in real-world scenarios) and generating realistic sample data. The Delta table creation showcases a key advantage of Delta Lake: its ability to handle complex, nested data structures efficiently.
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">3. Implementing Schema Evolution</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Schema evolution with mergeSchema option
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType, ArrayType
+
+# Read existing Delta table
+delta_df = spark.read.format("delta").load(delta_path)
+
+# Create sample data with new columns
+new_data = [
+    {
+        "customer_id": "C1001", 
+        "loyalty_tier": "GOLD",
+        "loyalty_points": 1250,
+        "preferences": {
+            "preferred_contact": "EMAIL",
+            "marketing_opt_in": True,
+            "categories": ["Electronics", "Home"]
+        }
+    },
+    {
+        "customer_id": "C1002", 
+        "loyalty_tier": "SILVER",
+        "loyalty_points": 750,
+        "preferences": {
+            "preferred_contact": "SMS",
+            "marketing_opt_in": False,
+            "categories": ["Clothing"]
+        }
+    }
+]
+
+# Define schema for new data with additional columns
+new_schema = StructType([
+    StructField("customer_id", StringType(), False),
+    StructField("loyalty_tier", StringType(), True),
+    StructField("loyalty_points", DoubleType(), True),
+    StructField("preferences", StructType([
+        StructField("preferred_contact", StringType(), True),
+        StructField("marketing_opt_in", StringType(), True),
+        StructField("categories", ArrayType(StringType()), True)
+    ]), True)
+])
+
+# Create DataFrame with new columns
+new_df = spark.createDataFrame(new_data, new_schema)
+
+# Write with mergeSchema option to evolve schema
+new_df.write.format("delta") \
+    .option("mergeSchema", "true") \
+    .mode("append") \
+    .save(delta_path)
+
+# Verify schema evolution
+evolved_df = spark.read.format("delta").load(delta_path)
+print("Schema after evolution:")
+evolved_df.printSchema()
+
+# Show data with new columns
+print("\nData with new columns:")
+display(evolved_df.select("customer_id", "loyalty_tier", "loyalty_points", "preferences").where("loyalty_tier IS NOT NULL"))</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This example demonstrates Delta Lake's schema evolution capabilities, allowing you to add new columns to your data model without breaking existing queries - a critical feature for agile data environments.
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">4. Time Travel and Version Management</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Demonstrate Delta Lake time travel
+from delta.tables import DeltaTable
+import time
+
+# Get current table version
+history = spark.sql(f"DESCRIBE HISTORY delta.`{delta_path}`")
+current_version = history.select("version").first()[0]
+print(f"Current table version: {current_version}")
+
+# Make some updates
+delta_table = DeltaTable.forPath(spark, delta_path)
+delta_table.update(
+    condition="address.state = 'CA'",
+    set={"address.state": F.lit("California")}
+)
+
+# Check history after update
+history = spark.sql(f"DESCRIBE HISTORY delta.`{delta_path}`")
+display(history.select("version", "timestamp", "operation", "operationParameters"))
+
+# Count records in California after update
+updated_df = spark.read.format("delta").load(delta_path)
+california_count = updated_df.filter("address.state = 'California'").count()
+print(f"Records with state 'California' after update: {california_count}")
+
+# Time travel to previous version
+previous_df = spark.read.format("delta").option("versionAsOf", current_version).load(delta_path)
+ca_count = previous_df.filter("address.state = 'CA'").count()
+california_count = previous_df.filter("address.state = 'California'").count()
+print(f"At version {current_version}:")
+print(f" - Records with state 'CA': {ca_count}")
+print(f" - Records with state 'California': {california_count}")
+
+# Demonstrate rollback
+delta_table.restoreToVersion(current_version)
+print(f"Table rolled back to version {current_version}")
+
+# Verify rollback
+restored_df = spark.read.format("delta").load(delta_path)
+ca_count = restored_df.filter("address.state = 'CA'").count()
+california_count = restored_df.filter("address.state = 'California'").count()
+print("After rollback:")
+print(f" - Records with state 'CA': {ca_count}")
+print(f" - Records with state 'California': {california_count}")</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This section demonstrates one of Delta Lake's most powerful features - time travel. The ability to query data at any point in time, review historical changes, and rollback to previous versions is invaluable for data governance, auditing, and recovery scenarios.
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">5. Optimizing Delta Lake Performance</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Delta Lake optimization techniques
+import time
+
+# Run a query and measure performance
+def measure_query_time(query_func):
+    start_time = time.time()
+    result = query_func()
+    end_time = time.time()
+    return result, (end_time - start_time)
+
+# Query to find high-value customers in New York
+def query_high_value_customers():
+    return spark.sql("""
+        SELECT 
+            c.customer_id,
+            c.name,
+            c.email,
+            c.address.city,
+            SUM(o.amount) as total_spend
+        FROM (
+            SELECT 
+                customer_id, 
+                name, 
+                email, 
+                address,
+                EXPLODE(orders) as o
+            FROM delta.`{}`) c
+        WHERE c.address.city = 'New York'
+        GROUP BY c.customer_id, c.name, c.email, c.address.city
+        HAVING SUM(o.amount) > 300
+        ORDER BY total_spend DESC
+    """.format(delta_path))
+
+# Run query before optimization
+print("Running query before optimization...")
+result_before, time_before = measure_query_time(query_high_value_customers)
+print(f"Query execution time before optimization: {time_before:.2f} seconds")
+display(result_before)
+
+# Optimize the Delta table with Z-Order
+print("\nOptimizing table...")
+spark.sql(f"""
+    OPTIMIZE delta.`{delta_path}`
+    ZORDER BY (customer_id, `address.city`)
+""")
+
+# Check optimization history
+optimize_history = spark.sql(f"DESCRIBE HISTORY delta.`{delta_path}`").filter("operation = 'OPTIMIZE'")
+display(optimize_history)
+
+# Run the same query after optimization
+print("\nRunning query after optimization...")
+result_after, time_after = measure_query_time(query_high_value_customers)
+print(f"Query execution time after optimization: {time_after:.2f} seconds")
+print(f"Performance improvement: {(time_before - time_after) / time_before * 100:.2f}%")
+
+# Vacuum old files (usually set higher in production)
+print("\nRunning vacuum to clean up old files...")
+# Setting retention to 0 hours for demo purposes
+# In production, use longer retention periods (default is 7 days)
+spark.sql(f"VACUUM delta.`{delta_path}` RETAIN 0 HOURS")
+
+# Check table details after optimization
+table_details = spark.sql(f"DESCRIBE DETAIL delta.`{delta_path}`")
+display(table_details)</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This section demonstrates Delta Lake's performance optimization capabilities, including Z-Order indexing and vacuuming. Z-Order optimizes data layout for common query patterns, while vacuuming manages file system cleanup - both critical for large-scale data lakes.
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">6. Delta Lake Change Data Feed (CDF)</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python"># Enable Change Data Feed for the table
+spark.sql(f"ALTER TABLE delta.`{delta_path}` SET TBLPROPERTIES (delta.enableChangeDataFeed = true)")
+
+# Get current version before changes
+history = spark.sql(f"DESCRIBE HISTORY delta.`{delta_path}`")
+start_version = history.select("version").first()[0]
+
+# Make some updates
+delta_table = DeltaTable.forPath(spark, delta_path)
+
+# Update: Change loyalty tier for some customers
+delta_table.update(
+    condition="customer_id IN ('C1001', 'C1003', 'C1005')",
+    set={"loyalty_tier": F.lit("PLATINUM")}
+)
+
+# Insert: Add new customer
+new_customer = [{
+    "customer_id": "C1101",
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "registration_date": datetime.datetime.now(),
+    "address": {
+        "street": "123 Park Ave",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10001"
+    },
+    "orders": [],
+    "loyalty_tier": "BRONZE",
+    "loyalty_points": 100
+}]
+new_customer_df = spark.createDataFrame(new_customer)
+new_customer_df.write.format("delta").mode("append").save(delta_path)
+
+# Delete: Remove a customer
+delta_table.delete("customer_id = 'C1050'")
+
+# Get end version after changes
+history = spark.sql(f"DESCRIBE HISTORY delta.`{delta_path}`")
+end_version = history.select("version").first()[0]
+
+# Read the change data feed between versions
+changes_df = spark.read.format("delta") \
+    .option("readChangeFeed", "true") \
+    .option("startingVersion", start_version + 1) \
+    .option("endingVersion", end_version) \
+    .load(delta_path)
+
+# Display changes
+print(f"Changes between versions {start_version + 1} and {end_version}:")
+display(changes_df.select(
+    "_change_type", 
+    "customer_id", 
+    "name", 
+    "loyalty_tier",
+    "_commit_version"
+))
+
+# Demonstrate CDC use case: Syncing changes to a downstream system
+print("\nSyncing changes to downstream system (example code):")
+print("============================================")
+print("# Code that would run in production to sync changes")
+print("changes_by_type = changes_df.groupBy('_change_type').count()")
+print("display(changes_by_type)")
+print("")
+print("# Process each change type")
+print("for change_type in ['insert', 'update_preimage', 'update_postimage', 'delete']:")
+print("    changes = changes_df.filter(f\"_change_type = '{change_type}'\")")
+print("    # Process based on change type")
+print("    if change_type == 'insert' or change_type == 'update_postimage':")
+print("        # Code to insert/update in downstream system")
+print("        pass")
+print("    elif change_type == 'delete':")
+print("        # Code to delete in downstream system")
+print("        pass")
+print("============================================")</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This section demonstrates Delta Lake's Change Data Feed (CDF) feature, which enables efficient change data capture for downstream processing, a critical capability for data integration and real-time data pipelines.
+                    </p>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">7. Integration with Azure Data Factory</h3>
+                    
+                    <div class="code-block mb-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-json">{
+    "name": "DatabricksDeltaIngestionPipeline",
+    "properties": {
+        "activities": [
+            {
+                "name": "IngestDataToDelta",
+                "type": "DatabricksNotebook",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 3,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/Ingestion/IngestToDelta",
+                    "baseParameters": {
+                        "sourceContainer": {
+                            "value": "@pipeline().parameters.sourceContainer",
+                            "type": "Expression"
+                        },
+                        "sourceFolder": {
+                            "value": "@pipeline().parameters.sourceFolder",
+                            "type": "Expression"
+                        },
+                        "deltaTablePath": {
+                            "value": "@pipeline().parameters.deltaTablePath",
+                            "type": "Expression"
+                        },
+                        "runDate": {
+                            "value": "@utcnow('yyyy-MM-dd')",
+                            "type": "Expression"
+                        }
+                    },
+                    "libraries": [
+                        {
+                            "pypi": {
+                                "package": "delta-spark==2.3.0"
+                            }
+                        }
+                    ]
+                },
+                "linkedServiceName": {
+                    "referenceName": "AzureDatabricks",
+                    "type": "LinkedServiceReference"
+                }
+            },
+            {
+                "name": "OptimizeDeltaTable",
+                "type": "DatabricksNotebook",
+                "dependsOn": [
+                    {
+                        "activity": "IngestDataToDelta",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 1,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "notebookPath": "/Shared/Maintenance/OptimizeDelta",
+                    "baseParameters": {
+                        "deltaTablePath": {
+                            "value": "@pipeline().parameters.deltaTablePath",
+                            "type": "Expression"
+                        },
+                        "optimizeColumns": "customer_id,registration_date",
+                        "vacuumRetentionHours": "168"
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "AzureDatabricks",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "parameters": {
+            "sourceContainer": {
+                "type": "string",
+                "defaultValue": "raw-data"
+            },
+            "sourceFolder": {
+                "type": "string",
+                "defaultValue": "customer-data"
+            },
+            "deltaTablePath": {
+                "type": "string",
+                "defaultValue": "/mnt/data/customer_orders_delta"
+            }
+        },
+        "annotations": [],
+        "lastPublishTime": "2025-04-28T13:49:32Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}</code></pre>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-4">
+                        This JSON example shows how to orchestrate Delta Lake operations using Azure Data Factory, creating a production-grade data pipeline that integrates data ingestion with Delta table maintenance.
+                    </p>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">8. Integration with Azure Synapse Analytics</h3>
+                    
+                    <div class="code-block">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-sql">-- Serverless SQL pool query against Delta Lake
+SELECT TOP 100
+    c.customer_id,
+    c.name,
+    c.email,
+    c.address.city AS city,
+    c.address.state AS state,
+    o.order_id,
+    o.order_date,
+    o.amount AS order_amount
+FROM
+    OPENROWSET(
+        BULK 'https://youraccount.dfs.core.windows.net/container/customer_orders_delta/',
+        FORMAT = 'DELTA'
+    ) AS c
+CROSS APPLY c.orders AS o
+WHERE
+    c.address.state IN ('NY', 'California')
+    AND o.amount > 200
+ORDER BY
+    o.amount DESC;
+
+-- Create a Synapse link to the Delta table
+CREATE EXTERNAL TABLE customer_orders_synapse
+WITH (
+    LOCATION = 'https://youraccount.dfs.core.windows.net/container/customer_orders_delta/',
+    DATA_SOURCE = DeltaLakeStorage,
+    FILE_FORMAT = DELTA
+)
+AS
+SELECT
+    customer_id,
+    name,
+    email,
+    address.street AS street_address,
+    address.city AS city,
+    address.state AS state,
+    address.zip AS zip_code,
+    registration_date,
+    loyalty_tier,
+    loyalty_points
+FROM
+    OPENROWSET(
+        BULK 'https://youraccount.dfs.core.windows.net/container/customer_orders_delta/',
+        FORMAT = 'DELTA'
+    );
+
+-- Join with other data in Synapse dedicated SQL pool
+SELECT
+    c.customer_id,
+    c.name,
+    c.city,
+    c.state,
+    c.loyalty_tier,
+    SUM(s.revenue) AS total_sales,
+    COUNT(DISTINCT s.order_id) AS order_count,
+    AVG(s.revenue) AS avg_order_value
+FROM
+    customer_orders_synapse c
+JOIN
+    dbo.SalesData s ON c.customer_id = s.customer_id
+WHERE
+    c.registration_date > DATEADD(YEAR, -1, GETDATE())
+GROUP BY
+    c.customer_id,
+    c.name,
+    c.city,
+    c.state,
+    c.loyalty_tier
+HAVING
+    SUM(s.revenue) > 500
+ORDER BY
+    total_sales DESC;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Python Example Tab -->
+        <section id="code" class="tab-content mb-16">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-green-900 mb-6">Executable Python Example: Real-time Data Processing with Delta Tables</h2>
+                
+                <div class="mb-6">
+                    <p class="text-gray-700 mb-4">
+                        This Python example demonstrates how to implement a real-time data processing pipeline using Delta Lake. This code can be run locally on your machine with the proper libraries installed. Created by <span class="font-semibold">Jinesh Ranawat</span>, this example showcases key Delta Lake concepts including streaming writes, schema evolution, and compaction.
+                    </p>
+                    
+                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-600 mb-6">
+                        <h3 class="font-bold text-lg text-blue-900">Prerequisites</h3>
+                        <p class="text-gray-700 mt-2">To run this example locally, you'll need:</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Python 3.8+ installed</li>
+                            <li>Required libraries: <code>pyspark, delta-spark, pandas, numpy, faker</code></li>
+                            <li>Installation: <code>pip install pyspark==3.4.0 delta-spark==2.4.0 pandas numpy faker</code></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="code-block mb-8">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded text-sm" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-python"># real_time_delta_processor.py
+# A complete local Python script for real-time data processing with Delta Lake
+# Created by Jinesh Ranawat
+
+import os
+import time
+import random
+import shutil
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+from faker import Faker
+from pyspark.sql import SparkSession
+from pyspark.sql.types import *
+from pyspark.sql.functions import *
+from delta.tables import *
+
+# Configuration
+LOCAL_DELTA_PATH = "./delta_tables"
+LOCAL_CHECKPOINT_PATH = "./checkpoints"
+STREAM_DATA_PATH = "./stream_data"
+BATCH_SIZE = 100
+NUM_BATCHES = 5
+STREAM_INTERVAL_SECONDS = 2
+
+# Clean up previous runs
+for path in [LOCAL_DELTA_PATH, LOCAL_CHECKPOINT_PATH, STREAM_DATA_PATH]:
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    os.makedirs(path)
+
+# Initialize Faker for generating realistic data
+fake = Faker()
+
+# Create Spark session with Delta support
+def create_spark_session():
+    return (SparkSession.builder
+            .appName("DeltaLakeRealTimeProcessing")
+            .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+            .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
+            .config("spark.databricks.delta.schema.autoMerge.enabled", "true")
+            .config("spark.sql.shuffle.partitions", "1") # For local demo only
+            .master("local[*]")
+            .getOrCreate())
+
+spark = create_spark_session()
+print("Spark session created successfully")
+
+# Define schema for the transaction data
+transaction_schema = StructType([
+    StructField("transaction_id", StringType(), False),
+    StructField("customer_id", StringType(), True),
+    StructField("transaction_time", TimestampType(), True),
+    StructField("amount", DoubleType(), True),
+    StructField("product_id", StringType(), True),
+    StructField("store_id", StringType(), True),
+    StructField("payment_method", StringType(), True),
+    StructField("is_approved", BooleanType(), True)
+])
+
+# Generate transaction data
+def generate_transaction_data(batch_id, batch_size):
+    transactions = []
+    
+    for i in range(batch_size):
+        transaction_id = f"T-{batch_id}-{i}"
+        customer_id = f"C{random.randint(1000, 9999)}"
+        transaction_time = datetime.now() - timedelta(seconds=random.randint(0, 60))
+        amount = round(random.uniform(10.0, 500.0), 2)
+        product_id = f"P{random.randint(100, 999)}"
+        store_id = f"S{random.randint(10, 99)}"
+        payment_method = random.choice(["CREDIT", "DEBIT", "CASH", "MOBILE"])
+        is_approved = random.random() > 0.05  # 5% rejected transactions
+        
+        transactions.append({
+            "transaction_id": transaction_id,
+            "customer_id": customer_id,
+            "transaction_time": transaction_time,
+            "amount": amount,
+            "product_id": product_id,
+            "store_id": store_id,
+            "payment_method": payment_method,
+            "is_approved": is_approved
+        })
+    
+    return transactions
+
+# Generate and save transaction data as JSON for streaming
+def generate_stream_data():
+    print("Generating streaming data...")
+    os.makedirs(f"{STREAM_DATA_PATH}/transactions", exist_ok=True)
+    
+    for batch_id in range(1, NUM_BATCHES + 1):
+        transactions = generate_transaction_data(batch_id, BATCH_SIZE)
+        df = pd.DataFrame(transactions)
+        
+        # Convert timestamps to string for JSON serialization
+        df['transaction_time'] = df['transaction_time'].astype(str)
+        
+        # Save as JSON file
+        file_path = f"{STREAM_DATA_PATH}/transactions/batch_{batch_id}.json"
+        df.to_json(file_path, orient='records', lines=True)
+        
+        print(f"Generated batch {batch_id} with {BATCH_SIZE} transactions")
+        time.sleep(STREAM_INTERVAL_SECONDS)
+
+# Create customer data with additional details
+def create_customer_data():
+    customers = []
+    
+    for i in range(1000, 10000):
+        customer_id = f"C{i}"
+        
+        customers.append({
+            "customer_id": customer_id,
+            "name": fake.name(),
+            "email": fake.email(),
+            "address": fake.address().replace('\n', ', '),
+            "city": fake.city(),
+            "state": fake.state_abbr(),
+            "registration_date": fake.date_between(start_date='-3y', end_date='today'),
+            "loyalty_tier": random.choice(["BRONZE", "SILVER", "GOLD", "PLATINUM"]),
+            "credit_score": random.randint(300, 850)
+        })
+    
+    # Convert to DataFrame and write to Delta
+    customer_df = spark.createDataFrame(customers)
+    customer_df.write.format("delta").mode("overwrite").save(f"{LOCAL_DELTA_PATH}/customers")
+    
+    print(f"Created customer Delta table with {len(customers)} records")
+    return customer_df
+
+# Create product data
+def create_product_data():
+    products = []
+    categories = ["Electronics", "Clothing", "Home", "Food", "Beauty", "Sports"]
+    
+    for i in range(100, 1000):
+        product_id = f"P{i}"
+        category = random.choice(categories)
+        
+        products.append({
+            "product_id": product_id,
+            "name": f"{category} Item {i}",
+            "category": category,
+            "price": round(random.uniform(10.0, 1000.0), 2),
+            "stock_quantity": random.randint(0, 500),
+            "rating": round(random.uniform(1.0, 5.0), 1)
+        })
+    
+    # Convert to DataFrame and write to Delta
+    product_df = spark.createDataFrame(products)
+    product_df.write.format("delta").mode("overwrite").save(f"{LOCAL_DELTA_PATH}/products")
+    
+    print(f"Created product Delta table with {len(products)} records")
+    return product_df
+
+# Setup streaming query to process transaction data
+def setup_streaming_query():
+    print("Setting up streaming query...")
+    
+    # Read the stream
+    transaction_stream = (
+        spark.readStream
+        .schema(transaction_schema)
+        .json(f"{STREAM_DATA_PATH}/transactions")
+    )
+    
+    # Process the stream with watermarking and windowing
+    processed_stream = (
+        transaction_stream
+        .withWatermark("transaction_time", "1 minute")
+        .withColumn("processing_time", current_timestamp())
+        .withColumn("hour_window", window("transaction_time", "1 hour"))
+    )
+    
+    # Write to Delta table with checkpointing
+    stream_query = (
+        processed_stream
+        .writeStream
+        .format("delta")
+        .option("checkpointLocation", f"{LOCAL_CHECKPOINT_PATH}/transactions")
+        .outputMode("append")
+        .start(f"{LOCAL_DELTA_PATH}/transactions")
+    )
+    
+    return stream_query
+
+# Create aggregated sales metrics in Delta table
+def create_sales_metrics():
+    # Wait for some streaming data to arrive
+    time.sleep(STREAM_INTERVAL_SECONDS * 2)
+    
+    # Define the Delta tables
+    transactions_delta = DeltaTable.forPath(spark, f"{LOCAL_DELTA_PATH}/transactions")
+    
+    # Create a view for SQL
+    transactions_delta.toDF().createOrReplaceTempView("transactions")
+    
+    # Create sales metrics with SQL and write to Delta
+    sales_metrics = spark.sql("""
+        SELECT 
+            product_id,
+            store_id,
+            COUNT(*) as transaction_count,
+            SUM(amount) as total_sales,
+            AVG(amount) as avg_transaction_value,
+            COUNT(CASE WHEN is_approved = false THEN 1 END) as rejected_count
+        FROM transactions
+        GROUP BY product_id, store_id
+    """)
+    
+    sales_metrics.write.format("delta").mode("overwrite").save(f"{LOCAL_DELTA_PATH}/sales_metrics")
+    print("Created sales metrics Delta table")
+    return sales_metrics
+
+# Demonstrate schema evolution by adding columns
+def demonstrate_schema_evolution():
+    print("\nDemonstrating schema evolution...")
+    
+    # Get the current schema
+    current_df = spark.read.format("delta").load(f"{LOCAL_DELTA_PATH}/transactions")
+    print("Original schema:")
+    current_df.printSchema()
+    
+    # Add new fields to the schema
+    new_data = spark.createDataFrame([
+        {
+            "transaction_id": f"T-EVO-1",
+            "customer_id": "C5000",
+            "transaction_time": datetime.now(),
+            "amount": 150.0,
+            "product_id": "P500",
+            "store_id": "S25",
+            "payment_method": "CRYPTO",
+            "is_approved": True,
+            "promotion_code": "SUMMER25",
+            "discount_amount": 25.0,
+            "loyalty_points_earned": 150
+        }
+    ])
+    
+    # Write with schema evolution
+    new_data.write.format("delta").mode("append").option("mergeSchema", "true").save(f"{LOCAL_DELTA_PATH}/transactions")
+    
+    # Check updated schema
+    evolved_df = spark.read.format("delta").load(f"{LOCAL_DELTA_PATH}/transactions")
+    print("\nEvolved schema:")
+    evolved_df.printSchema()
+    
+    # Verify the new row is there
+    new_row = evolved_df.filter("transaction_id = 'T-EVO-1'")
+    print("\nNew row with extended schema:")
+    new_row.show(truncate=False)
+
+# Demonstrate Delta time travel
+def demonstrate_time_travel():
+    print("\nDemonstrating Delta time travel...")
+    
+    # Get the current version
+    history = spark.sql(f"DESCRIBE HISTORY delta.`{LOCAL_DELTA_PATH}/transactions`")
+    versions = history.select("version").collect()
+    
+    if len(versions) > 1:
+        current_version = versions[0][0]
+        previous_version = versions[1][0]
+        
+        # Count records in current version
+        current_count = spark.read.format("delta").load(f"{LOCAL_DELTA_PATH}/transactions").count()
+        print(f"Current version {current_version} record count: {current_count}")
+        
+        # Count records in previous version
+        previous_count = spark.read.format("delta").option("versionAsOf", previous_version).load(f"{LOCAL_DELTA_PATH}/transactions").count()
+        print(f"Previous version {previous_version} record count: {previous_count}")
+        
+        # Show history
+        print("\nTable history:")
+        history.select("version", "timestamp", "operation", "operationParameters").show(truncate=False)
+    else:
+        print("Not enough versions available for time travel demonstration")
+
+# Demonstrate optimization and vacuuming
+def demonstrate_optimization():
+    print("\nDemonstrating Delta optimization...")
+    
+    # Optimize table
+    spark.sql(f"OPTIMIZE delta.`{LOCAL_DELTA_PATH}/transactions` ZORDER BY (transaction_time, store_id)")
+    
+    # Show optimize history
+    history = spark.sql(f"DESCRIBE HISTORY delta.`{LOCAL_DELTA_PATH}/transactions`")
+    optimize_history = history.filter(history.operation == "OPTIMIZE")
+    print("Optimization history:")
+    optimize_history.show(truncate=False)
+    
+    # Vacuum
+    # Note: Using retention=0 for demo; in production use longer retention
+    spark.sql(f"VACUUM delta.`{LOCAL_DELTA_PATH}/transactions` RETAIN 0 HOURS")
+
+# Join Delta tables and perform analysis
+def perform_analysis():
+    print("\nPerforming data analysis...")
+    
+    # Load all Delta tables
+    transactions = spark.read.format("delta").load(f"{LOCAL_DELTA_PATH}/transactions")
+    customers = spark.read.format("delta").load(f"{LOCAL_DELTA_PATH}/customers")
+    products = spark.read.format("delta").load(f"{LOCAL_DELTA_PATH}/products")
+    
+    # Register as views
+    transactions.createOrReplaceTempView("transactions")
+    customers.createOrReplaceTempView("customers")
+    products.createOrReplaceTempView("products")
+    
+    # Perform analysis
+    analysis = spark.sql("""
+        SELECT 
+            c.loyalty_tier,
+            p.category,
+            COUNT(t.transaction_id) as num_transactions,
+            SUM(t.amount) as total_spend,
+            AVG(t.amount) as avg_transaction_value,
+            SUM(CASE WHEN t.is_approved = false THEN 1 ELSE 0 END) as rejected_count
+        FROM transactions t
+        JOIN customers c ON t.customer_id = c.customer_id
+        JOIN products p ON t.product_id = p.product_id
+        GROUP BY c.loyalty_tier, p.category
+        ORDER BY c.loyalty_tier, total_spend DESC
+    """)
+    
+    print("\nCustomer spending analysis by loyalty tier and product category:")
+    analysis.show(truncate=False)
+    
+    # Calculate percentage of rejected transactions by payment method
+    rejected_analysis = spark.sql("""
+        SELECT 
+            payment_method,
+            COUNT(*) as total_transactions,
+            SUM(CASE WHEN is_approved = false THEN 1 ELSE 0 END) as rejected_count,
+            (SUM(CASE WHEN is_approved = false THEN 1 ELSE 0 END) / COUNT(*)) * 100 as rejection_rate
+        FROM transactions
+        GROUP BY payment_method
+        ORDER BY rejection_rate DESC
+    """)
+    
+    print("\nRejection rate by payment method:")
+    rejected_analysis.show(truncate=False)
+    
+    # Top 10 customers by spend
+    top_customers = spark.sql("""
+        SELECT 
+            c.customer_id,
+            c.name,
+            c.loyalty_tier,
+            SUM(t.amount) as total_spend,
+            COUNT(t.transaction_id) as transaction_count
+        FROM transactions t
+        JOIN customers c ON t.customer_id = c.customer_id
+        WHERE t.is_approved = true
+        GROUP BY c.customer_id, c.name, c.loyalty_tier
+        ORDER BY total_spend DESC
+        LIMIT 10
+    """)
+    
+    print("\nTop 10 customers by spend:")
+    top_customers.show(truncate=False)
+
+# Main execution
+def main():
+    try:
+        print("Starting Delta Lake Real-time Processing Demo...")
+        
+        # Create reference data
+        create_customer_data()
+        create_product_data()
+        
+        # Start streaming process
+        stream_query = setup_streaming_query()
+        
+        # Generate streaming data in a separate thread
+        import threading
+        stream_thread = threading.Thread(target=generate_stream_data)
+        stream_thread.start()
+        
+        # Create sales metrics
+        create_sales_metrics()
+        
+        # Wait for streaming to complete
+        stream_thread.join()
+        
+        # Wait for processing to complete
+        stream_query.processAllAvailable()
+        
+        # Demonstrate Delta features
+        demonstrate_schema_evolution()
+        demonstrate_time_travel()
+        demonstrate_optimization()
+        
+        # Perform analysis on the data
+        perform_analysis()
+        
+        # Stop the streaming query
+        stream_query.stop()
+        
+        print("\nDemo completed successfully!")
+        print(f"Generated Delta tables can be found at: {os.path.abspath(LOCAL_DELTA_PATH)}")
+        
+    except Exception as e:
+        print(f"Error in demo: {str(e)}")
+    finally:
+        spark.stop()
+
+if __name__ == "__main__":
+    main()</code></pre>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-purple-800 mb-3">Running the Example</h3>
+                <div class="bg-gray-50 p-4 rounded-md mb-6">
+                    <p class="text-gray-700 mb-2">Save the code as <code>real_time_delta_processor.py</code> and run it with:</p>
+                    <pre><code class="language-bash">python real_time_delta_processor.py</code></pre>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-purple-800 mb-3">What This Example Demonstrates</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-purple-50 p-4 rounded-md border-l-4 border-purple-600">
+                        <h4 class="font-bold text-purple-900">Delta Lake Features</h4>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Streaming writes to Delta tables</li>
+                            <li>Schema evolution with mergeSchema option</li>
+                            <li>Time travel capabilities</li>
+                            <li>Delta table optimization with Z-Order</li>
+                            <li>Vacuum for file management</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-blue-50 p-4 rounded-md border-l-4 border-blue-600">
+                        <h4 class="font-bold text-blue-900">Data Engineering Concepts</h4>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Real-time data processing</li>
+                            <li>Reference data integration</li>
+                            <li>Transaction processing</li>
+                            <li>Metrics calculation</li>
+                            <li>Data analysis and reporting</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mt-8 bg-green-50 p-4 rounded-md border-l-4 border-green-600">
+                    <h3 class="font-bold text-lg text-green-900">Key Learning Points</h3>
+                    <p class="text-gray-700 mt-2">In our course, we'll dive deeper into each aspect demonstrated in this code, including:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <li>Configuring optimized Delta Lake parameters for performance</li>
+                        <li>Implementing advanced streaming patterns</li>
+                        <li>Deploying this pattern to Azure Databricks</li>
+                        <li>Scaling for production workloads</li>
+                        <li>Integrating with Azure Data Factory for orchestration</li>
+                        <li>Connecting to Synapse Analytics for data warehousing scenarios</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="bg-gray-800 text-white p-6">
+        <div class="container mx-auto">
+            <div class="text-center">
+                <p>Azure Data Engineering Mastery Course</p>
+                <p class="text-sm mt-2">© 2025 - Comprehensive 35-Hour Training Program by Jinesh Ranawat</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show the selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active state in navigation
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('bg-blue-700');
+                btn.classList.add('hover:bg-blue-700');
+            });
+            
+            // Find the button that corresponds to this tab and highlight it
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('bg-blue-700');
+                    btn.classList.remove('hover:bg-blue-700');
+                }
+            });
+        }
+        
+        // Filter modules in syllabus
+        function filterModules(category) {
+            // Update active state in filter buttons
+            document.querySelectorAll('.module-filter-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-blue-700', 'text-white');
+                btn.classList.add('text-blue-900', 'bg-white');
+            });
+            
+            // Find the button that corresponds to this filter and highlight it
+            document.querySelectorAll('.module-filter-btn').forEach(btn => {
+                if (btn.getAttribute('onclick').includes(category)) {
+                    btn.classList.add('active', 'bg-blue-700', 'text-white');
+                    btn.classList.remove('text-blue-900', 'bg-white');
+                }
+            });
+            
+            // Filter the modules
+            document.querySelectorAll('.module').forEach(module => {
+                if (category === 'all') {
+                    module.style.display = 'block';
+                } else if (module.getAttribute('data-category') === category) {
+                    module.style.display = 'block';
+                } else {
+                    module.style.display = 'none';
+                }
+            });
+        }
+        
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const menu = document.getElementById('menu');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                menu.classList.toggle('hidden');
+            });
+            
+            // Set the default tab (overview)
+            showTab('overview');
+            
+            // Set default filter (all)
+            filterModules('all');
+        });
+        
+        // Copy code functionality
+        function copyCode(button) {
+            const pre = button.nextElementSibling;
+            const code = pre.querySelector('code');
+            const text = code.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                button.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
