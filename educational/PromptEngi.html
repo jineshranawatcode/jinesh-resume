@@ -1,0 +1,2444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ultimate Prompt Engineering Guide for Developers</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Syntax highlighting via Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
+    <style>
+        /* Custom styles */
+        .code-block {
+            position: relative;
+            border-radius: 0.375rem;
+            margin: 1rem 0;
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .copy-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.5rem 1rem;
+            background-color: #4c1d95;
+            color: white;
+            border-radius: 0.25rem;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-content.expanded {
+            max-height: 5000px;
+            transition: max-height 1s ease-in;
+        }
+        .cheatsheet {
+            display: none;
+            position: fixed;
+            bottom: 4rem;
+            right: 1rem;
+            width: 24rem;
+            max-height: 80vh;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            z-index: 40;
+            overflow-y: auto;
+        }
+        .cheatsheet.visible {
+            display: block;
+        }
+        /* Print styles */
+        @media print {
+            .tab-menu, .cheatsheet-toggle, .copy-button {
+                display: none !important;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .collapsible-content {
+                max-height: none !important;
+            }
+            .collapsible-header:after {
+                display: none !important;
+            }
+        }
+        /* ... existing code ... */
+        .code-block code, .code-block pre, .code-block pre code {
+            color: #111 !important;
+            /* Ensure high contrast for code */
+        }
+        /* ... existing code ... */
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+    <!-- Toast notification for copy confirmation -->
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white py-8 px-4 shadow-lg">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold mb-2">The Ultimate Guide to Prompt Engineering</h1>
+            <p class="text-xl opacity-90">Master the art and science of crafting effective prompts for AI models</p>
+            <div class="mt-6 flex flex-wrap gap-2">
+                <button class="bg-white text-purple-800 px-4 py-2 rounded font-medium hover:bg-gray-100 transition" onclick="printGuide()">
+                    Print Guide
+                </button>
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded font-medium hover:bg-indigo-700 transition" onclick="toggleCheatsheet()">
+                    Toggle Cheatsheet
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-30">
+        <div class="container mx-auto overflow-x-auto">
+            <div id="tab-menu" class="tab-menu flex space-x-1 p-2 min-w-max">
+                <button data-tab="principles" class="tab-button active px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors bg-purple-100 text-purple-700">
+                    Core Principles
+                </button>
+                <button data-tab="tactics" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Tactical Approaches
+                </button>
+                <button data-tab="process" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Iterative Process
+                </button>
+                <button data-tab="techniques" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Specialized Techniques
+                </button>
+                <button data-tab="chatbots" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Building Chatbots
+                </button>
+                <button data-tab="workflow" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Dev Workflow
+                </button>
+                <button data-tab="patterns" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Patterns
+                </button>
+                <button data-tab="cheatsheet" class="tab-button px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors text-gray-600 hover:bg-gray-100">
+                    Cheatsheet
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating cheatsheet -->
+    <div id="floating-cheatsheet" class="cheatsheet">
+        <div class="bg-indigo-700 text-white p-3 flex justify-between items-center sticky top-0">
+            <h3 class="font-bold">Prompt Engineering Cheatsheet</h3>
+            <button onclick="toggleCheatsheet()" class="text-white">
+                &times;
+            </button>
+        </div>
+        <div class="p-4">
+            <h4 class="font-semibold text-indigo-800 mb-2">Common Tasks</h4>
+            <ul class="space-y-2 mb-4">
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">Code Generation:</span> "Write a function that [does X]. Include error handling."
+                </li>
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">Text Summarization:</span> "Summarize this text focusing on [aspect]."
+                </li>
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">Bug Fixing:</span> "Debug this code and explain the issue: [code]"
+                </li>
+            </ul>
+            
+            <h4 class="font-semibold text-indigo-800 mb-2">Core Techniques</h4>
+            <ul class="space-y-2 mb-4">
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">Delimiters:</span> Use ```text``` to clearly separate content
+                </li>
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">Structured Output:</span> "Format as JSON with keys: [key1, key2]"
+                </li>
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">Step-by-Step:</span> "1. First do X. 2. Then do Y. 3. Finally do Z."
+                </li>
+            </ul>
+            
+            <h4 class="font-semibold text-indigo-800 mb-2">Temperature Settings</h4>
+            <ul class="space-y-2">
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">0.0-0.3:</span> Factual tasks (code, documentation)
+                </li>
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">0.3-0.7:</span> Balanced creativity (content writing)
+                </li>
+                <li class="text-sm border-b border-gray-100 pb-2">
+                    <span class="font-medium">0.7-1.0:</span> High creativity (brainstorming)
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Core Principles -->
+        <section id="principles" class="tab-content active">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Core Principles of Effective Prompting</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="principle1">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Principle 1: Write Clear and Specific Instructions</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="principle1-content">
+                    <p class="my-4">Clear, specific instructions help the AI model understand exactly what you want. The clearer your prompt, the better the results.</p>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4 my-4">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tactic 1: Use Delimiters</h4>
+                        <p class="mb-4">Delimiters clearly separate different parts of your input, helping the model understand what you want it to process.</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Summarize the text delimited by triple backticks into a single sentence:
+```{text}```
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        
+                        <p class="mt-2">This approach ensures the model knows exactly which text to work with, reducing ambiguity.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4 my-4">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tactic 2: Ask for Structured Output</h4>
+                        <p class="mb-4">When you need information in a specific format, explicitly request it.</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Generate a list of three made-up book titles along with their authors and genres.
+Provide them in JSON format with the following keys: 
+book_id, title, author, genre.
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        
+                        <p class="mt-4">For developers, this is particularly useful when you need to parse the output programmatically:</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Analyze this API endpoint and identify security vulnerabilities.
+Format your response as JSON with these keys:
+- vulnerability_type
+- severity (high/medium/low)
+- description
+- remediation
+"""
+response = get_completion(prompt)
+# Parse the JSON response
+import json
+vulnerabilities = json.loads(response)
+for vuln in vulnerabilities:
+    print(f"Found {vuln['severity']} severity issue: {vuln['vulnerability_type']}")</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4 my-4">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tactic 3: Check Whether Conditions Are Satisfied</h4>
+                        <p class="mb-4">Ask the model to verify conditions before proceeding with a task:</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">text_1 = "Making a cup of tea is easy! First, you need to get some water boiling..."
+prompt = f"""
+You will be provided with text delimited by triple quotes. 
+If it contains a sequence of instructions, 
+re-write those instructions in the following format:
+
+Step 1 - ...
+Step 2 - …
+…
+Step N - …
+
+If the text does not contain a sequence of instructions, 
+then simply write "No steps provided."
+
+\"\"\"{text_1}\"\"\"
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4 my-4">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tactic 4: Few-shot Prompting</h4>
+                        <p class="mb-4">Show examples of what you want before asking the model to perform the task:</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Your task is to answer in a consistent style.
+
+<child>: Teach me about patience.
+
+<grandparent>: The river that carves the deepest 
+valley flows from a modest spring; the 
+grandest symphony originates from a single note; 
+the most intricate tapestry begins with a solitary thread.
+
+<child>: Teach me about resilience.
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="principle2">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Principle 2: Give the Model Time to "Think"</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="principle2-content">
+                    <p class="my-4">Complex tasks require giving the model space to work through problems step by step, similar to how humans approach difficult problems.</p>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4 my-4">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tactic 1: Specify Steps for Complex Tasks</h4>
+                        <p class="mb-4">Break complex tasks into clear, sequential steps:</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">text = "In a charming village, siblings Jack and Jill set out on a quest to fetch water..."
+prompt = f"""
+Perform the following actions: 
+1 - Summarize the following text delimited by triple backticks with 1 sentence.
+2 - Translate the summary into French.
+3 - List each name in the French summary.
+4 - Output a JSON object that contains the following keys: french_summary, num_names.
+
+Separate your answers with line breaks.
+
+Text:
+```{text}```
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        
+                        <p class="mt-4">For development tasks, this approach yields better results:</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">legacy_code = """
+def calculate_total(items):
+    total = 0
+    for item in items:
+        total = total + item['price'] * item['quantity']
+    return total
+"""
+
+prompt = f"""
+To refactor this legacy code:
+1. Identify code smells and architectural issues
+2. Propose a refactoring strategy with design patterns
+3. Rewrite the code with modern practices
+4. Add appropriate tests for the new implementation
+
+Legacy code: ```{legacy_code}```
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4 my-4">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tactic 2: Instruct the Model to Work Through Its Own Solution</h4>
+                        <p class="mb-4">Ask the model to solve a problem step-by-step before providing a final answer:</p>
+                        
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Your task is to determine if the student's solution is correct or not.
+To solve the problem do the following:
+- First, work out your own solution to the problem including the final total. 
+- Then compare your solution to the student's solution 
+and evaluate if the student's solution is correct or not. 
+Don't decide if the student's solution is correct until 
+you have done the problem yourself.
+
+Use the following format:
+Question:
+```
+question here
+```
+Student's solution:
+```
+student's solution here
+```
+Actual solution:
+```
+steps to work out the solution and your solution here
+```
+Is the student's solution the same as actual solution just calculated:
+```
+yes or no
+```
+Student grade:
+```
+correct or incorrect
+```
+
+Question:
+```
+I'm building a solar power installation and I need help working out the financials. 
+- Land costs $100 / square foot
+- I can buy solar panels for $250 / square foot
+- I negotiated a contract for maintenance that will cost me a flat $100k per year, and an additional $10 / square foot
+What is the total cost for the first year of operations as a function of the number of square feet.
+``` 
+Student's solution:
+```
+Let x be the size of the installation in square feet.
+Costs:
+1. Land cost: 100x
+2. Solar panel cost: 250x
+3. Maintenance cost: 100,000 + 100x
+Total cost: 100x + 250x + 100,000 + 100x = 450x + 100,000
+```
+"""
+response = get_completion(prompt)
+print(response)</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                        <p class="mt-2">By asking the model to solve the problem independently first, you get more accurate evaluations and reasoning.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Key Takeaways:</h3>
+                <ul class="list-disc list-inside space-y-2 text-indigo-900">
+                    <li>Be specific and clear with your instructions</li>
+                    <li>Use delimiters to separate different parts of your input</li>
+                    <li>Ask for structured output when you need to parse results</li>
+                    <li>Provide examples using few-shot prompting</li>
+                    <li>Break complex tasks into steps</li>
+                    <li>Ask the model to show its reasoning process</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Tactical Approaches -->
+        <section id="tactics" class="tab-content">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Tactical Approaches to Prompt Engineering</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <p class="mb-4">Beyond the core principles, these specific tactics can help you craft more effective prompts for different scenarios.</p>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Using Different Types of Delimiters</h4>
+                    <p class="mb-2">You can use various delimiter styles to separate parts of your prompt:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Triple backticks: ```text```</li>
+                        <li>Triple quotes: """text"""</li>
+                        <li>Triple dashes: ---text---</li>
+                        <li>Angle brackets: &lt;text&gt;</li>
+                        <li>XML/HTML tags: &lt;tag&gt;text&lt;/tag&gt;</li>
+                    </ul>
+                    <p class="mt-2">Choose a delimiter that doesn't appear in your content to avoid confusion.</p>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">System Message: Setting the Stage</h4>
+                    <p class="mb-4">When using chat-based LLM formats, the system message helps establish the behavior, personality, or role of the assistant:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">messages = [
+    {'role': 'system', 'content': 'You are an expert software developer specialized in Python and JavaScript. You provide code that is secure, efficient, and follows best practices. Always explain your code thoroughly.'},
+    {'role': 'user', 'content': 'Write a function to validate email addresses'}
+]</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Personas and Role Assignment</h4>
+                    <p class="mb-4">Assigning specific roles or personas can dramatically improve results for specialized tasks:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">prompt = f"""
+You are a senior security engineer at a major financial institution.
+Review the following code for security vulnerabilities:
+
+```python
+def process_payment(user_id, amount):
+    query = f"UPDATE accounts SET balance = balance - {amount} WHERE user_id = '{user_id}'"
+    db.execute(query)
+    return True
+```
+
+Identify vulnerabilities, explain their potential impact, and provide secure alternatives.
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Format Instructions</h4>
+                    <p class="mb-4">Explicitly specifying the format helps ensure the output is exactly what you need:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">prompt = f"""
+Analyze the performance issues in the following code and provide recommendations.
+
+Format your response using the following structure:
+## Issues Identified
+- [Issue 1]
+- [Issue 2]
+
+## Performance Impact
+[Explain the performance implications]
+
+## Recommendations
+1. [First recommendation]
+2. [Second recommendation]
+
+Code to analyze:
+```javascript
+function findUsers(userArray, property, value) {
+    let results = [];
+    for(let i = 0; i < userArray.length; i++) {
+        if(userArray[i][property] === value) {
+            results.push(userArray[i]);
+        }
+    }
+    return results;
+}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Advanced Tactics for Developers:</h3>
+                <ul class="list-disc list-inside space-y-2 text-indigo-900">
+                    <li><span class="font-medium">Temperature Control:</span> Lower values (0.0-0.3) for deterministic tasks like code generation; higher values (0.7-1.0) for creative brainstorming</li>
+                    <li><span class="font-medium">Context Mining:</span> Provide relevant context for domain-specific tasks (e.g., API docs, architecture diagrams)</li>
+                    <li><span class="font-medium">Iterative Refinement:</span> Use the model's output as input for subsequent prompts to refine results</li>
+                    <li><span class="font-medium">Chained Prompting:</span> Break complex workflows into a series of connected prompts, each building on previous results</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Iterative Process -->
+        <section id="process" class="tab-content">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">The Iterative Prompt Development Process</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <p class="mb-4">Prompt engineering is fundamentally an iterative process. The first prompt you write will rarely be the best one. Instead, treat prompt development as a cycle of continuous improvement:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 my-8">
+                    <div class="bg-purple-700 text-white rounded-lg p-4 text-center">
+                        <p class="font-bold">1. Start with a Basic Prompt</p>
+                    </div>
+                    <div class="bg-purple-600 text-white rounded-lg p-4 text-center">
+                        <p class="font-bold">2. Analyze the Results</p>
+                    </div>
+                    <div class="bg-purple-500 text-white rounded-lg p-4 text-center">
+                        <p class="font-bold">3. Refine Your Prompt</p>
+                    </div>
+                    <div class="bg-purple-400 text-white rounded-lg p-4 text-center">
+                        <p class="font-bold">4. Test with Variations</p>
+                    </div>
+                    <div class="bg-purple-300 text-gray-800 rounded-lg p-4 text-center">
+                        <p class="font-bold">5. Iterate and Refine</p>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Step 1: Start with a Basic Prompt</h4>
+                    <p class="mb-4">Begin with a simple prompt that addresses your core need.</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">fact_sheet_chair = """
+OVERVIEW
+- Part of a beautiful family of mid-century inspired office furniture, 
+including filing cabinets, desks, bookcases, meeting tables, and more.
+- Several options of shell color and base finishes.
+- Available with plastic back and front upholstery (SWC-100) 
+or full upholstery (SWC-110) in 10 fabric and 6 leather options.
+- Base finish options are: stainless steel, matte black, 
+gloss white, or chrome.
+- Chair is available with or without armrests.
+- Suitable for home or business settings.
+- Qualified for contract use.
+
+CONSTRUCTION
+- 5-wheel plastic coated aluminum base.
+- Pneumatic chair adjust for easy raise/lower action.
+
+DIMENSIONS
+- WIDTH 53 CM | 20.87"
+- DEPTH 51 CM | 20.08"
+- HEIGHT 80 CM | 31.50"
+- SEAT HEIGHT 44 CM | 17.32"
+- SEAT DEPTH 41 CM | 16.14"
+
+OPTIONS
+- Soft or hard-floor caster options.
+- Two choices of seat foam densities: 
+ medium (1.8 lb/ft3) or high (2.8 lb/ft3)
+- Armless or 8 position PU armrests 
+
+MATERIALS
+SHELL BASE GLIDER
+- Cast Aluminum with modified nylon PA6/PA66 coating.
+- Shell thickness: 10 mm.
+SEAT
+- HD36 foam
+
+COUNTRY OF ORIGIN
+- Italy
+"""
+
+prompt = f"""
+Your task is to help a marketing team create a 
+description for a retail website of a product based 
+on a technical fact sheet.
+
+Write a product description based on the information 
+provided in the technical specifications delimited by 
+triple backticks.
+
+Technical specifications: ```{fact_sheet_chair}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Step 2: Analyze the Results</h4>
+                    <p class="mb-4">Carefully evaluate the output:</p>
+                    <ul class="list-disc list-inside ml-4 space-y-1">
+                        <li>Does it meet your requirements?</li>
+                        <li>Is it the right length, tone, and technical level?</li>
+                        <li>What specific aspects need improvement?</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Step 3: Refine Your Prompt</h4>
+                    <p class="mb-4">Based on your analysis, improve your prompt by:</p>
+                    <ul class="list-disc list-inside ml-4 space-y-1">
+                        <li>Adding more specific instructions</li>
+                        <li>Including constraints or requirements</li>
+                        <li>Specifying format, length, or tone</li>
+                        <li>Providing examples of desired output</li>
+                    </ul>
+                    
+                    <div class="code-block mt-4">
+                        <pre><code class="language-python">prompt = f"""
+Your task is to help a marketing team create a 
+description for a retail website of a product based 
+on a technical fact sheet.
+
+Write a product description based on the information 
+provided in the technical specifications delimited by 
+triple backticks.
+
+Use at most 50 words. Focus on the materials the product is constructed from.
+
+Technical specifications: ```{fact_sheet_chair}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Step 4: Test with Multiple Variations</h4>
+                    <p class="mb-4">Create several different versions of your prompt to see which produces the best results.</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">prompt_1 = f"""
+Your task is to help a marketing team create a 
+description for a retail website of a product based 
+on a technical fact sheet.
+
+Write a product description based on the information 
+provided in the technical specifications delimited by 
+triple backticks.
+
+The description is intended for furniture retailers, 
+so should be technical in nature and focus on the 
+materials the product is constructed from.
+
+Use at most 50 words.
+
+Technical specifications: ```{fact_sheet_chair}```
+"""
+
+prompt_2 = f"""
+Your task is to help a marketing team create a 
+description for a retail website of a product based 
+on a technical fact sheet.
+
+Write a product description based on the information 
+provided in the technical specifications delimited by 
+triple backticks.
+
+The description is intended for furniture retailers, 
+so should be technical in nature and focus on the 
+materials the product is constructed from.
+
+At the end of the description, include every 7-character 
+Product ID in the technical specification.
+
+Use at most 50 words.
+
+Technical specifications: ```{fact_sheet_chair}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Step 5: Iterate and Refine</h4>
+                    <p class="mb-4">Continue the cycle, making incremental improvements with each iteration.</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">prompt_final = f"""
+Your task is to help a marketing team create a 
+description for a retail website of a product based 
+on a technical fact sheet.
+
+Write a product description based on the information 
+provided in the technical specifications delimited by 
+triple backticks.
+
+The description is intended for furniture retailers, 
+so should be technical in nature and focus on the 
+materials the product is constructed from.
+
+At the end of the description, include every 7-character 
+Product ID in the technical specification.
+
+After the description, include a table that gives the 
+product's dimensions. The table should have two columns.
+In the first column include the name of the dimension. 
+In the second column include the measurements in inches only.
+
+Give the table the title 'Product Dimensions'.
+
+Format everything as HTML that can be used in a website. 
+Place the description in a <div> element.
+
+Technical specifications: ```{fact_sheet_chair}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Developer Tip:</h3>
+                <p class="text-indigo-900">Keep a prompt development journal to track what works and what doesn't. This helps you develop a personal library of effective prompt patterns that you can reuse across projects. Document both successful and unsuccessful attempts to learn from both.</p>
+            </div>
+        </section>
+
+        <!-- Specialized Techniques -->
+        <section id="techniques" class="tab-content">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Specialized Techniques for Specific Tasks</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="summarizing">
+                    <h3 class="text-2xl font-semibold text-indigo-800">1. Summarizing Text with Focus Control</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="summarizing-content">
+                    <p class="my-4">You can ask models to summarize content while focusing on specific aspects of interest:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">prod_review = """
+Got this panda plush toy for my daughter's birthday, 
+who loves it and takes it everywhere. It's soft and 
+super cute, and its face has a friendly look. It's 
+a bit small for what I paid though. I think there 
+might be other options that are bigger for the 
+same price. It arrived a day earlier than expected, 
+so I got to play with it myself before I gave it 
+to her.
+"""
+
+prompt = f"""
+Your task is to generate a short summary of a product 
+review from an ecommerce site to give feedback to the 
+Shipping department.
+
+Summarize the review below, delimited by triple 
+backticks, in at most 30 words, and focusing on any aspects 
+that mention shipping and delivery of the product.
+
+Review: ```{prod_review}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="extraction">
+                    <h3 class="text-2xl font-semibold text-indigo-800">2. Information Extraction Instead of Summarization</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="extraction-content">
+                    <p class="my-4">Sometimes it's better to extract specific information rather than summarize:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">prompt = f"""
+Your task is to extract relevant information from 
+a product review from an ecommerce site to give 
+feedback to the Shipping department.
+
+From the review below, delimited by triple quotes 
+extract the information relevant to shipping and 
+delivery. Limit to 30 words.
+
+Review: ```{prod_review}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="sentiment">
+                    <h3 class="text-2xl font-semibold text-indigo-800">3. Inferring Sentiment and Topics</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="sentiment-content">
+                    <p class="my-4">Models can analyze sentiment and extract topics from text:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">lamp_review = """
+Needed a nice lamp for my bedroom, and this one had 
+additional storage and not too high of a price point. 
+Got it fast. The string to our lamp broke during the 
+transit and the company happily sent over a new one. 
+Came within a few days as well. It was easy to put 
+together. I had a missing part, so I contacted their 
+support and they very quickly got me the missing piece! 
+Lumina seems to me to be a great company that cares 
+about their customers and products!!
+"""
+
+prompt = f"""
+Identify the following items from the review text: 
+- Sentiment (positive or negative)
+- Is the reviewer expressing anger? (true or false)
+- Item purchased by reviewer
+- Company that made the item
+
+The review is delimited with triple backticks.
+Format your response as a JSON object with 
+"Sentiment", "Anger", "Item" and "Brand" as the keys.
+If the information isn't present, use "unknown" 
+as the value.
+Make your response as short as possible.
+Format the Anger value as a boolean.
+
+Review text: ```{lamp_review}```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                    
+                    <p class="mt-4">You can also parse and use the JSON response:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python"># Parse the JSON response
+import json
+review_analysis = json.loads(response)
+print(f"The customer sentiment is: {review_analysis['Sentiment']}")
+print(f"Is the customer angry? {review_analysis['Anger']}")</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="transforming">
+                    <h3 class="text-2xl font-semibold text-indigo-800">4. Transforming Text</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="transforming-content">
+                    <p class="my-4">Models can transform text in various ways, including translation, tone adjustment, and format conversion:</p>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Translation Example:</h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Translate the following English text to Spanish: 
+```Hi, I would like to order a blender```
+"""</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Tone Transformation:</h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">prompt = f"""
+Translate the following from slang to a business letter: 
+'Dude, This is Joe, check out this spec on this standing lamp.'
+"""</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Format Conversion:</h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">data_json = { "restaurant employees" :[ 
+    {"name":"Shyam", "email":"shyamjaiswal@gmail.com"},
+    {"name":"Bob", "email":"bob32@gmail.com"},
+    {"name":"Jai", "email":"jai87@gmail.com"}
+]}
+
+prompt = f"""
+Translate the following python dictionary from JSON to an HTML 
+table with column headers and title: {data_json}
+"""</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h4 class="text-lg font-medium text-purple-800 mb-2">Grammar and Spelling Correction:</h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">text = """
+The girl with the black and white puppies have a ball.
+Its going to be a long day. Does the car need it's oil changed?
+"""
+
+prompt = f"""
+Proofread and correct the following text
+and rewrite the corrected version. If you don't find
+any errors, just say "No errors found". Don't use 
+any punctuation around the text:
+```{text}```
+"""</code></pre>
+                            <button class="copy-button" onclick="copyCode(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="expanding">
+                    <h3 class="text-2xl font-semibold text-indigo-800">5. Expanding Content with Customization</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="expanding-content">
+                    <p class="my-4">Models can expand and customize content based on specific parameters:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python"># Example for customized customer service email based on review sentiment
+sentiment = "negative"
+
+review = """
+So, they still had the 17 piece system on seasonal 
+sale for around $49 in the month of November, about 
+half off, but for some reason (call it price gouging) 
+around the second week of December the prices all went 
+up to about anywhere from between $70-$89 for the same 
+system.
+"""
+
+prompt = f"""
+You are a customer service AI assistant.
+Your task is to send an email reply to a valued customer.
+Given the customer email delimited by ```, 
+Generate a reply to thank the customer for their review.
+If the sentiment is positive or neutral, thank them for 
+their review.
+If the sentiment is negative, apologize and suggest that 
+they can reach out to customer service. 
+Make sure to use specific details from the review.
+Write in a concise and professional tone.
+Sign the email as `AI customer agent`.
+Customer review: ```{review}```
+Review sentiment: {sentiment}
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500 mb-6">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Developer Tips for Specialized Techniques:</h3>
+                <ul class="list-disc list-inside space-y-2 text-indigo-900">
+                    <li>Use <span class="font-medium">Summarizing</span> when you need a condensed version of long content</li>
+                    <li>Use <span class="font-medium">Information Extraction</span> to pull specific data points from text</li>
+                    <li>Use <span class="font-medium">Sentiment Analysis</span> to understand customer feedback at scale</li>
+                    <li>Use <span class="font-medium">Text Transformation</span> to convert content between formats, languages, or styles</li>
+                    <li>Use <span class="font-medium">Content Expansion</span> when starting with a template or skeleton</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Building Chatbots -->
+        <section id="chatbots" class="tab-content">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Building Chatbots with the Chat Format</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <p class="mb-4">The chat format allows for extended conversations with LLMs by maintaining a conversation history. This is especially useful for building chatbots and interactive applications.</p>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Basic Chat Format</h4>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">def get_completion_from_messages(messages, model="gpt-3.5-turbo", temperature=0):
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+    )
+    return response.choices[0].message["content"]
+
+messages = [
+    {'role': 'system', 'content': 'You are a helpful assistant that speaks like Shakespeare.'},
+    {'role': 'user', 'content': 'tell me a joke'},
+    {'role': 'assistant', 'content': 'Why did the chicken cross the road?'},
+    {'role': 'user', 'content': "I don't know"}
+]
+
+response = get_completion_from_messages(messages, temperature=1)
+print(response)</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Maintaining Conversation Memory</h4>
+                    <p class="mb-4">The key to building effective chatbots is maintaining conversation context:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python"># Without context
+messages = [
+    {'role': 'system', 'content': 'You are a friendly chatbot.'},
+    {'role': 'user', 'content': 'Yes, can you remind me, what is my name?'}
+]
+response = get_completion_from_messages(messages, temperature=1)
+print("Without context:")
+print(response)
+
+# With context
+messages = [
+    {'role': 'system', 'content': 'You are a friendly chatbot.'},
+    {'role': 'user', 'content': 'Hi, my name is Isa'},
+    {'role': 'assistant', 'content': "Hi Isa! It's nice to meet you. Is there anything I can help you with today?"},
+    {'role': 'user', 'content': 'Yes, you can remind me, what is my name?'}
+]
+response = get_completion_from_messages(messages, temperature=1)
+print("\nWith context:")
+print(response)</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Building an OrderBot</h4>
+                    <p class="mb-4">Here's a complete example of building an OrderBot for a pizza restaurant:</p>
+                    
+                    <div class="code-block">
+                        <pre><code class="language-python">import panel as pn
+import json
+import openai
+import os
+
+# Set up OpenAI API key
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
+def get_completion_from_messages(messages, model="gpt-3.5-turbo", temperature=0):
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+    )
+    return response.choices[0].message["content"]
+
+# Initialize chat context with system message
+context = [
+    {'role': 'system', 'content': """
+    You are OrderBot, an automated service to collect orders for a pizza restaurant.
+    You first greet the customer, then collect the order,
+    and then ask if it's a pickup or delivery.
+    You wait to collect the entire order, then summarize it and check for a final
+    time if the customer wants to add anything else.
+    If it's a delivery, you ask for an address.
+    Finally you collect the payment.
+    Make sure to clarify all options, extras and sizes to uniquely
+    identify the item from the menu.
+    You respond in a short, very conversational friendly style.
+    The menu includes:
+    - pepperoni pizza  12.95, 10.00, 7.00
+    - cheese pizza   10.95, 9.25, 6.50
+    - eggplant pizza   11.95, 9.75, 6.75
+    - fries 4.50, 3.50
+    - greek salad 7.25
+    Toppings:
+    - extra cheese 2.00
+    - mushrooms 1.50
+    - sausage 3.00
+    - canadian bacon 3.50
+    - AI sauce 1.50
+    - peppers 1.00
+    Drinks:
+    - coke 3.00, 2.00, 1.00
+    - sprite 3.00, 2.00, 1.00
+    - bottled water 5.00
+    """}
+]
+
+def collect_messages(message):
+    context.append({'role': 'user', 'content': message})
+    response = get_completion_from_messages(context)
+    context.append({'role': 'assistant', 'content': response})
+    return response
+
+# Example interaction
+customer_message = "Hi, I'd like to order a pizza"
+bot_response = collect_messages(customer_message)
+print(f"Customer: {customer_message}")
+print(f"OrderBot: {bot_response}")
+
+# Continue conversation
+customer_message = "Can I get a large pepperoni pizza with extra cheese?"
+bot_response = collect_messages(customer_message)
+print(f"Customer: {customer_message}")
+print(f"OrderBot: {bot_response}")
+
+# Get order summary in JSON format
+context.append(
+    {'role': 'system', 'content': 'create a json summary of the previous food order. Itemize the price for each item. The fields should be 1) pizza, include size 2) list of toppings 3) list of drinks, include size 4) list of sides include size 5) total price'}
+)
+response = get_completion_from_messages(context)
+print("\nOrder Summary:")
+print(response)</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-4">Best Practices for Chatbot Development</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">1. Craft a Clear System Message</h4>
+                        <p>The system message sets the tone, personality, and capabilities of your chatbot. Be specific about its role, knowledge boundaries, and how it should respond.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">2. Maintain Conversation State</h4>
+                        <p>Save the full conversation history to provide context. Consider summarizing or pruning old messages if the context gets too long.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">3. Handle Edge Cases</h4>
+                        <p>Plan for unexpected inputs, off-topic questions, or attempts to change the subject. Your system message should include guidance on how to handle these situations.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">4. Use Temperature Strategically</h4>
+                        <p>Lower temperature (0.0-0.3) for factual or structured responses, higher temperature (0.7-1.0) for more creative or conversational interactions.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">5. Implement Fallbacks</h4>
+                        <p>Have strategies for when the model can't answer or isn't confident. This might include apologizing and suggesting alternatives or escalating to a human.</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 rounded-lg p-4">
+                        <h4 class="font-medium text-purple-800 mb-2">6. Validate Critical Information</h4>
+                        <p>For important data like emails, phone numbers, or addresses, implement verification steps in your conversation flow.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Advanced Chatbot Features:</h3>
+                <ul class="list-disc list-inside space-y-2 text-indigo-900">
+                    <li><span class="font-medium">Multi-turn Planning:</span> Build bots that can reason over multiple turns to accomplish complex tasks</li>
+                    <li><span class="font-medium">Tool Use:</span> Enable your chatbot to call external tools and APIs to access current data or perform actions</li>
+                    <li><span class="font-medium">Structured Data Handling:</span> Use JSON mode or specific formatting instructions to get structured outputs</li>
+                    <li><span class="font-medium">Persistent Memory:</span> Implement storage solutions to maintain user preferences and context across sessions</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Development Workflow -->
+        <section id="workflow" class="tab-content">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Development Workflow for Prompt Engineering</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <p class="mb-4">A systematic approach to developing effective prompts will save you time and improve results:</p>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">1. Start with a Clear Problem Definition</h4>
+                    <p>Define exactly what you need the model to do. Be specific about:</p>
+                    <ul class="list-disc list-inside ml-4 space-y-1">
+                        <li>Input format and content</li>
+                        <li>Desired output format and content</li>
+                        <li>Any constraints or requirements</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">2. Develop a Basic Prompt</h4>
+                    <p>Start simple and build up complexity.</p>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">3. Test and Analyze Results</h4>
+                    <p>Evaluate the output against your requirements.</p>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">4. Iteratively Refine Your Prompt</h4>
+                    <p>Address any issues by adding specificity, examples, or constraints.</p>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">5. Use Temperature Control for Appropriate Creativity</h4>
+                    <p>The temperature parameter controls randomness in outputs:</p>
+                    <ul class="list-disc list-inside ml-4 space-y-1">
+                        <li>Lower temperature (0.0-0.3): More deterministic, good for factual tasks</li>
+                        <li>Medium temperature (0.3-0.7): Balanced creativity, good for content generation</li>
+                        <li>Higher temperature (0.7-1.0): More creative, good for brainstorming</li>
+                    </ul>
+                    
+                    <div class="code-block mt-4">
+                        <pre><code class="language-python"># Helper function with temperature control
+def get_completion(prompt, model="gpt-3.5-turbo", temperature=0):
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+    )
+    return response.choices[0].message["content"]
+
+# For deterministic code generation
+code_response = get_completion(code_prompt, temperature=0)
+
+# For creative marketing content
+marketing_response = get_completion(marketing_prompt, temperature=0.7)</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-4">Incorporating Prompt Engineering into Your Development Process</h3>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Version Control for Prompts</h4>
+                    <p class="mb-2">Treat prompts like code - use version control to track changes and improvements:</p>
+                    <pre class="bg-gray-800 text-white p-2 rounded-md overflow-x-auto">
+# prompt_v1.py
+SUMMARIZATION_PROMPT = """
+Summarize the text delimited by triple backticks into a single paragraph.
+```{text}```
+"""
+
+# prompt_v2.py
+SUMMARIZATION_PROMPT = """
+Summarize the text delimited by triple backticks into a single paragraph.
+Focus on the key technical details and maintain the original terminology.
+```{text}```
+"""</pre>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Creating a Prompt Library</h4>
+                    <p class="mb-2">Build a reusable library of prompts for common tasks:</p>
+                    <pre class="bg-gray-800 text-white p-2 rounded-md overflow-x-auto">
+# prompts/text_processing.py
+SUMMARIZATION_PROMPT = """
+Summarize the text delimited by triple backticks into a single paragraph.
+```{text}```
+"""
+
+CODE_EXPLANATION_PROMPT = """
+Explain the following code as if speaking to a junior developer:
+```{code}```
+"""
+
+BUG_FINDING_PROMPT = """
+Analyze this code for potential bugs and edge cases:
+```{code}```
+"""</pre>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4 my-4">
+                    <h4 class="text-lg font-medium text-purple-800 mb-2">Automated Testing for Prompts</h4>
+                    <p class="mb-2">Create test cases to validate prompt effectiveness:</p>
+                    <pre class="bg-gray-800 text-white p-2 rounded-md overflow-x-auto">
+def test_summarization_prompt():
+    test_texts = [
+        "Long technical text about databases...",
+        "Marketing text about a new product...",
+        "Academic paper abstract..."
+    ]
+    for text in test_texts:
+        prompt = SUMMARIZATION_PROMPT.format(text=text)
+        result = get_completion(prompt)
+        # Validate result meets requirements
+        assert len(result.split()) < 100, "Summary too long"
+        # Other validation checks...</pre>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Pattern Implementation Example:</h3>
+                <p class="mb-4">Here's a complete example integrating many of the techniques:</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-python">import openai
+import os
+import json
+
+# Setup
+api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = api_key
+
+def get_completion(prompt, model="gpt-3.5-turbo", temperature=0):
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+    )
+    return response.choices[0].message["content"]
+
+# 1. Initial code review prompt
+code_to_review = """
+def process_user_data(user_input):
+    query = "SELECT * FROM users WHERE username='" + user_input + "'"
+    return database.execute(query)
+"""
+
+review_prompt = f"""
+Review the following code for security vulnerabilities.
+Follow these steps:
+1. Identify potential security issues
+2. Rate each issue on a scale of 1-10 for severity
+3. Explain how each issue could be exploited
+4. Provide a secure version of the code
+
+Code to review:
+```python
+{code_to_review}
+```
+
+Format your response as JSON with sections for 'issues', 'secure_code', and 'explanation'.
+"""
+
+review_result = get_completion(review_prompt)
+
+# 2. Generate test cases based on the secure version
+# Parse the JSON response to extract the secure code
+review_json = json.loads(review_result)
+secure_code = review_json.get('secure_code', code_to_review)
+
+test_prompt = f"""
+Generate comprehensive test cases for this function:
+```python
+{secure_code}
+```
+
+Include tests for:
+1. Normal usage with valid inputs
+2. Edge cases with unexpected inputs
+3. Potential attack vectors
+"""
+
+test_cases = get_completion(test_prompt)
+
+# 3. Create documentation for the function
+docs_prompt = f"""
+Create comprehensive developer documentation for this function:
+```python
+{secure_code}
+```
+
+Include:
+1. Function purpose and description
+2. Parameter details and validation requirements
+3. Return value information
+4. Security considerations
+5. Usage examples
+
+Format as Markdown suitable for a developer wiki.
+"""
+
+documentation = get_completion(docs_prompt, temperature=0.2)</code></pre>
+                    <button class="copy-button" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompt Engineering Patterns -->
+        <section id="patterns" class="tab-content">
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Prompt Engineering Patterns for Developers</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <p class="mb-4">Here are several pattern templates that you can adapt for common development tasks:</p>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="docgen">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Documentation Generator</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="docgen-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Generate comprehensive documentation for the following {language} function.
+Include:
+1. A brief description
+2. Parameters and return values with types
+3. Example usage
+4. Edge cases and error handling
+5. Performance considerations
+
+Function:
+```
+{function_code}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="testgen">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Test Case Generator</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="testgen-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Generate unit tests for the following function using {test_framework}.
+Create tests that cover:
+1. Happy path with normal inputs
+2. Edge cases (empty inputs, boundary values)
+3. Error cases
+4. Performance test for large inputs
+
+Function to test:
+```
+{function_code}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="refactor">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Code Refactoring Assistant</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="refactor-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Refactor the following code to improve:
+1. Readability
+2. Performance
+3. Maintainability
+4. Error handling
+
+Explain the changes you made and why they improve the code.
+
+Original code:
+```
+{original_code}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="apidesign">
+                    <h3 class="text-2xl font-semibold text-indigo-800">API Design Reviewer</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="apidesign-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Review this API design for a {service_type} service.
+Evaluate it for:
+1. RESTful design principles
+2. Security considerations
+3. Scalability
+4. Versioning strategy
+5. Error handling
+
+For each issue found, suggest improvements.
+
+API Design:
+```
+{api_design}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="sqloptimizer">
+                    <h3 class="text-2xl font-semibold text-indigo-800">SQL Query Optimizer</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="sqloptimizer-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Optimize the following SQL query for better performance.
+Consider:
+1. Indexing recommendations
+2. Query structure
+3. Join optimizations
+4. Subquery/CTE improvements
+
+Provide the optimized query and explain your changes.
+
+Database schema:
+```
+{db_schema}
+```
+
+Original query:
+```
+{sql_query}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 rounded-lg p-6 border-l-4 border-indigo-500">
+                <h3 class="text-xl font-semibold text-indigo-800 mb-2">Pattern Implementation Example:</h3>
+                <p class="mb-4">Here's a complete example integrating many of the techniques:</p>
+                
+                <div class="code-block">
+                    <pre><code class="language-python">import openai
+import os
+import json
+
+# Setup
+api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = api_key
+
+def get_completion(prompt, model="gpt-3.5-turbo", temperature=0):
+    messages = [{"role": "user", "content": prompt}]
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+    )
+    return response.choices[0].message["content"]
+
+# 1. Initial code review prompt
+code_to_review = """
+def process_user_data(user_input):
+    query = "SELECT * FROM users WHERE username='" + user_input + "'"
+    return database.execute(query)
+"""
+
+review_prompt = f"""
+Review the following code for security vulnerabilities.
+Follow these steps:
+1. Identify potential security issues
+2. Rate each issue on a scale of 1-10 for severity
+3. Explain how each issue could be exploited
+4. Provide a secure version of the code
+
+Code to review:
+```python
+{code_to_review}
+```
+
+Format your response as JSON with sections for 'issues', 'secure_code', and 'explanation'.
+"""
+
+review_result = get_completion(review_prompt)
+
+# 2. Generate test cases based on the secure version
+# Parse the JSON response to extract the secure code
+review_json = json.loads(review_result)
+secure_code = review_json.get('secure_code', code_to_review)
+
+test_prompt = f"""
+Generate comprehensive test cases for this function:
+```python
+{secure_code}
+```
+
+Include tests for:
+1. Normal usage with valid inputs
+2. Edge cases with unexpected inputs
+3. Potential attack vectors
+"""
+
+test_cases = get_completion(test_prompt)
+
+# 3. Create documentation for the function
+docs_prompt = f"""
+Create comprehensive developer documentation for this function:
+```python
+{secure_code}
+```
+
+Include:
+1. Function purpose and description
+2. Parameter details and validation requirements
+3. Return value information
+4. Security considerations
+5. Usage examples
+
+Format as Markdown suitable for a developer wiki.
+"""
+
+documentation = get_completion(docs_prompt, temperature=0.2)</code></pre>
+                    <button class="copy-button" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy
+                    </button>
+                </div>
+            </div>
+            <h2 class="text-3xl font-bold text-purple-900 mb-6">Prompt Engineering Patterns for Developers</h2>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <p class="mb-4">Here are several pattern templates that you can adapt for common development tasks:</p>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="docgen">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Documentation Generator</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="docgen-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Generate comprehensive documentation for the following {language} function.
+Include:
+1. A brief description
+2. Parameters and return values with types
+3. Example usage
+4. Edge cases and error handling
+5. Performance considerations
+
+Function:
+```
+{function_code}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="collapsible-header flex justify-between items-center cursor-pointer" data-section="testgen">
+                    <h3 class="text-2xl font-semibold text-indigo-800">Test Case Generator</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600 chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </div>
+                
+                <div class="collapsible-content" id="testgen-content">
+                    <div class="code-block my-4">
+                        <pre><code class="language-python">prompt = f"""
+Generate unit tests for the following function using {test_framework}.
+Create tests that cover:
+1. Happy path with normal inputs
+2. Edge cases (empty inputs, boundary values)
+3. Error cases
+4. Performance test for large inputs
+
+Function to test:
+```
+{function_code}
+```
+"""</code></pre>
+                        <button class="copy-button" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <!-- Additional Resources Section -->
+    <div class="fixed bottom-4 left-4 z-30">
+        <button onclick="toggleResources()" class="bg-purple-800 text-white px-4 py-2 rounded-full shadow-lg flex items-center space-x-2 hover:bg-purple-700 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span>Resources</span>
+        </button>
+    </div>
+
+    <!-- Resources Panel -->
+    <div id="resources-panel" class="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 m-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-purple-900">Additional Resources</h3>
+                <button onclick="toggleResources()" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-purple-800 mb-2">Advanced Reading</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="https://arxiv.org/abs/2109.01134" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                "Training language models to follow instructions"
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://arxiv.org/abs/2203.02155" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://arxiv.org/abs/2201.11903" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                "Self-Consistency Improves Chain of Thought Reasoning in Language Models"
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-purple-800 mb-2">Tools & Libraries</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="https://github.com/hwchase17/langchain" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                LangChain: Framework for developing LLM applications
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/guidance-ai/guidance" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Guidance: Controlling LLMs with structured prompting
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/lm-sys/FastChat" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                FastChat: Training and serving LLM chat models
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-purple-800 mb-2">Prompt Collections</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="https://github.com/f/awesome-chatgpt-prompts" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Awesome ChatGPT Prompts
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/promptslab/Awesome-Prompt-Engineering" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Awesome Prompt Engineering
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://prompts.chat/" target="_blank" class="text-indigo-600 hover:text-indigo-800 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                                Prompts.chat
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-purple-800 mb-2">Prompt Template Database</h4>
+                    <div class="mb-2">
+                        <input type="text" id="search-templates" placeholder="Search templates..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent">
+                    </div>
+                    <div class="max-h-64 overflow-y-auto">
+                        <table class="min-w-full text-sm">
+                            <tbody id="template-list">
+                                <tr class="border-b template-item">
+                                    <td class="py-2">Security Audit</td>
+                                    <td class="py-2 text-right">
+                                        <button class="text-indigo-600 hover:text-indigo-800 text-xs" onclick="showTemplate(0)">View</button>
+                                    </td>
+                                </tr>
+                                <tr class="border-b template-item">
+                                    <td class="py-2">Requirements Analysis</td>
+                                    <td class="py-2 text-right">
+                                        <button class="text-indigo-600 hover:text-indigo-800 text-xs" onclick="showTemplate(1)">View</button>
+                                    </td>
+                                </tr>
+                                <tr class="border-b template-item">
+                                    <td class="py-2">Data Transformation</td>
+                                    <td class="py-2 text-right">
+                                        <button class="text-indigo-600 hover:text-indigo-800 text-xs" onclick="showTemplate(2)">View</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template Modal -->
+    <div id="template-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 m-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="template-title" class="text-xl font-bold text-purple-900">Template Title</h3>
+                <button onclick="hideTemplateModal()" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="mb-4">
+                <pre id="template-content" class="bg-gray-50 p-4 rounded-lg overflow-x-auto text-sm"></pre>
+            </div>
+            <div class="flex justify-end">
+                <button onclick="copyTemplateContent()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+                    Copy Template
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt Generator Tool -->
+    <div id="prompt-generator" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full p-6 m-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-purple-900">Interactive Prompt Generator</h3>
+                <button onclick="togglePromptGenerator()" class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <h4 class="font-medium text-gray-700 mb-2">1. Choose a Prompt Type</h4>
+                    <select id="prompt-type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+                        <option value="code-generation">Code Generation</option>
+                        <option value="explain-code">Code Explanation</option>
+                        <option value="refactor">Code Refactoring</option>
+                        <option value="debug">Debugging</option>
+                        <option value="api-design">API Design</option>
+                        <option value="data-analysis">Data Analysis</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-700 mb-2">2. Language/Framework (if applicable)</h4>
+                    <select id="language" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+                        <option value="Python">Python</option>
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="TypeScript">TypeScript</option>
+                        <option value="Java">Java</option>
+                        <option value="C#">C#</option>
+                        <option value="Go">Go</option>
+                        <option value="Rust">Rust</option>
+                        <option value="PHP">PHP</option>
+                        <option value="SQL">SQL</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <h4 class="font-medium text-gray-700 mb-2">3. Further Details</h4>
+                <textarea id="prompt-details" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Describe what you want the LLM to do in more detail..."></textarea>
+            </div>
+            
+            <div class="mb-4">
+                <h4 class="font-medium text-gray-700 mb-2">4. Options</h4>
+                <div class="flex flex-wrap gap-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="step-by-step" class="mr-2">
+                        Step-by-step reasoning
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="examples" class="mr-2">
+                        Include examples
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="structured-output" class="mr-2">
+                        Structured output
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" id="explanations" class="mr-2">
+                        Include explanations
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <h4 class="font-medium text-gray-700 mb-2">Generated Prompt:</h4>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <pre id="generated-prompt" class="whitespace-pre-wrap"></pre>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button onclick="generatePrompt()" class="bg-purple-600 text-white px-4 py-2 mr-2 rounded hover:bg-purple-700 transition">
+                        Generate
+                    </button>
+                    <button onclick="copyGeneratedPrompt()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
+                        Copy
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Prompt Generator Button -->
+    <div class="fixed bottom-4 right-4 z-30">
+        <button onclick="togglePromptGenerator()" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-full shadow-lg hover:from-indigo-700 hover:to-purple-700 transition">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                <span>Create Prompt</span>
+            </div>
+        </button>
+    </div>
+
+    <script>
+        // Template data
+        const templates = [
+            {
+                title: "Security Audit Template",
+                content: `Perform a comprehensive security audit on the following code:
+
+Function/API:
+\`\`\`
+{code_to_audit}
+\`\`\`
+
+Please analyze for:
+1. Potential security vulnerabilities (e.g., SQL injection, XSS, CSRF)
+2. Authentication/authorization issues
+3. Data validation problems
+4. Cryptographic flaws
+5. Secure coding best practices violations
+
+For each issue found:
+- Describe the vulnerability
+- Rate severity (Critical, High, Medium, Low)
+- Explain potential impact
+- Provide a code example showing how to fix it
+- Reference relevant security standards (OWASP, CWE, etc.)
+
+Format the response with clear headings and include a summary of all findings at the beginning.`
+            },
+            {
+                title: "Requirements Analysis Template",
+                content: `Based on the project description below, generate a detailed requirements analysis:
+
+Project Description:
+\`\`\`
+{project_description}
+\`\`\`
+
+Please provide:
+
+1. Functional Requirements
+   - Core features and capabilities
+   - User interactions and flows
+   - Data management requirements
+   - System interfaces
+
+2. Non-Functional Requirements
+   - Performance expectations
+   - Security requirements
+   - Scalability needs
+   - Reliability standards
+   - Compliance requirements
+
+3. Technical Constraints
+   - Platform limitations
+   - Integration requirements
+   - Legacy system considerations
+
+4. Prioritization
+   - MoSCoW categorization (Must have, Should have, Could have, Won't have)
+   - Implementation phases recommendation
+
+Format the output as a structured document with clear sections and subsections.`
+            },
+            {
+                title: "Data Transformation Template",
+                content: `Transform the following data from {source_format} to {target_format}:
+
+Source Data ({source_format}):
+\`\`\`
+{source_data}
+\`\`\`
+
+Requirements:
+1. Convert all data to {target_format}
+2. Normalize field names to follow {convention} naming convention
+3. Handle missing or null values by {missing_value_strategy}
+4. Apply the following transformations to specific fields:
+   - {field1}: {transformation1}
+   - {field2}: {transformation2}
+5. Validate the output against these rules:
+   - {validation_rule1}
+   - {validation_rule2}
+
+Please provide:
+- The transformed data in {target_format}
+- A brief explanation of the transformation process
+- Any potential issues or edge cases to be aware of`
+            }
+        ];
+
+        // Function to show template
+        function showTemplate(index) {
+            const template = templates[index];
+            document.getElementById('template-title').textContent = template.title;
+            document.getElementById('template-content').textContent = template.content;
+            document.getElementById('template-modal').classList.remove('hidden');
+        }
+
+        // Function to hide template modal
+        function hideTemplateModal() {
+            document.getElementById('template-modal').classList.add('hidden');
+        }
+
+        // Function to copy template content
+        function copyTemplateContent() {
+            const content = document.getElementById('template-content').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                const toast = document.getElementById('toast');
+                toast.textContent = 'Template copied to clipboard!';
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+
+        // Toggle resources panel
+        function toggleResources() {
+            const panel = document.getElementById('resources-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Toggle prompt generator
+        function togglePromptGenerator() {
+            const generator = document.getElementById('prompt-generator');
+            generator.classList.toggle('hidden');
+        }
+
+        // Generate prompt based on selections
+        function generatePrompt() {
+            const promptType = document.getElementById('prompt-type').value;
+            const language = document.getElementById('language').value;
+            const details = document.getElementById('prompt-details').value;
+            const stepByStep = document.getElementById('step-by-step').checked;
+            const examples = document.getElementById('examples').checked;
+            const structuredOutput = document.getElementById('structured-output').checked;
+            const explanations = document.getElementById('explanations').checked;
+            
+            let promptTemplate = "";
+            
+            // Basic prompt based on type
+            switch(promptType) {
+                case 'code-generation':
+                    promptTemplate = `Write ${language} code to ${details || 'solve the following problem'}.\n\n`;
+                    break;
+                case 'explain-code':
+                    promptTemplate = `Explain the following ${language} code in detail:\n\n\`\`\`${language}\n// Your code here\n\`\`\`\n\n`;
+                    break;
+                case 'refactor':
+                    promptTemplate = `Refactor the following ${language} code to improve performance, readability, and maintainability:\n\n\`\`\`${language}\n// Your code here\n\`\`\`\n\n`;
+                    break;
+                case 'debug':
+                    promptTemplate = `Debug the following ${language} code and identify any issues:\n\n\`\`\`${language}\n// Your code here\n\`\`\`\n\n`;
+                    break;
+                case 'api-design':
+                    promptTemplate = `Design a RESTful API for ${details || 'the specified system'} using ${language}.\n\n`;
+                    break;
+                case 'data-analysis':
+                    promptTemplate = `Analyze the following data and provide insights ${details ? 'focusing on ' + details : ''}:\n\n\`\`\`\n// Your data here\n\`\`\`\n\n`;
+                    break;
+            }
+            
+            // Add options
+            if (stepByStep) {
+                promptTemplate += "Please provide a step-by-step explanation of your thought process.\n\n";
+            }
+            
+            if (examples) {
+                promptTemplate += "Include practical examples demonstrating how to use the code.\n\n";
+            }
+            
+            if (structuredOutput) {
+                promptTemplate += "Format your response as JSON with the following structure:\n```json\n{\n  \"solution\": \"...\",\n  \"explanation\": \"...\",\n  \"examples\": [...]\n}\n```\n\n";
+            }
+            
+            if (explanations) {
+                promptTemplate += "For each part of your solution, explain why you made those specific design decisions.\n\n";
+            }
+            
+            // Add final details if provided
+            if (details && promptType !== 'code-generation' && promptType !== 'api-design' && promptType !== 'data-analysis') {
+                promptTemplate += `Additional requirements: ${details}\n\n`;
+            }
+            
+            document.getElementById('generated-prompt').textContent = promptTemplate;
+        }
+
+        // Copy generated prompt
+        function copyGeneratedPrompt() {
+            const content = document.getElementById('generated-prompt').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                const toast = document.getElementById('toast');
+                toast.textContent = 'Prompt copied to clipboard!';
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2000);
+            });
+        }
+
+        // Filter template list
+        document.getElementById('search-templates').addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const items = document.getElementsByClassName('template-item');
+            
+            for (let i = 0; i < items.length; i++) {
+                const text = items[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+                if (text.indexOf(filter) > -1) {
+                    items[i].style.display = '';
+                } else {
+                    items[i].style.display = 'none';
+                }
+            }
+        });
+
+        // Tab switching logic
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                tabButtons.forEach(b => b.classList.remove('active', 'bg-purple-100', 'text-purple-700'));
+                // Hide all tab contents
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active', 'bg-purple-100', 'text-purple-700');
+                // Show the corresponding tab content
+                const tabId = this.getAttribute('data-tab');
+                const content = document.getElementById(tabId);
+                if (content) content.classList.add('active');
+            });
+        });
+
+        // Collapsible sections logic
+        const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
+        collapsibleHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const section = this.getAttribute('data-section');
+                const content = document.getElementById(section + '-content');
+                if (content) {
+                    content.classList.toggle('expanded');
+                    // Optionally toggle chevron direction
+                    const chevron = this.querySelector('.chevron');
+                    if (chevron) {
+                        chevron.classList.toggle('rotate-180');
+                    }
+                }
+            });
+        });
+
+        // ... existing code ...
+        function toggleCheatsheet() {
+            const cheatsheet = document.getElementById('floating-cheatsheet');
+            cheatsheet.classList.toggle('visible');
+        }
+    </script>
+</body>
+</html>
